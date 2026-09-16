@@ -208,6 +208,24 @@ class TPADatabase {
     return newRecord;
   }
 
+  deleteSppRecord(recordId) {
+    const idx = this.data.sppRecords.findIndex(r => r.id === recordId);
+    if (idx === -1) return false;
+    const rec = this.data.sppRecords[idx];
+    this.data.sppRecords.splice(idx, 1);
+
+    // Kembalikan saldo kas operasional & hapus riwayat transaksi kas terkait
+    const txIdx = this.data.transactions.findIndex(t => t.ref === rec.receiptNo || t.ref === rec.id);
+    if (txIdx !== -1) {
+      const tx = this.data.transactions[txIdx];
+      this.updateWalletBalance(tx.walletId, -tx.amount);
+      this.data.transactions.splice(txIdx, 1);
+    }
+    this.save();
+    return true;
+  }
+
+
   // --- Tabungan Santri ---
   addSavingsTransaction(studentId, type, amount, note = '') {
     const student = this.getStudent(studentId);

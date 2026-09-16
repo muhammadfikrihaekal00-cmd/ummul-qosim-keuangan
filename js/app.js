@@ -375,6 +375,9 @@ class SikadApp {
             <button class="btn btn-whatsapp btn-sm" onclick="app.sendReceiptWA('${s.id}', '${sppStatus.record.id}')" title="Kirim WA Bukti Bayar">
               📲 Kirim WA
             </button>
+            <button class="btn btn-danger btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pembayaran / Ubah jadi Belum Lunas">
+              ↩️ Batal
+            </button>
           </div>
         `;
       } else {
@@ -467,6 +470,11 @@ class SikadApp {
     const btnWa = document.getElementById('btn-rcp-send-wa');
     btnWa.onclick = () => this.sendReceiptWA(student.id, record.id);
 
+    const btnCancel = document.getElementById('btn-rcp-cancel');
+    if (btnCancel) {
+      btnCancel.onclick = () => this.cancelSppPaymentPrompt(record.id);
+    }
+
     this.openModal('modal-receipt');
   }
 
@@ -475,6 +483,20 @@ class SikadApp {
     if (!record) return;
     const student = window.db.getStudent(record.studentId);
     this.showReceipt(record, student);
+  }
+
+  cancelSppPaymentPrompt(recordId) {
+    const record = window.db.data.sppRecords.find(r => r.id === recordId);
+    if (!record) return;
+    const student = window.db.getStudent(record.studentId);
+    const studentName = student ? student.name : 'Santri';
+
+    if (confirm(`Batalkan pelunasan SPP Bulan ${this.formatMonthId(record.month)} untuk ${studentName}?\n\nStatus santri akan kembali menjadi 'Belum Lunas' (tombol Bayar SPP akan muncul kembali) dan saldo kas operasional akan disesuaikan.`)) {
+      window.db.deleteSppRecord(recordId);
+      this.closeModal('modal-receipt');
+      this.renderAll();
+      alert(`Pembayaran SPP untuk ${studentName} berhasil dibatalkan. Tombol 'Bayar SPP' kini telah tersedia kembali.`);
+    }
   }
 
   // WhatsApp Integration: Kirim Pengingat SPP
