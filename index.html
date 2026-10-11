@@ -9,6 +9,59 @@
 </head>
 <body>
 
+  <!-- ==================== SECURITY PIN LOCK GATE ==================== -->
+  <div class="pin-gate-overlay" id="security-pin-screen">
+    <div class="pin-gate-box">
+      <!-- Luxury Islamic Emblem Badge -->
+      <div class="pin-brand-badge">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1.5" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <h2 class="pin-title">Sikad<span>TPA</span> Keuangan</h2>
+      <p class="pin-subtitle">RQ Ummul Qosim • Sistem Kas Terpadu</p>
+
+      <div class="pin-prompt-box">
+        <div class="pin-status-label" id="pin-status-message">Masukkan PIN Keamanan Bendahara</div>
+        
+        <!-- 6-digit indicator dots -->
+        <div class="pin-dots-row" id="pin-dots-container">
+          <div class="pin-dot" data-idx="0"></div>
+          <div class="pin-dot" data-idx="1"></div>
+          <div class="pin-dot" data-idx="2"></div>
+          <div class="pin-dot" data-idx="3"></div>
+          <div class="pin-dot" data-idx="4"></div>
+          <div class="pin-dot" data-idx="5"></div>
+        </div>
+
+        <!-- Hidden input for direct typing if using physical keyboard -->
+        <input type="password" id="pin-hidden-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="position: absolute; opacity: 0; pointer-events: none;" autocomplete="off">
+      </div>
+
+      <!-- Numeric Keypad Grid -->
+      <div class="pin-keypad-grid">
+        <button type="button" class="pin-key-btn" data-key="1">1</button>
+        <button type="button" class="pin-key-btn" data-key="2">2</button>
+        <button type="button" class="pin-key-btn" data-key="3">3</button>
+        <button type="button" class="pin-key-btn" data-key="4">4</button>
+        <button type="button" class="pin-key-btn" data-key="5">5</button>
+        <button type="button" class="pin-key-btn" data-key="6">6</button>
+        <button type="button" class="pin-key-btn" data-key="7">7</button>
+        <button type="button" class="pin-key-btn" data-key="8">8</button>
+        <button type="button" class="pin-key-btn" data-key="9">9</button>
+        <button type="button" class="pin-key-btn pin-key-action" id="btn-pin-clear" title="Hapus Semua">C</button>
+        <button type="button" class="pin-key-btn" data-key="0">0</button>
+        <button type="button" class="pin-key-btn pin-key-action" id="btn-pin-backspace" title="Hapus Satu">⌫</button>
+      </div>
+
+      <div class="pin-footer-hint">
+        <span>🔒 Kunci Keamanan Aktif (PIN: 060708)</span>
+      </div>
+    </div>
+  </div>
+
   <div class="app-container">
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
@@ -98,6 +151,7 @@
           <div class="user-name" id="sidebar-user-name">Ibu Rahmawati, S.E.</div>
           <div class="user-role">Bendahara TPA</div>
         </div>
+        <button type="button" class="btn-lock-sidebar" onclick="app.lockSession()" title="Kunci Aplikasi (PIN)">🔒 Kunci</button>
       </div>
     </aside>
 
@@ -196,6 +250,9 @@
             <span>•</span>
             <span id="header-masehi-date">16 September 2026</span>
           </div>
+          <button type="button" class="btn-lock-header" onclick="app.lockSession()" title="Kunci Aplikasi (PIN)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </button>
           <button class="btn-quick-add" id="btn-open-tx-modal">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span>Catat Kas</span>
@@ -843,6 +900,11 @@
                 <div class="form-group">
                   <label>Nama Bendahara</label>
                   <input type="text" class="form-control" id="info-tpa-bendahara" required>
+                </div>
+                <div class="form-group">
+                  <label>PIN Keamanan Bendahara (6 Digit)</label>
+                  <input type="password" class="form-control" id="info-tpa-pin" maxlength="6" placeholder="060708" required>
+                  <small style="color: var(--slate-500); font-size: 0.72rem;">PIN saat ini: <strong>060708</strong> (bisa diubah kapan saja)</small>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                   💾 Simpan Perubahan Profil

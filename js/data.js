@@ -16,7 +16,8 @@ const DEFAULT_DATA = {
     ketua: "Ustadz H. Abdul Malik, S.Pd.I",
     bendahara: "Ibu Rahmawati, S.E.",
     qrisUrl: "", // bisa diisi url gambar atau default canvas
-    rekening: "BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)"
+    rekening: "BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)",
+    securityPin: "060708"
   },
   // 4 Kantong Kas Utama
   wallets: [
@@ -370,6 +371,23 @@ class TPADatabase {
     this.data.tpaInfo = { ...this.data.tpaInfo, ...newInfo };
     this.save();
     return this.data.tpaInfo;
+  }
+
+  // --- Keamanan & PIN Bendahara ---
+  getSecurityPin() {
+    if (!this.data.tpaInfo) this.data.tpaInfo = {};
+    if (!this.data.tpaInfo.securityPin) {
+      this.data.tpaInfo.securityPin = '060708';
+      this.save();
+    }
+    return this.data.tpaInfo.securityPin;
+  }
+
+  updateSecurityPin(newPin) {
+    if (!this.data.tpaInfo) this.data.tpaInfo = {};
+    this.data.tpaInfo.securityPin = String(newPin);
+    this.save();
+    return this.data.tpaInfo.securityPin;
   }
 }
 

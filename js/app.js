@@ -10,10 +10,12 @@ class SikadApp {
     this.sppQuickFilter = 'all';
     this.currentWaMsg = '';
     this.currentWaPhone = '';
+    this.enteredPin = '';
     this.init();
   }
 
   init() {
+    this.initSecurityPinGate();
     this.initTheme();
     this.bindEvents();
     this.initCommandPalette();
@@ -215,6 +217,9 @@ class SikadApp {
 
     const elBendahara = document.getElementById('info-tpa-bendahara');
     if (elBendahara) elBendahara.value = info.bendahara || '';
+
+    const elPin = document.getElementById('info-tpa-pin');
+    if (elPin) elPin.value = window.db.getSecurityPin() || '060708';
   }
 
   // =========================================================================
@@ -1272,19 +1277,22 @@ Bendahara *${tpaInfo.nama}*
 
   saveTpaInfo(e) {
     e.preventDefault();
+    const pinVal = document.getElementById('info-tpa-pin')?.value || '060708';
     const newInfo = {
       nama: document.getElementById('info-tpa-name').value,
       masjid: document.getElementById('info-tpa-masjid').value,
       alamat: document.getElementById('info-tpa-alamat').value,
       rekening: document.getElementById('info-tpa-rekening').value,
       ketua: document.getElementById('info-tpa-ketua').value,
-      bendahara: document.getElementById('info-tpa-bendahara').value
+      bendahara: document.getElementById('info-tpa-bendahara').value,
+      securityPin: pinVal
     };
 
     window.db.updateTPAInfo(newInfo);
+    window.db.updateSecurityPin(pinVal);
     this.loadTPAInfoToUI();
     this.generateReport();
-    alert("Profil dan identitas lembaga TPA berhasil diperbarui!");
+    this.showToast("Profil lembaga dan PIN keamanan (060708) berhasil disimpan!");
   }
 
   // =========================================================================
@@ -1566,6 +1574,148 @@ Bendahara *${tpaInfo.nama}*
     if (this._tempCmdActions && this._tempCmdActions[idx]) {
       this._tempCmdActions[idx].action();
     }
+  }
+
+  // =========================================================================
+  // SECURITY PIN LOCK GATE CONTROLLER (PIN: 060708)
+  // =========================================================================
+  initSecurityPinGate() {
+    const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
+    const screen = document.getElementById('security-pin-screen');
+    if (screen) {
+      screen.classList.toggle('unlocked', isUnlocked);
+    }
+
+    // Keypad numbers
+    document.querySelectorAll('.pin-key-btn[data-key]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const key = btn.getAttribute('data-key');
+        if (key !== null) this.inputPinDigit(key);
+      });
+    });
+
+    // Clear and Backspace buttons
+    const btnClear = document.getElementById('btn-pin-clear');
+    if (btnClear) {
+      btnClear.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.clearPin();
+      });
+    }
+
+    const btnBack = document.getElementById('btn-pin-backspace');
+    if (btnBack) {
+      btnBack.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.backspacePin();
+      });
+    }
+
+    // Physical Keyboard support
+    window.addEventListener('keydown', (e) => {
+      const screenEl = document.getElementById('security-pin-screen');
+      if (!screenEl || screenEl.classList.contains('unlocked')) return;
+
+      if (e.key >= '0' && e.key <= '9') {
+        e.preventDefault();
+        this.inputPinDigit(e.key);
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        this.backspacePin();
+      } else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        this.clearPin();
+      }
+    });
+  }
+
+  inputPinDigit(digit) {
+    if (this.enteredPin.length < 6) {
+      this.enteredPin += digit;
+      this.updatePinDots();
+
+      if (this.enteredPin.length === 6) {
+        setTimeout(() => this.verifyPin(), 60);
+      }
+    }
+  }
+
+  backspacePin() {
+    if (this.enteredPin.length > 0) {
+      this.enteredPin = this.enteredPin.slice(0, -1);
+      this.updatePinDots();
+      this.resetPinStatus();
+    }
+  }
+
+  clearPin() {
+    this.enteredPin = '';
+    this.updatePinDots();
+    this.resetPinStatus();
+  }
+
+  updatePinDots() {
+    const dots = document.querySelectorAll('#pin-dots-container .pin-dot');
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('filled', idx < this.enteredPin.length);
+    });
+  }
+
+  resetPinStatus() {
+    const msg = document.getElementById('pin-status-message');
+    if (msg) {
+      msg.innerText = 'Masukkan PIN Keamanan Bendahara';
+      msg.classList.remove('error');
+    }
+  }
+
+  verifyPin() {
+    const correctPin = window.db.getSecurityPin() || '060708';
+    const msg = document.getElementById('pin-status-message');
+    const screen = document.getElementById('security-pin-screen');
+    const box = document.querySelector('.pin-gate-box');
+
+    if (this.enteredPin === correctPin) {
+      if (msg) {
+        msg.innerText = '✓ PIN Benar! Membuka akses...';
+        msg.classList.remove('error');
+      }
+      sessionStorage.setItem('sikadtpa_unlocked', 'true');
+
+      setTimeout(() => {
+        if (screen) screen.classList.add('unlocked');
+        this.enteredPin = '';
+        this.updatePinDots();
+        this.resetPinStatus();
+        this.showToast('Selamat datang! Akses keuangan terbuka.');
+      }, 250);
+    } else {
+      if (msg) {
+        msg.innerText = '✕ PIN salah! Silakan coba lagi.';
+        msg.classList.add('error');
+      }
+      if (box) {
+        box.classList.remove('shake');
+        void box.offsetWidth;
+        box.classList.add('shake');
+      }
+
+      setTimeout(() => {
+        this.enteredPin = '';
+        this.updatePinDots();
+      }, 500);
+    }
+  }
+
+  lockSession() {
+    sessionStorage.removeItem('sikadtpa_unlocked');
+    const screen = document.getElementById('security-pin-screen');
+    if (screen) {
+      screen.classList.remove('unlocked');
+    }
+    this.clearPin();
+    this.showToast('🔒 Sesi aplikasi telah dikunci.');
   }
 
   showToast(message) {
