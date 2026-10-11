@@ -8,15 +8,15 @@ const STORAGE_KEY = 'SIKAD_TPA_DATA_V1';
 // Seed Data Awal yang Lengkap dan Realistis
 const DEFAULT_DATA = {
   tpaInfo: {
-    nama: "TPA Al-Hidayah",
-    masjid: "Masjid Jami' Al-Hidayah",
+    nama: "RQ Ummul Qosim",
+    masjid: "Masjid Jami' Ummul Qosim",
     alamat: "Jl. Melati No. 45, Kompleks Griya Asri, Kota Bandung",
     kontak: "0812-3456-7890",
-    email: "tpa.alhidayah@gmail.com",
+    email: "rq.ummulqosim@gmail.com",
     ketua: "Ustadz H. Abdul Malik, S.Pd.I",
     bendahara: "Ibu Rahmawati, S.E.",
     qrisUrl: "", // bisa diisi url gambar atau default canvas
-    rekening: "BSI: 7123-4567-89 (a.n. TPA Al-Hidayah)"
+    rekening: "BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)"
   },
   // 4 Kantong Kas Utama
   wallets: [

@@ -4,16 +4,29 @@ Aplikasi web modern, terpadu, dan responsif untuk manajemen operasional dan keua
 
 ---
 
-## 🌟 Fitur Utama
+## 🌟 Fitur Utama & Desain Eksklusif (Tidak Pasaran)
 
-- 📊 **Dashboard Kas Real-time**: Monitoring kas operasional, saldo tabungan santri, dan infaq/donasi secara terpisah dan akurat.
-- 💳 **Manajemen SPP & Syahriah**: Pemantauan tagihan iuran bulanan santri, pencatatan pembayaran, dan riwayat pelunasan.
-- 💰 **Tabungan Santri Terpadu**: Buku tabungan digital untuk setor, tarik saldo, serta mutasi per santri.
-- 🕌 **Infaq & Wakaf**: Pencatatan dana sosial, pembangunan gedung, dan donasi jamaah.
-- 🧑‍🏫 **Bisyarah / Honor Guru & Asatidz**: Pengelolaan honor ustadz dan ustadzah secara teratur.
-- 🧾 **Kwitansi Digital WhatsApp**: Pembuatan bukti pembayaran otomatis yang siap dikirim langsung ke nomor WhatsApp wali santri.
-- 📈 **Laporan Keuangan & Cetak**: Rekapitulasi kas masuk/keluar, ringkasan bulanan/tahunan, dan opsi cetak/export dokumen.
-- 💾 **Offline-Ready**: Menggunakan penyimpanan lokal (*LocalStorage*) tanpa dependensi server yang rumit.
+- 💎 **Luxury Bento Grid Fintech Dashboard**:
+  - *Master Vault Card*: Kartu titanium kaca dengan saldo likuiditas total gabungan, bar alokasi persentase multi-kas dinamis (*Operasional, Tabungan, Infaq, Sarpras*), serta chip keamanan fintech EMV.
+  - *Radar Syahriah (SPP) Circular Gauge*: Pengukur lingkaran SVG interaktif dengan animasi *stroke-dashoffset*, persentase capaian, serta rincian santri lunas, tunggakan, dan penerima beasiswa yatim.
+  - *4 Kapsul Kas Unik*: Kas Operasional, Kas Tabungan Santri (*🔒 Dilindungi Syariah - Titipan Murni*), Kas Infaq/Sedekah (*Amal Jariyah*), dan Kas Sarpras (*Pengembangan Gedung*).
+- 🔍 **Spotlight Command Palette (`Ctrl + K`) & Omnibar**:
+  - Akses pencarian cepat santri, ustadz, transaksi, dan aksi keuangan hanya dengan menekan `Ctrl + K` atau klik bar pencarian mengambang.
+- 🎴 **Dual-View SPP & Smart Segmented Filter**:
+  - Mode **Visual Kartu Santri** (*Identitas avatar inisial, lencana jilid, kontak wali, dan tombol tindakan*) dan Mode **Tabel Data Pro**.
+  - Bilah filter kapsul cerdas: *Semua Santri, Belum Lunas, Sudah Lunas, Beasiswa Yatim*.
+- 📲 **Simulasi Pesan WhatsApp Interaktif**:
+  - Jendela pop-up simulasi bubble chat WhatsApp asli sebelum mengirim pesan tagihan/kuitansi, lengkap dengan fitur salin teks dan peluncuran langsung ke WhatsApp Web / HP.
+- 🧾 **Kwitansi Digital Thermal Slip**:
+  - Desain struk kasir termal modern dengan tepi gerigi perforasi autentik, stempel air (*watermark verified*), dan kode batang.
+- 🎨 **Multi-Theme Engine (5 Tema Mewah)**:
+  - *Royal Sapphire* (default - Biru Safir & Gold)
+  - *Persian Turquoise* (Toska Samarkand & Coral)
+  - *Moroccan Terracotta* (Earthy Terakota & Pasir Gurun)
+  - *Obsidian Midnight* (Dark Mode Futuristik Neon)
+  - *Classic Emerald* (Zamrud Hijau Islami)
+- 📖 **Buku Panduan Interaktif**: Panduan lengkap cara kustomisasi profil lembaga, santri, SPP, dan kode sumber langsung di aplikasi.
+- 💾 **100% Offline-Ready & Backup JSON**: Menggunakan penyimpanan browser (*LocalStorage*) tanpa dependensi server berat.
 
 ---
 

@@ -13,50 +13,87 @@
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="logo-badge">📖</div>
+        <div class="logo-badge" style="background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--slate-900); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <circle cx="12" cy="8.5" r="2.2" fill="currentColor"></circle>
+          </svg>
+        </div>
         <div class="logo-text">
           <h1>Sikad<span>TPA</span></h1>
-          <p id="sidebar-tpa-name">TPA Al-Hidayah</p>
+          <p id="sidebar-tpa-name">RQ Ummul Qosim</p>
         </div>
+      </div>
+
+      <!-- Spotlight Omnibar Trigger in Sidebar -->
+      <div style="padding: 0 14px 12px;">
+        <button type="button" class="sidebar-cmd-btn" id="btn-trigger-cmd-sidebar" onclick="app.openCommandPalette()" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 8px 12px; color: rgba(255, 255, 255, 0.85); font-size: 0.76rem; font-weight: 600; cursor: pointer; transition: 0.2s;" title="Pencarian Spotlight (Ctrl + K)">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Cari Cepat</span>
+          </span>
+          <kbd style="font-size: 0.65rem; background: rgba(255, 255, 255, 0.16); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.2); font-family: monospace;">Ctrl K</kbd>
+        </button>
       </div>
 
       <nav class="sidebar-nav">
         <div class="nav-section-title">Menu Utama</div>
         <a class="nav-item active" data-tab="tab-dashboard" id="nav-dashboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="12" width="7" height="9" rx="2"></rect><rect x="3" y="16" width="7" height="5" rx="2"></rect></svg>
+          </div>
           <span>Dashboard Kas</span>
         </a>
         <a class="nav-item" data-tab="tab-spp" id="nav-spp">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M9 15l2 2 4-4"></path></svg>
+          </div>
           <span>SPP & Syahriah</span>
           <span class="nav-badge" id="badge-unpaid-spp">4</span>
         </a>
         <a class="nav-item" data-tab="tab-tabungan" id="nav-tabungan">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="6" x2="12" y2="8"></line><line x1="12" y1="16" x2="12" y2="18"></line></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8.7 3.5 2 4.6V19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1h4v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2.4c1.2-1 2-2.5 2-4.6 0-3.5-1.5-6-4-7z"></path><circle cx="9" cy="11" r="1"></circle><path d="M13 10v2"></path></svg>
+          </div>
           <span>Tabungan Santri</span>
         </a>
         <a class="nav-item" data-tab="tab-infaq" id="nav-infaq">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </div>
           <span>Infaq & Donasi</span>
         </a>
         <a class="nav-item" data-tab="tab-pengeluaran" id="nav-pengeluaran">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="6" x2="12" y2="8"></line><line x1="12" y1="16" x2="12" y2="18"></line></svg>
+          </div>
           <span>Bisyarah & Operasional</span>
         </a>
 
         <div class="nav-section-title">Pelaporan & Data</div>
         <a class="nav-item" data-tab="tab-laporan" id="nav-laporan">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg>
+          </div>
           <span>Laporan Keuangan</span>
         </a>
         <a class="nav-item" data-tab="tab-master" id="nav-master">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+          </div>
           <span>Santri & Ustadz</span>
+        </a>
+        <a class="nav-item" data-tab="tab-panduan" id="nav-panduan">
+          <div class="nav-icon-pebble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+          </div>
+          <span>Panduan Ubah Isi</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="user-avatar">RW</div>
+        <div class="user-avatar" id="sidebar-user-avatar">RW</div>
         <div class="user-info">
           <div class="user-name" id="sidebar-user-name">Ibu Rahmawati, S.E.</div>
           <div class="user-role">Bendahara TPA</div>
@@ -78,7 +115,82 @@
           </div>
         </div>
 
+        <!-- Spotlight Omnibar Search -->
+        <div class="header-omni-search" id="btn-trigger-omni-search" onclick="app.openCommandPalette()" title="Tekan Ctrl + K untuk cari cepat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span style="opacity: 0.85;">Cari santri, kas, menu, transaksi...</span>
+          <kbd>Ctrl K</kbd>
+        </div>
+
         <div class="header-right">
+          <!-- Theme Switcher Dropdown -->
+          <div class="theme-dropdown-container" id="theme-dropdown-container">
+            <button class="btn-theme-toggle" id="btn-theme-dropdown" title="Ganti Tema Warna">
+              <span class="theme-preview-dot" id="theme-preview-dot"></span>
+              <span id="current-theme-label">Royal Sapphire</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="theme-dropdown-menu" id="theme-dropdown-menu">
+              <div class="theme-menu-title">Pilih Tema Antarmuka</div>
+              <div class="theme-option active" data-theme-val="royal">
+                <div class="theme-swatch">
+                  <span style="background: #2563eb;"></span>
+                  <span style="background: #f59e0b;"></span>
+                </div>
+                <div class="theme-info">
+                  <div class="theme-title">Royal Sapphire</div>
+                  <div class="theme-desc">Navy biru safir mewah & emas sampanye</div>
+                </div>
+              </div>
+              <div class="theme-option" data-theme-val="persian">
+                <div class="theme-swatch">
+                  <span style="background: #0d9488;"></span>
+                  <span style="background: #f97316;"></span>
+                </div>
+                <div class="theme-info">
+                  <div class="theme-title">Persian Turquoise</div>
+                  <div class="theme-desc">Toska khas Samarkand & aksen coral</div>
+                </div>
+              </div>
+              <div class="theme-option" data-theme-val="terracotta">
+                <div class="theme-swatch">
+                  <span style="background: #ea580c;"></span>
+                  <span style="background: #ca8a04;"></span>
+                </div>
+                <div class="theme-info">
+                  <div class="theme-title">Moroccan Terracotta</div>
+                  <div class="theme-desc">Earthy terakota & nuansa pasir gurun</div>
+                </div>
+              </div>
+              <div class="theme-option" data-theme-val="midnight">
+                <div class="theme-swatch">
+                  <span style="background: #06b6d4;"></span>
+                  <span style="background: #111827;"></span>
+                </div>
+                <div class="theme-info">
+                  <div class="theme-title">Obsidian Midnight</div>
+                  <div class="theme-desc">Mode gelap futuristik & neon glass</div>
+                </div>
+              </div>
+              <div class="theme-option" data-theme-val="emerald">
+                <div class="theme-swatch">
+                  <span style="background: #059669;"></span>
+                  <span style="background: #f59e0b;"></span>
+                </div>
+                <div class="theme-info">
+                  <div class="theme-title">Classic Emerald</div>
+                  <div class="theme-desc">Zamrud hijau klasik islami</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Guide Button -->
+          <button class="btn-guide-toggle" id="btn-open-guide-modal" title="Buka Panduan Kustomisasi">
+            <span>📖</span>
+            <span>Panduan Isi</span>
+          </button>
+
           <div class="date-badge">
             <span class="hijri" id="header-hijri-date">4 Rabi'ul Awwal 1448 H</span>
             <span>•</span>
@@ -94,150 +206,189 @@
       <!-- Content Body -->
       <main class="content-body">
         
-        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <!-- ==================== TAB 1: DASHBOARD (LUXURY BENTO GRID) ==================== -->
         <section class="tab-view active" id="tab-dashboard">
-          <!-- 4 Kantong Kas Utama -->
-          <div class="wallets-grid" id="wallets-container">
-            <!-- Dynamic rendered by JS -->
-          </div>
+          <div class="bento-dashboard-grid">
+            <!-- Bento 1: Master Vault Card (Spans 8 Cols) -->
+            <div class="bento-tile bento-master-vault">
+              <div class="vault-watermark">
+                <svg viewBox="0 0 100 100" fill="currentColor">
+                  <circle cx="50" cy="50" r="46" stroke="currentColor" stroke-width="4" fill="none" opacity="0.3"></circle>
+                  <polygon points="50,10 62,38 92,38 68,56 77,85 50,68 23,85 32,56 8,38 38,38" fill="currentColor"></polygon>
+                </svg>
+              </div>
 
-          <!-- Quick Metrics -->
-          <div class="metrics-row">
-            <div class="metric-pill">
-              <div class="metric-icon income">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-              </div>
-              <div class="metric-data">
-                <div class="label">Pemasukan Bulan Ini</div>
-                <div class="val" id="metric-income-month">Rp 0</div>
-              </div>
-            </div>
-
-            <div class="metric-pill">
-              <div class="metric-icon expense">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
-              </div>
-              <div class="metric-data">
-                <div class="label">Pengeluaran Bulan Ini</div>
-                <div class="val" id="metric-expense-month">Rp 0</div>
-              </div>
-            </div>
-
-            <div class="metric-pill">
-              <div class="metric-icon student">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-              </div>
-              <div class="metric-data">
-                <div class="label">Status SPP Santri</div>
-                <div class="val" id="metric-spp-status">0 / 0 Santri</div>
-              </div>
-            </div>
-
-            <div class="metric-pill">
-              <div class="metric-icon total">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-              </div>
-              <div class="metric-data">
-                <div class="label">Total Saldo Gabungan</div>
-                <div class="val" id="metric-total-balance">Rp 0</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Dashboard Grid: Charts & Recent Transactions -->
-          <div class="dashboard-grid">
-            <!-- Left: Visual Chart & SPP Gauge -->
-            <div class="dashboard-left">
-              <!-- SPP Gauge Box -->
-              <div class="spp-progress-box">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div>
-                    <h4 style="font-size: 1.05rem; font-weight: 700;">Target Syahriah (SPP) September 2026</h4>
-                    <p style="font-size: 0.8rem; opacity: 0.9; margin-top: 2px;">Dana operasional utama kegiatan belajar mengajar</p>
-                  </div>
-                  <span class="badge badge-warning" id="spp-progress-percentage" style="font-size: 0.85rem; padding: 6px 12px;">60% Tercapai</span>
+              <div class="vault-header">
+                <div class="vault-badge">
+                  <span class="btn-glow-dot"></span>
+                  <span id="vault-status-text">KAS GABUNGAN AMANAH AKTIF</span>
                 </div>
-                <div class="progress-bar-bg">
-                  <div class="progress-bar-fill" id="spp-progress-fill" style="width: 60%;"></div>
+                <div class="vault-emv-chip" title="Fintech Security Shield"></div>
+              </div>
+
+              <div class="vault-body">
+                <div class="vault-balance-label">Total Likuiditas Saldo Seluruh Kas</div>
+                <div class="vault-balance-amount" id="vault-master-total-balance">Rp 0</div>
+                
+                <!-- Dynamic Allocation Track Bar -->
+                <div class="vault-allocation-track" id="vault-allocation-track" title="Alokasi Pembagian Dana Kas">
+                  <div class="alloc-segment alloc-ops" id="alloc-ops" style="width: 40%;" title="Kas Operasional"></div>
+                  <div class="alloc-segment alloc-tabungan" id="alloc-tabungan" style="width: 30%;" title="Kas Tabungan Santri"></div>
+                  <div class="alloc-segment alloc-infaq" id="alloc-infaq" style="width: 20%;" title="Kas Infaq & Sedekah"></div>
+                  <div class="alloc-segment alloc-bangun" id="alloc-bangun" style="width: 10%;" title="Kas Sarpras & Pembangunan"></div>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; opacity: 0.95;">
-                  <span id="spp-progress-collected">Terkumpul: Rp 300.000</span>
-                  <span id="spp-progress-remaining">Sisa Tunggakan: Rp 200.000</span>
+
+                <div class="vault-allocation-legend">
+                  <div class="legend-pill-item"><span class="dot" style="background: #38bdf8;"></span> Operasional (<span id="pct-ops">0%</span>)</div>
+                  <div class="legend-pill-item"><span class="dot" style="background: #10b981;"></span> Tabungan (<span id="pct-tabungan">0%</span>)</div>
+                  <div class="legend-pill-item"><span class="dot" style="background: #fbbf24;"></span> Infaq (<span id="pct-infaq">0%</span>)</div>
+                  <div class="legend-pill-item"><span class="dot" style="background: #c084fc;"></span> Sarpras (<span id="pct-bangun">0%</span>)</div>
                 </div>
               </div>
 
-              <!-- Bar Chart Arus Kas -->
-              <div class="card">
-                <div class="card-header">
-                  <div>
-                    <h3>Arus Kas 6 Bulan Terakhir</h3>
-                    <div class="card-subtitle">Perbandingan Pemasukan dan Pengeluaran Kas Seluruh Dompet</div>
-                  </div>
+              <div class="vault-actions-bar">
+                <button type="button" class="vault-action-btn primary" onclick="app.openTxModal('in', 'ops')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Pemasukan Baru</span>
+                </button>
+                <button type="button" class="vault-action-btn" onclick="app.openTxModal('out', 'ops')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Pengeluaran Kas</span>
+                </button>
+                <button type="button" class="vault-action-btn" onclick="app.openQRISModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  <span>QRIS Infaq</span>
+                </button>
+                <button type="button" class="vault-action-btn" onclick="app.switchTab('tab-laporan')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  <span>Laporan Resmi</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Bento 2: SPP Syahriah Radar Progress Ring (Spans 4 Cols) -->
+            <div class="bento-tile bento-spp-radar">
+              <div class="tile-header">
+                <div class="tile-title-group">
+                  <h4>Radar Syahriah (SPP)</h4>
+                  <div class="tile-subtitle" id="spp-radar-month">Bulan September 2026</div>
                 </div>
-                <div class="chart-container">
-                  <div class="chart-bars-wrap" id="dashboard-cashflow-chart">
-                    <!-- Populated by JS -->
-                  </div>
-                  <div class="chart-legend">
-                    <div><span class="legend-dot" style="background: var(--primary-500);"></span> Pemasukan (Kas Masuk)</div>
-                    <div><span class="legend-dot" style="background: var(--danger);"></span> Pengeluaran (Kas Keluar)</div>
+                <button type="button" class="tile-mini-btn" onclick="app.switchTab('tab-spp')">Detail &rarr;</button>
+              </div>
+
+              <div class="circle-gauge-wrap">
+                <div class="circle-gauge-svg-box">
+                  <svg class="circle-gauge-svg" viewBox="0 0 120 120">
+                    <circle class="circle-gauge-bg" cx="60" cy="60" r="50"></circle>
+                    <circle class="circle-gauge-fill" id="spp-circle-fill" cx="60" cy="60" r="50"></circle>
+                  </svg>
+                  <div class="circle-gauge-center">
+                    <div class="gauge-pct" id="spp-circle-pct">0%</div>
+                    <div class="gauge-lbl">Tercapai</div>
                   </div>
                 </div>
+                <div class="circle-gauge-stats">
+                  <div class="gauge-stat-row">
+                    <span class="stat-dot dot-success"></span>
+                    <span class="stat-lbl">Santri Lunas</span>
+                    <span class="stat-val text-success" id="spp-count-paid">0</span>
+                  </div>
+                  <div class="gauge-stat-row">
+                    <span class="stat-dot dot-danger"></span>
+                    <span class="stat-lbl">Tunggakan</span>
+                    <span class="stat-val text-danger" id="spp-count-unpaid">0</span>
+                  </div>
+                  <div class="gauge-stat-row">
+                    <span class="stat-dot dot-gold"></span>
+                    <span class="stat-lbl">Beasiswa</span>
+                    <span class="stat-val" id="spp-count-scholarship">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: var(--slate-50); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; font-size: 0.74rem;">
+                <span style="color: var(--slate-500);">Terkumpul: <strong id="spp-radar-collected" style="color: var(--slate-800);">Rp 0</strong></span>
+                <span style="color: var(--slate-500);">Target: <strong id="spp-radar-target" style="color: var(--slate-800);">Rp 0</strong></span>
               </div>
             </div>
 
-            <!-- Right: Quick Actions & Recent Transactions -->
-            <div class="dashboard-right">
-              <!-- Quick Action Card -->
-              <div class="card" style="margin-bottom: 22px;">
-                <div class="card-header">
-                  <h3>Aksi Cepat</h3>
+            <!-- Bento 3: 4 Vault Capsules Row (Spans 12 Cols) -->
+            <div class="bento-wallets-capsule-row" id="wallets-capsule-container">
+              <!-- Dynamically rendered by JS -->
+            </div>
+
+            <!-- Bento 4: Cashflow Bar Chart (Spans 7 Cols) -->
+            <div class="bento-tile bento-cashflow-chart">
+              <div class="tile-header">
+                <div class="tile-title-group">
+                  <h4>Arus Kas Multi-Kantong (6 Bulan)</h4>
+                  <div class="tile-subtitle">Perbandingan realisasi pemasukan vs pengeluaran seluruh kas</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                  <button class="btn btn-secondary" style="padding: 12px;" onclick="app.switchTab('tab-spp')">
-                    📝 Bayar SPP Santri
-                  </button>
-                  <button class="btn btn-secondary" style="padding: 12px;" onclick="app.switchTab('tab-tabungan')">
-                    💰 Setor Tabungan
-                  </button>
-                  <button class="btn btn-secondary" style="padding: 12px;" onclick="app.openQRISModal()">
-                    📱 Tampilkan QRIS
-                  </button>
-                  <button class="btn btn-secondary" style="padding: 12px;" onclick="app.switchTab('tab-laporan')">
-                    🖨️ Cetak Laporan
-                  </button>
+                <div class="chart-legend-pills">
+                  <div><span class="pill-dot in"></span> Masuk</div>
+                  <div><span class="pill-dot out"></span> Keluar</div>
                 </div>
               </div>
+              <div class="chart-container" style="padding-top: 10px;">
+                <div class="chart-bars-wrap" id="dashboard-cashflow-chart">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
 
-              <!-- Recent Transactions List -->
-              <div class="card">
-                <div class="card-header">
-                  <h3>Mutasi Kas Terbaru</h3>
-                  <a href="javascript:void(0)" onclick="app.switchTab('tab-laporan')" style="font-size: 0.78rem; color: var(--primary-700); font-weight: 600; text-decoration: none;">Lihat Semua &rarr;</a>
+            <!-- Bento 5: Live Activity Mutasi Stream (Spans 5 Cols) -->
+            <div class="bento-tile bento-recent-stream">
+              <div class="tile-header">
+                <div class="tile-title-group">
+                  <h4>Aktivitas Mutasi Terkini</h4>
+                  <div class="tile-subtitle">5 Transaksi kas terbaru</div>
                 </div>
-                <div id="recent-transactions-list" style="display: flex; flex-direction: column; gap: 12px;">
-                  <!-- Dynamic render -->
-                </div>
+                <a href="javascript:void(0)" onclick="app.switchTab('tab-laporan')" class="tile-link">Buku Kas &rarr;</a>
+              </div>
+              <div class="recent-stream-list" id="recent-transactions-list">
+                <!-- Populated by JS -->
               </div>
             </div>
           </div>
         </section>
 
-        <!-- ==================== TAB 2: SPP & SYAHRIAH ==================== -->
+        <!-- ==================== TAB 2: SPP & SYAHRIAH (DUAL VIEW) ==================== -->
         <section class="tab-view" id="tab-spp">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <h3>Pengelolaan Syahriah / SPP Santri</h3>
-                <div class="card-subtitle">Catat pembayaran, cetak kuitansi, dan kirim pengingat ramah via WhatsApp</div>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary" id="btn-broadcast-reminder" onclick="app.broadcastSppReminder()">
-                  📲 Format Pengingat Santri
-                </button>
-              </div>
+          <!-- Smart Toolbar: Segmented Filter Capsules & Dual View Toggle -->
+          <div class="spp-toolbar-card">
+            <div class="segmented-capsule-bar" id="spp-quick-filter-bar">
+              <button type="button" class="capsule-item active" data-spp-filter="all" onclick="app.setSppQuickFilter('all')">
+                <span>Semua Santri</span>
+                <span class="capsule-count" id="count-capsule-all">10</span>
+              </button>
+              <button type="button" class="capsule-item" data-spp-filter="unpaid" onclick="app.setSppQuickFilter('unpaid')">
+                <span>Belum Lunas</span>
+                <span class="capsule-count warn" id="count-capsule-unpaid">4</span>
+              </button>
+              <button type="button" class="capsule-item" data-spp-filter="paid" onclick="app.setSppQuickFilter('paid')">
+                <span>Sudah Lunas</span>
+                <span class="capsule-count success" id="count-capsule-paid">5</span>
+              </button>
+              <button type="button" class="capsule-item" data-spp-filter="scholarship" onclick="app.setSppQuickFilter('scholarship')">
+                <span>Beasiswa/Yatim</span>
+                <span class="capsule-count gold" id="count-capsule-scholarship">1</span>
+              </button>
             </div>
 
+            <!-- View Switcher -->
+            <div class="view-switcher-group">
+              <button type="button" class="view-btn active" id="btn-view-cards" onclick="app.setSppView('cards')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Visual Kartu</span>
+              </button>
+              <button type="button" class="view-btn" id="btn-view-table" onclick="app.setSppView('table')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>Tabel Data</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
             <!-- Filter Controls -->
             <div class="filter-bar">
               <div class="filter-left">
@@ -275,12 +426,20 @@
               </div>
 
               <div class="filter-right">
+                <button type="button" class="btn btn-secondary" id="btn-broadcast-reminder" onclick="app.broadcastSppReminder()">
+                  📲 Salin Pesan Pengingat WA
+                </button>
                 <span class="badge badge-neutral" id="spp-filter-summary">Menampilkan 10 Santri</span>
               </div>
             </div>
 
-            <!-- Tabel SPP -->
-            <div class="table-responsive">
+            <!-- VIEW 1: Visual Identity Cards Grid -->
+            <div id="spp-cards-container" class="student-cards-grid">
+              <!-- Dynamically populated by app.js -->
+            </div>
+
+            <!-- VIEW 2: Data Table View -->
+            <div id="spp-table-container" class="table-responsive" style="display: none; margin-top: 10px;">
               <table class="table-app">
                 <thead>
                   <tr>
@@ -548,8 +707,8 @@
             <div id="report-print-container" style="padding: 10px;">
               <!-- Header Kop Surat -->
               <div style="text-align: center; border-bottom: 3px double var(--slate-800); padding-bottom: 14px; margin-bottom: 20px;">
-                <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--primary-800); text-transform: uppercase;" id="rep-tpa-name">TPA AL-HIDAYAH</h2>
-                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--slate-700);" id="rep-tpa-masjid">MASJID JAMI' AL-HIDAYAH</h4>
+                <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--primary-800); text-transform: uppercase;" id="rep-tpa-name">RQ UMMUL QOSIM</h2>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--slate-700);" id="rep-tpa-masjid">MASJID JAMI' UMMUL QOSIM</h4>
                 <p style="font-size: 0.78rem; color: var(--slate-600);" id="rep-tpa-address">Jl. Melati No. 45, Kompleks Griya Asri, Kota Bandung • Kontak: 0812-3456-7890</p>
                 <div style="margin-top: 10px; font-weight: 700; font-size: 1.05rem; text-decoration: underline;" id="rep-title">
                   LAPORAN ARUS KAS & PERTANGGUNGJAWABAN KEUANGAN
@@ -606,7 +765,7 @@
               <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 40px; text-align: center; font-size: 0.85rem;">
                 <div>
                   <p>Mengetahui,</p>
-                  <p style="font-weight: 700;">Ketua TPA Al-Hidayah</p>
+                  <p style="font-weight: 700;" id="rep-sign-title-ketua">Ketua TPA Al-Hidayah</p>
                   <div style="height: 60px;"></div>
                   <p style="font-weight: 700; text-decoration: underline;" id="rep-sign-ketua">Ustadz H. Abdul Malik, S.Pd.I</p>
                 </div>
@@ -689,6 +848,150 @@
                   💾 Simpan Perubahan Profil
                 </button>
               </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 8: PANDUAN UBAH ISI ==================== -->
+        <section class="tab-view" id="tab-panduan">
+          <div class="guide-hero">
+            <h2>📖 Panduan Lengkap Pengelolaan & Kustomisasi SikadTPA</h2>
+            <p>
+              Panduan interaktif langkah demi langkah untuk mengelola data lembaga, santri, SPP, honor pengajar, mutasi kas, hingga pengubahan tema warna tanpa monoton.
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" onclick="app.switchTab('tab-master')" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.4);">
+                🏢 Edit Profil Lembaga
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="app.openStudentModal()" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.4);">
+                ➕ Tambah Santri Baru
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="document.getElementById('btn-theme-dropdown').click()" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.4);">
+                🎨 Ganti Tema Warna
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="app.exportJsonData()" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.4);">
+                💾 Unduh Cadangan JSON
+              </button>
+            </div>
+          </div>
+
+          <div class="guide-steps-grid">
+            <!-- Step 1 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-title">Mengubah Profil & Data Lembaga TPA</div>
+              </div>
+              <div class="guide-step-content">
+                Identitas lembaga akan otomatis muncul di seluruh Kop Laporan Cetak Resmi, Kwitansi SPP, QRIS, dan pesan WhatsApp wali santri:
+                <ul>
+                  <li><strong>Melalui Web UI:</strong> Buka menu <span class="guide-code-badge">Santri & Ustadz</span> lalu scroll ke card <em>Informasi Lembaga TPA</em> di sisi kanan. Isi Nama TPA, Masjid naungan, Alamat lengkap, No Rekening donasi, Nama Ketua, dan Nama Bendahara. Klik <strong>Simpan Perubahan Profil</strong>.</li>
+                  <li><strong>Melalui File Kode:</strong> Buka berkas <span class="guide-code-badge">js/data.js</span> dan sesuaikan nilai properti di dalam objek <span class="guide-code-badge">DEFAULT_DATA.tpaInfo</span>.</li>
+                </ul>
+                <button class="guide-action-btn" onclick="app.switchTab('tab-master')">
+                  🏢 Buka Form Edit Profil Lembaga
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-title">Mengubah & Menambah Santri serta SPP</div>
+              </div>
+              <div class="guide-step-content">
+                Setiap santri memiliki pencatatan SPP bulanan dan buku tabungan digital terpisah:
+                <ul>
+                  <li><strong>Tambah Santri:</strong> Di menu <span class="guide-code-badge">Santri & Ustadz</span>, klik tombol <em>➕ Tambah Santri</em>. Isi NIS, Nama Santri, Kelas/Jilid, Wali, No WA wali (format 628xxxx), dan tarif SPP.</li>
+                  <li><strong>Beasiswa Yatim / Dhuafa:</strong> Centang opsi <em>Santri Penerima Beasiswa / Yatim</em> agar status SPP santri otomatis Rp 0 (Lunas Gratis).</li>
+                  <li><strong>Pencatatan Pembayaran:</strong> Buka menu <span class="guide-code-badge">SPP & Syahriah</span>, klik <em>Bayar</em> pada santri, lalu cetak bukti kwitansi atau kirim struk instan ke WhatsApp.</li>
+                  <li><strong>Melalui File Kode:</strong> Buka <span class="guide-code-badge">js/data.js</span> pada array <span class="guide-code-badge">DEFAULT_DATA.students</span>.</li>
+                </ul>
+                <button class="guide-action-btn" onclick="app.openStudentModal()">
+                  ➕ Buka Modal Tambah Santri
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">3</div>
+                <div class="guide-step-title">Mengatur Guru / Ustadz & Bisyarah</div>
+              </div>
+              <div class="guide-step-content">
+                Pengelolaan pengajar tahsin, jilid iqro, hafalan doa harian, dan pencatatan honor:
+                <ul>
+                  <li><strong>Melalui Web UI:</strong> Buka menu <span class="guide-code-badge">Bisyarah & Operasional</span>. Anda dapat memantau daftar ustadz, jumlah kehadiran/sesi mengajar, serta membayarkan honor bulanan dengan mengklik tombol <em>Bayar Bisyarah</em> (otomatis mengurangi Kas Operasional).</li>
+                  <li><strong>Melalui File Kode:</strong> Tambah atau ubah pengajar di file <span class="guide-code-badge">js/data.js</span> pada array <span class="guide-code-badge">DEFAULT_DATA.teachers</span> (termasuk <span class="guide-code-badge">baseSalary</span> dan perannya).</li>
+                </ul>
+                <button class="guide-action-btn" onclick="app.switchTab('tab-pengeluaran')">
+                  🧑‍🏫 Buka Manajemen Bisyarah Guru
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">4</div>
+                <div class="guide-step-title">Manajemen 4 Kantong Kas Amanah</div>
+              </div>
+              <div class="guide-step-content">
+                SikadTPA memisahkan kas untuk menjaga kepatuhan syariah dan akuntabilitas:
+                <ul>
+                  <li><strong>Kas Operasional:</strong> Berisi dana SPP untuk honor guru, listrik, ATK, dan modul.</li>
+                  <li><strong>Kas Tabungan Santri:</strong> Dana amanah murni titipan uang saku santri. <em>Dilarang terpakai untuk operasional</em>.</li>
+                  <li><strong>Kas Infaq & Sedekah:</strong> Kotak amal Jumat santri, fidyah, dan infaq sukarela.</li>
+                  <li><strong>Kas Sarana & Pembangunan:</strong> Renovasi ruang kelas, pengadaan karpet, meja Al-Qur'an, dan inventaris.</li>
+                  <li><strong>Melalui File Kode:</strong> Buka <span class="guide-code-badge">js/data.js</span> pada array <span class="guide-code-badge">DEFAULT_DATA.wallets</span>.</li>
+                </ul>
+                <button class="guide-action-btn" onclick="app.switchTab('tab-dashboard')">
+                  📊 Lihat Posisi 4 Kantong Kas
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">5</div>
+                <div class="guide-step-title">Mengubah Tema Warna Tampilan</div>
+              </div>
+              <div class="guide-step-content">
+                Tersedia 5 tema tampilan modern agar tidak monoton dan tampak segar:
+                <ul>
+                  <li><strong>Royal Sapphire:</strong> Perpaduan biru safir navy mewah & emas sampanye (default baru).</li>
+                  <li><strong>Persian Turquoise:</strong> Toska mozaik masjid Samarkand & coral oranye hangat.</li>
+                  <li><strong>Moroccan Terracotta:</strong> Warna tanah liat terakota artisan membumi.</li>
+                  <li><strong>Obsidian Midnight Dark:</strong> Mode gelap futuristik dengan aksen neon cyan.</li>
+                  <li><strong>Classic Emerald:</strong> Hijau zamrud klasik islami.</li>
+                  <li><strong>Cara Cepat:</strong> Klik tombol pemilih tema di bilah atas (header kanan). Pilihan tersimpan otomatis di browser Anda.</li>
+                </ul>
+                <button class="guide-action-btn" onclick="document.getElementById('btn-theme-dropdown').click()">
+                  🎨 Buka Menu Ganti Tema
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="guide-step-card">
+              <div class="guide-step-header">
+                <div class="guide-step-num">6</div>
+                <div class="guide-step-title">Cadangkan (Backup) & Pulihkan Data</div>
+              </div>
+              <div class="guide-step-content">
+                Karena aplikasi menyimpan data secara lokal di browser, Anda disarankan rutin membuat backup:
+                <ul>
+                  <li><strong>Unduh Cadangan:</strong> Buka menu <span class="guide-code-badge">Laporan Keuangan</span> lalu klik <strong>Backup JSON</strong>. File data akan terunduh ke komputer Anda.</li>
+                  <li><strong>Pulihkan Data:</strong> Klik tombol <strong>Restore Data</strong> dan pilih berkas backup JSON Anda jika berpindah laptop atau komputer.</li>
+                  <li><strong>Reset Contoh:</strong> Tombol <em>Reset Sample</em> akan mengembalikan seluruh data ke data awal bawaan jika Anda ingin memulai dari nol.</li>
+                </ul>
+                <button class="guide-action-btn" onclick="app.exportJsonData()">
+                  💾 Unduh Cadangan Data (.JSON)
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -833,7 +1136,7 @@
       <div class="modal-body">
         <div class="qris-card-box">
           <div class="qris-badge-top">QRIS</div>
-          <h4 style="font-weight: 800; font-size: 1.1rem; color: #1e293b;">TPA AL-HIDAYAH</h4>
+          <h4 style="font-weight: 800; font-size: 1.1rem; color: #1e293b;" id="qris-tpa-name">TPA AL-HIDAYAH</h4>
           <p style="font-size: 0.78rem; color: #64748b;">NMID: ID1026091234567 • A01</p>
           
           <!-- Mock QR Code SVG -->
@@ -878,54 +1181,61 @@
     </div>
   </div>
 
-  <!-- 5. Modal Kwitansi Resmi Struk Cetak -->
+  <!-- 5. Modal Kwitansi Resmi Struk Cetak (Digital Thermal Style) -->
   <div class="modal-overlay" id="modal-receipt">
     <div class="modal-box" style="max-width: 480px;">
       <div class="modal-header">
-        <h3>Kwitansi Tanda Terima</h3>
+        <h3>Kwitansi Tanda Terima Resmi</h3>
         <button class="btn-close-modal" onclick="app.closeModal('modal-receipt')">&times;</button>
       </div>
-      <div class="modal-body" id="receipt-print-area">
-        <div class="receipt-paper">
-          <div class="receipt-header">
-            <h4>TPA AL-HIDAYAH</h4>
-            <p>Bukti Tanda Terima Pembayaran Resmi</p>
-            <p style="font-size: 0.7rem;" id="rcp-number">No: KW-2609-001</p>
+      <div class="modal-body" id="receipt-print-area" style="background: #f1f5f9; padding: 24px;">
+        <div class="receipt-thermal-paper">
+          <div class="receipt-header" style="text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; margin-bottom: 14px;">
+            <h4 id="rcp-tpa-name" style="font-weight: 800; font-size: 1.15rem; color: #0f172a; margin-bottom: 2px;">RQ UMMUL QOSIM</h4>
+            <p style="font-size: 0.75rem; color: #64748b;">Bukti Tanda Terima Pembayaran Resmi</p>
+            <p style="font-size: 0.7rem; font-family: monospace; color: #0284c7; font-weight: 700; margin-top: 4px;" id="rcp-number">No: KW-2609-001</p>
           </div>
           <div class="receipt-row">
             <span>Tanggal:</span>
             <span id="rcp-date">-</span>
           </div>
           <div class="receipt-row">
-            <span>Telah Diterima Dari:</span>
+            <span>Diterima Dari:</span>
             <span id="rcp-parent" style="font-weight: bold;">-</span>
           </div>
           <div class="receipt-row">
             <span>Nama Santri:</span>
-            <span id="rcp-student">-</span>
+            <span id="rcp-student" style="font-weight: 700;">-</span>
           </div>
           <div class="receipt-row">
             <span>Kelas / Jilid:</span>
             <span id="rcp-class">-</span>
           </div>
           <div class="receipt-row">
-            <span>Untuk Pembayaran:</span>
+            <span>Keterangan:</span>
             <span id="rcp-for">SPP Bulan September 2026</span>
           </div>
           <div class="receipt-row">
-            <span>Metode:</span>
+            <span>Metode Bayar:</span>
             <span id="rcp-method">Tunai</span>
           </div>
-          <div class="receipt-row total">
-            <span>JUMLAH:</span>
-            <span id="rcp-amount">Rp 50.000</span>
+          <div class="receipt-row total" style="border-top: 2px dashed #cbd5e1; padding-top: 10px; margin-top: 10px;">
+            <span>TOTAL DITERIMA:</span>
+            <span id="rcp-amount" style="font-size: 1.15rem; color: #0f172a;">Rp 50.000</span>
           </div>
-          <div class="receipt-footer">
+
+          <div style="text-align: center;">
+            <div class="receipt-stamp-watermark">✓ LUNAS SYAHRIAN TPA</div>
+            <div class="receipt-barcode-box">||| |||| || ||||| |||</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; font-family: monospace;">VERIFIED DIGITAL RECORD</div>
+          </div>
+
+          <div class="receipt-footer" style="margin-top: 14px; font-size: 0.72rem; text-align: center; color: #64748b;">
             <p>Jazakumullah Khairan Katsiran</p>
             <p>Semoga menjadi amal jariyah dan berkah bagi ananda.</p>
-            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-              <span style="font-size: 0.7rem;">Wali Santri</span>
-              <span style="font-size: 0.7rem;">Bendahara TPA</span>
+            <div style="margin-top: 18px; display: flex; justify-content: space-between; font-size: 0.7rem; color: #475569;">
+              <span>Wali Santri</span>
+              <span>Bendahara TPA</span>
             </div>
           </div>
         </div>
@@ -933,7 +1243,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-receipt')">Tutup</button>
         <button type="button" class="btn btn-danger btn-sm" id="btn-rcp-cancel" style="margin-right: auto;">↩️ Batal Lunas</button>
-        <button type="button" class="btn btn-whatsapp" id="btn-rcp-send-wa">📲 Kirim via WhatsApp</button>
+        <button type="button" class="btn btn-whatsapp" id="btn-rcp-send-wa">📲 Preview & Kirim WA</button>
         <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Cetak Kuitansi</button>
       </div>
     </div>
@@ -992,6 +1302,131 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- ==================== 7. MODAL PANDUAN KUSTOMISASI ==================== -->
+  <div class="modal-overlay" id="modal-guide">
+    <div class="modal-box" style="max-width: 780px;">
+      <div class="modal-header">
+        <h3>📖 Panduan Kustomisasi & Pengubahan Isi</h3>
+        <button class="btn-close-modal" onclick="app.closeModal('modal-guide')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-steps-grid" style="grid-template-columns: 1fr; gap: 14px;">
+          <div class="guide-step-card">
+            <div class="guide-step-header">
+              <div class="guide-step-num">1</div>
+              <div class="guide-step-title">Mengubah Profil Lembaga TPA</div>
+            </div>
+            <div class="guide-step-content">
+              Buka menu <strong>Santri & Ustadz</strong> -> Formulir <strong>Informasi Lembaga TPA</strong>. Masukkan Nama TPA, Masjid, Alamat, Rekening Bank, Nama Ketua, dan Nama Bendahara. Data ini otomatis digunakan di seluruh Kop Laporan PDF/Cetak, Kwitansi, dan format WhatsApp.
+              <br><br>
+              <button class="guide-action-btn" onclick="app.closeModal('modal-guide'); app.switchTab('tab-master');">
+                🏢 Buka Formulir Profil Sekarang
+              </button>
+            </div>
+          </div>
+
+          <div class="guide-step-card">
+            <div class="guide-step-header">
+              <div class="guide-step-num">2</div>
+              <div class="guide-step-title">Mengubah & Menambah Santri serta SPP</div>
+            </div>
+            <div class="guide-step-content">
+              Buka menu <strong>Santri & Ustadz</strong> -> Klik tombol <strong>➕ Tambah Santri</strong>. Masukkan NIS, Nama, Kelas, No WA Wali, dan tarif SPP. Santri beasiswa yatim/dhuafa dapat dicentang agar gratis SPP.
+              <br><br>
+              <button class="guide-action-btn" onclick="app.closeModal('modal-guide'); app.openStudentModal();">
+                ➕ Tambah Santri Baru
+              </button>
+            </div>
+          </div>
+
+          <div class="guide-step-card">
+            <div class="guide-step-header">
+              <div class="guide-step-num">3</div>
+              <div class="guide-step-title">Mengubah Tema Tampilan</div>
+            </div>
+            <div class="guide-step-content">
+              Klik tombol <strong>🎨 [Nama Tema]</strong> di pojok kanan atas untuk memilih salah satu dari 5 tema visual eksklusif: <em>Royal Sapphire, Persian Turquoise, Moroccan Terracotta, Obsidian Midnight, atau Classic Emerald</em>. Pilihan tema tersimpan otomatis di browser.
+            </div>
+          </div>
+
+          <div class="guide-step-card">
+            <div class="guide-step-header">
+              <div class="guide-step-num">4</div>
+              <div class="guide-step-title">Pengubahan Langsung di Kode Sumber</div>
+            </div>
+            <div class="guide-step-content">
+              Jika ingin mengubah data default secara permanen:
+              <ul>
+                <li>File <span class="guide-code-badge">js/data.js</span>: Objek <span class="guide-code-badge">DEFAULT_DATA</span> (tpaInfo, students, teachers, wallets, transactions).</li>
+                <li>File <span class="guide-code-badge">css/style.css</span>: Pengaturan warna tema di <span class="guide-code-badge">:root</span> dan <span class="guide-code-badge">[data-theme="..."]</span>.</li>
+                <li>File <span class="guide-code-badge">index.html</span>: Judul web, logo brand, dan struktur teks statis.</li>
+              </ul>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-guide')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 8. SPOTLIGHT COMMAND PALETTE MODAL ==================== -->
+  <div class="command-palette-backdrop" id="command-palette-modal" onclick="app.handleCmdBackdropClick(event)">
+    <div class="command-palette-box">
+      <div class="command-input-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="command-input-field" id="command-search-input" placeholder="Cari santri, kas, guru, atau ketik perintah..." autocomplete="off">
+        <kbd class="command-esc-badge">ESC</kbd>
+      </div>
+      <div class="command-results-list" id="command-results-list">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 9. MODAL SIMULASI PREVIEW WHATSAPP ==================== -->
+  <div class="modal-overlay" id="modal-wa-preview">
+    <div class="modal-box" style="max-width: 520px; overflow: hidden;">
+      <div class="modal-header" style="background: #075e54; color: #fff;">
+        <h3 style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+          <span>📲</span>
+          <span>Preview Pesan WhatsApp Wali Santri</span>
+        </h3>
+        <button class="btn-close-modal" style="color: #fff;" onclick="app.closeModal('modal-wa-preview')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 0; background: #efeae2;">
+        <div class="wa-sim-window">
+          <div class="wa-sim-header">
+            <div class="wa-contact-avatar" id="wa-preview-avatar">WA</div>
+            <div class="wa-contact-meta">
+              <h4 id="wa-preview-name">Bpk/Ibu Wali Santri</h4>
+              <p id="wa-preview-phone">+62 812-xxxx-xxxx</p>
+            </div>
+          </div>
+          <div class="wa-chat-canvas">
+            <div class="wa-chat-bubble" id="wa-preview-bubble-text">
+              Pesan kuitansi atau pengingat...
+              <div class="wa-bubble-time" id="wa-preview-time">12:00 ✓✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="background: #f0f2f5;">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-wa-preview')">Tutup</button>
+        <button type="button" class="btn btn-secondary" id="btn-wa-copy" onclick="app.copyWaPreviewText()">📋 Salin Teks</button>
+        <a href="#" target="_blank" class="btn btn-whatsapp" id="btn-wa-launch-direct">
+          🚀 Buka WhatsApp Langsung
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="app-toast" id="app-toast">
+    <span>🎨</span>
+    <span id="app-toast-text">Tema tampilan berhasil diubah!</span>
   </div>
 
   <!-- Scripts -->

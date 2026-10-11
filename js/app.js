@@ -6,11 +6,17 @@ class SikadApp {
   constructor() {
     this.currentTab = 'tab-dashboard';
     this.currentReceipt = null;
+    this.sppView = 'cards';
+    this.sppQuickFilter = 'all';
+    this.currentWaMsg = '';
+    this.currentWaPhone = '';
     this.init();
   }
 
   init() {
+    this.initTheme();
     this.bindEvents();
+    this.initCommandPalette();
     this.loadTPAInfoToUI();
     this.renderAll();
   }
@@ -114,7 +120,8 @@ class SikadApp {
       'tab-infaq': { title: 'Infaq, Sedekah & QRIS', desc: 'Penerimaan kotak amal Jumat, donatur tetap, dan zakat/fidyah' },
       'tab-pengeluaran': { title: 'Bisyarah & Operasional', desc: 'Honorarium ustadz/ustadzah dan belanja operasional ATK / Modul' },
       'tab-laporan': { title: 'Laporan Keuangan Resmi', desc: 'Rekapitulasi arus kas siap cetak untuk Takmir Masjid & Wali Santri' },
-      'tab-master': { title: 'Master Data & Profil', desc: 'Kelola data santri, ustadz, dan identitas lembaga TPA' }
+      'tab-master': { title: 'Master Data & Profil', desc: 'Kelola data santri, ustadz, dan identitas lembaga TPA' },
+      'tab-panduan': { title: 'Panduan Ubah Isi & Tema', desc: 'Panduan lengkap cara mengubah profil, data santri, ustadz, dan tema aplikasi' }
     };
 
     if (titles[tabId]) {
@@ -164,98 +171,176 @@ class SikadApp {
 
   loadTPAInfoToUI() {
     const info = window.db.getTPAInfo();
-    document.getElementById('sidebar-tpa-name').innerText = info.nama;
-    document.getElementById('sidebar-user-name').innerText = info.bendahara;
-    
-    // Master settings inputs
-    document.getElementById('info-tpa-name').value = info.nama;
-    document.getElementById('info-tpa-masjid').value = info.masjid;
-    document.getElementById('info-tpa-alamat').value = info.alamat;
-    document.getElementById('info-tpa-rekening').value = info.rekening;
-    document.getElementById('info-tpa-ketua').value = info.ketua;
-    document.getElementById('info-tpa-bendahara').value = info.bendahara;
+    if (!info) return;
+
+    // Sidebar Branding & User
+    const sidebarTpaName = document.getElementById('sidebar-tpa-name');
+    if (sidebarTpaName) sidebarTpaName.innerText = info.nama;
+
+    const sidebarUserName = document.getElementById('sidebar-user-name');
+    if (sidebarUserName) sidebarUserName.innerText = info.bendahara;
+
+    const avatarEl = document.getElementById('sidebar-user-avatar');
+    if (avatarEl && info.bendahara) {
+      const cleanName = info.bendahara.replace(/^(Ibu|Bpk\.|Bapak|Ustadz|Ustadzah)\s+/i, '').trim();
+      const initials = cleanName.split(/\s+/).map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+      avatarEl.innerText = initials || 'BD';
+    }
+
+    // Modal QRIS & Receipt
+    const qrisName = document.getElementById('qris-tpa-name');
+    if (qrisName) qrisName.innerText = (info.nama || 'TPA').toUpperCase();
+
+    const rcpName = document.getElementById('rcp-tpa-name');
+    if (rcpName) rcpName.innerText = (info.nama || 'TPA').toUpperCase();
+
+    const repSignTitleKetua = document.getElementById('rep-sign-title-ketua');
+    if (repSignTitleKetua) repSignTitleKetua.innerText = `Ketua ${info.nama}`;
+
+    // Master settings inputs (tab Santri & Ustadz)
+    const elName = document.getElementById('info-tpa-name');
+    if (elName) elName.value = info.nama || '';
+
+    const elMasjid = document.getElementById('info-tpa-masjid');
+    if (elMasjid) elMasjid.value = info.masjid || '';
+
+    const elAlamat = document.getElementById('info-tpa-alamat');
+    if (elAlamat) elAlamat.value = info.alamat || '';
+
+    const elRekening = document.getElementById('info-tpa-rekening');
+    if (elRekening) elRekening.value = info.rekening || '';
+
+    const elKetua = document.getElementById('info-tpa-ketua');
+    if (elKetua) elKetua.value = info.ketua || '';
+
+    const elBendahara = document.getElementById('info-tpa-bendahara');
+    if (elBendahara) elBendahara.value = info.bendahara || '';
   }
 
   // =========================================================================
-  // 1. DASHBOARD CONTROLLER
+  // 1. DASHBOARD CONTROLLER (LUXURY BENTO FINTECH GRID)
   // =========================================================================
   renderDashboard() {
     const wallets = window.db.getWallets();
-    const walletsContainer = document.getElementById('wallets-container');
+    const walletsCapsuleContainer = document.getElementById('wallets-capsule-container');
     
     let totalAllBalances = 0;
-    walletsContainer.innerHTML = wallets.map(w => {
-      totalAllBalances += w.balance;
-      const icons = {
-        ops: '💼',
-        tabungan: '💰',
-        infaq: '🤲',
-        bangun: '🕌'
+    wallets.forEach(w => totalAllBalances += w.balance);
+
+    // Update Master Vault Balance
+    const masterBalEl = document.getElementById('vault-master-total-balance');
+    if (masterBalEl) masterBalEl.innerText = this.formatRp(totalAllBalances);
+
+    // Compute percentage allocations
+    const safeTotal = totalAllBalances > 0 ? totalAllBalances : 1;
+    const opsW = wallets.find(w => w.id === 'ops') || { balance: 0 };
+    const tabunganW = wallets.find(w => w.id === 'tabungan') || { balance: 0 };
+    const infaqW = wallets.find(w => w.id === 'infaq') || { balance: 0 };
+    const bangunW = wallets.find(w => w.id === 'bangun') || { balance: 0 };
+
+    const pctOps = Math.round((opsW.balance / safeTotal) * 100);
+    const pctTabungan = Math.round((tabunganW.balance / safeTotal) * 100);
+    const pctInfaq = Math.round((infaqW.balance / safeTotal) * 100);
+    const pctBangun = Math.max(0, 100 - (pctOps + pctTabungan + pctInfaq));
+
+    // Update Allocation Bar Segments
+    const allocOps = document.getElementById('alloc-ops');
+    if (allocOps) allocOps.style.width = `${pctOps}%`;
+    const allocTabungan = document.getElementById('alloc-tabungan');
+    if (allocTabungan) allocTabungan.style.width = `${pctTabungan}%`;
+    const allocInfaq = document.getElementById('alloc-infaq');
+    if (allocInfaq) allocInfaq.style.width = `${pctInfaq}%`;
+    const allocBangun = document.getElementById('alloc-bangun');
+    if (allocBangun) allocBangun.style.width = `${pctBangun}%`;
+
+    const elPctOps = document.getElementById('pct-ops');
+    if (elPctOps) elPctOps.innerText = `${pctOps}%`;
+    const elPctTabungan = document.getElementById('pct-tabungan');
+    if (elPctTabungan) elPctTabungan.innerText = `${pctTabungan}%`;
+    const elPctInfaq = document.getElementById('pct-infaq');
+    if (elPctInfaq) elPctInfaq.innerText = `${pctInfaq}%`;
+    const elPctBangun = document.getElementById('pct-bangun');
+    if (elPctBangun) elPctBangun.innerText = `${pctBangun}%`;
+
+    // Render 4 Vault Capsules
+    if (walletsCapsuleContainer) {
+      const capsuleMeta = {
+        ops: { icon: '💼', badge: 'Utama', sub: 'Kas Operasional & Honor', desc: 'Dana likuid untuk honor ustadz dan kegiatan KBM harian.' },
+        tabungan: { icon: '🔒', badge: 'Titipan Syariah', sub: 'Kas Tabungan Santri', desc: 'Dana titipan amanah tabungan santri. Terlindungi & terpisah.' },
+        infaq: { icon: '🤲', badge: 'Amal Jariyah', sub: 'Kas Infaq & Sedekah', desc: 'Penerimaan kotak amal Jumat, donatur tetap & QRIS.' },
+        bangun: { icon: '🕌', badge: 'Pengembangan', sub: 'Kas Pembangunan & Sarpras', desc: 'Alokasi khusus renovasi kelas, AC, sound & fasilitas TPA.' }
       };
-      return `
-        <div class="wallet-card wallet-${w.id}">
-          <div class="wallet-top">
-            <div class="wallet-info">
-              <h4>${w.name}</h4>
-              <div class="wallet-balance">${this.formatRp(w.balance)}</div>
+
+      walletsCapsuleContainer.innerHTML = wallets.map(w => {
+        const meta = capsuleMeta[w.id] || { icon: '💳', badge: 'Kas', sub: w.name, desc: w.desc };
+        return `
+          <div class="vault-capsule-card vault-${w.id}">
+            <div>
+              <div class="capsule-top">
+                <div class="capsule-icon-pebble">${meta.icon}</div>
+                <span class="capsule-badge-pill">${meta.badge}</span>
+              </div>
+              <div class="capsule-title">${meta.sub}</div>
+              <div class="capsule-amount">${this.formatRp(w.balance)}</div>
             </div>
-            <div class="wallet-icon-box" style="font-size: 1.4rem;">
-              ${icons[w.id] || '💳'}
-            </div>
+            <div class="capsule-desc">${meta.desc}</div>
           </div>
-          <div class="wallet-desc">${w.desc}</div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    }
 
-    // Metrics calculation for current month (September 2026)
+    // SPP Metrics & Circular SVG Radar Gauge
     const currentMonth = '2026-09';
-    const txs = window.db.getTransactions();
-    
-    let incomeMonth = 0;
-    let expenseMonth = 0;
-
-    txs.forEach(t => {
-      if (t.date.startsWith(currentMonth)) {
-        if (t.type === 'in') incomeMonth += t.amount;
-        if (t.type === 'out') expenseMonth += t.amount;
-      }
-    });
-
-    document.getElementById('metric-income-month').innerText = this.formatRp(incomeMonth);
-    document.getElementById('metric-expense-month').innerText = this.formatRp(expenseMonth);
-    document.getElementById('metric-total-balance').innerText = this.formatRp(totalAllBalances);
-
-    // SPP Metrics
     const students = window.db.getStudents();
     let paidCount = 0;
     let totalTarget = 0;
     let totalCollected = 0;
+    let scholarshipCount = 0;
 
     students.forEach(s => {
-      totalTarget += s.sppAmount;
-      const status = window.db.getSppStatus(s.id, currentMonth);
-      if (status.isPaid) {
-        paidCount++;
-        totalCollected += (status.record ? status.record.amount : 0);
+      if (s.isScholarship) {
+        scholarshipCount++;
+      } else {
+        totalTarget += s.sppAmount;
+        const status = window.db.getSppStatus(s.id, currentMonth);
+        if (status.isPaid) {
+          paidCount++;
+          totalCollected += (status.record ? status.record.amount : 0);
+        }
       }
     });
 
-    const unpaidCount = students.length - paidCount;
-    document.getElementById('metric-spp-status').innerText = `${paidCount} / ${students.length} Santri`;
-    document.getElementById('badge-unpaid-spp').innerText = unpaidCount;
+    const unpaidCount = students.length - paidCount - scholarshipCount;
+    const badgeUnpaid = document.getElementById('badge-unpaid-spp');
+    if (badgeUnpaid) badgeUnpaid.innerText = unpaidCount;
 
-    // SPP Progress Box
+    // SPP Radar Circle
     const pct = totalTarget > 0 ? Math.round((totalCollected / totalTarget) * 100) : 100;
-    document.getElementById('spp-progress-percentage').innerText = `${pct}% Tercapai`;
-    document.getElementById('spp-progress-fill').style.width = `${Math.min(pct, 100)}%`;
-    document.getElementById('spp-progress-collected').innerText = `Terkumpul: ${this.formatRp(totalCollected)}`;
-    document.getElementById('spp-progress-remaining').innerText = `Sisa Tunggakan: ${this.formatRp(totalTarget - totalCollected)}`;
+    const circleFill = document.getElementById('spp-circle-fill');
+    if (circleFill) {
+      // Circumference 2 * pi * 50 ≈ 314
+      const offset = 314 - (314 * Math.min(pct, 100) / 100);
+      circleFill.style.strokeDashoffset = offset;
+    }
+    const circlePct = document.getElementById('spp-circle-pct');
+    if (circlePct) circlePct.innerText = `${pct}%`;
 
-    // Render 6-Month Cashflow Chart Mockup
+    const elPaidCount = document.getElementById('spp-count-paid');
+    if (elPaidCount) elPaidCount.innerText = `${paidCount} Santri`;
+    const elUnpaidCount = document.getElementById('spp-count-unpaid');
+    if (elUnpaidCount) elUnpaidCount.innerText = `${unpaidCount} Santri`;
+    const elScholarshipCount = document.getElementById('spp-count-scholarship');
+    if (elScholarshipCount) elScholarshipCount.innerText = `${scholarshipCount} Santri`;
+
+    const elSppCollected = document.getElementById('spp-radar-collected');
+    if (elSppCollected) elSppCollected.innerText = this.formatRp(totalCollected);
+    const elSppTarget = document.getElementById('spp-radar-target');
+    if (elSppTarget) elSppTarget.innerText = this.formatRp(totalTarget);
+
+    // Cashflow Bar Chart
     this.renderCashflowChart();
 
-    // Render Recent Transactions
+    // Recent Transactions Stream
     this.renderRecentTransactions();
   }
 
@@ -295,7 +380,7 @@ class SikadApp {
 
     const txs = window.db.getTransactions().slice(0, 5);
     if (txs.length === 0) {
-      listEl.innerHTML = `<p style="font-size: 0.8rem; color: var(--slate-400); text-align: center; padding: 16px;">Belum ada transaksi</p>`;
+      listEl.innerHTML = `<p style="font-size: 0.8rem; color: var(--slate-400); text-align: center; padding: 24px;">Belum ada mutasi kas.</p>`;
       return;
     }
 
@@ -303,21 +388,24 @@ class SikadApp {
       ops: 'Kas Operasional',
       tabungan: 'Kas Tabungan',
       infaq: 'Kas Infaq',
-      bangun: 'Kas Pembangunan'
+      bangun: 'Kas Sarpras'
     };
 
     listEl.innerHTML = txs.map(t => {
       const isIncome = t.type === 'in';
       return `
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--slate-50); border-radius: var(--radius-md); border-left: 3px solid ${isIncome ? 'var(--primary-500)' : 'var(--danger)'};">
-          <div>
-            <div style="font-size: 0.82rem; font-weight: 700; color: var(--slate-800);">${t.category}</div>
-            <div style="font-size: 0.72rem; color: var(--slate-500);">${this.formatDateId(t.date)} • <span style="color: var(--primary-700); font-weight: 600;">${walletNames[t.walletId] || t.walletId}</span></div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-size: 0.85rem; font-weight: 800; color: ${isIncome ? 'var(--primary-700)' : 'var(--danger)'};">
-              ${isIncome ? '+' : '-'}${this.formatRp(t.amount)}
+        <div class="recent-stream-item">
+          <div class="recent-stream-left">
+            <div class="stream-direction-badge ${isIncome ? 'in' : 'out'}">
+              ${isIncome ? '↓' : '↑'}
             </div>
+            <div>
+              <div class="stream-meta-title">${t.category}</div>
+              <div class="stream-meta-sub">${this.formatDateId(t.date)} • ${walletNames[t.walletId] || t.walletId}</div>
+            </div>
+          </div>
+          <div class="stream-amount ${isIncome ? 'in' : 'out'}">
+            ${isIncome ? '+' : '-'}${this.formatRp(t.amount)}
           </div>
         </div>
       `;
@@ -325,99 +413,242 @@ class SikadApp {
   }
 
   // =========================================================================
-  // 2. MODUL SPP & SYAHRIAH
+  // 2. MODUL SPP & SYAHRIAH (DUAL VIEW & SMART CAPSULES)
   // =========================================================================
+  setSppView(mode) {
+    this.sppView = mode;
+    const btnCards = document.getElementById('btn-view-cards');
+    const btnTable = document.getElementById('btn-view-table');
+    if (btnCards) btnCards.classList.toggle('active', mode === 'cards');
+    if (btnTable) btnTable.classList.toggle('active', mode === 'table');
+    this.renderSppTable();
+  }
+
+  setSppQuickFilter(filter) {
+    this.sppQuickFilter = filter;
+    document.querySelectorAll('#spp-quick-filter-bar .capsule-item').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-spp-filter') === filter);
+    });
+    this.renderSppTable();
+  }
+
   renderSppTable() {
+    const cardsContainer = document.getElementById('spp-cards-container');
+    const tableContainer = document.getElementById('spp-table-container');
     const tbody = document.getElementById('spp-table-body');
-    if (!tbody) return;
+    if (!tbody || !cardsContainer) return;
 
     const selectedMonth = document.getElementById('filter-spp-month')?.value || '2026-09';
-    const searchQuery = document.getElementById('filter-spp-search')?.value.toLowerCase() || '';
+    const searchQuery = document.getElementById('filter-spp-search')?.value.toLowerCase().trim() || '';
     const classFilter = document.getElementById('filter-spp-class')?.value || '';
     const statusFilter = document.getElementById('filter-spp-status')?.value || '';
 
-    let students = window.db.getStudents();
+    const allStudents = window.db.getStudents();
 
-    // Filters
-    if (searchQuery) {
-      students = students.filter(s => s.name.toLowerCase().includes(searchQuery) || s.parent.toLowerCase().includes(searchQuery) || s.nis.includes(searchQuery));
-    }
-    if (classFilter) {
-      students = students.filter(s => s.class === classFilter);
-    }
+    // Calculate quick counts for capsule bar
+    let countAll = allStudents.length;
+    let countUnpaid = 0;
+    let countPaid = 0;
+    let countScholarship = 0;
 
-    let rowsHtml = '';
-    let matchCount = 0;
+    allStudents.forEach(s => {
+      if (s.isScholarship) {
+        countScholarship++;
+      } else {
+        const st = window.db.getSppStatus(s.id, selectedMonth);
+        if (st.isPaid) countPaid++;
+        else countUnpaid++;
+      }
+    });
 
-    students.forEach(s => {
+    const elCountAll = document.getElementById('count-capsule-all');
+    if (elCountAll) elCountAll.innerText = countAll;
+    const elCountUnpaid = document.getElementById('count-capsule-unpaid');
+    if (elCountUnpaid) elCountUnpaid.innerText = countUnpaid;
+    const elCountPaid = document.getElementById('count-capsule-paid');
+    if (elCountPaid) elCountPaid.innerText = countPaid;
+    const elCountScholarship = document.getElementById('count-capsule-scholarship');
+    if (elCountScholarship) elCountScholarship.innerText = countScholarship;
+
+    // Filter students
+    let filteredStudents = allStudents.filter(s => {
       const sppStatus = window.db.getSppStatus(s.id, selectedMonth);
       const isPaid = sppStatus.isPaid;
       const statusLabel = isPaid ? 'Lunas' : 'Belum Lunas';
 
-      if (statusFilter && statusFilter !== statusLabel) {
-        return;
-      }
-      matchCount++;
+      // 1. Quick Filter Capsule
+      if (this.sppQuickFilter === 'unpaid' && (s.isScholarship || isPaid)) return false;
+      if (this.sppQuickFilter === 'paid' && (s.isScholarship || !isPaid)) return false;
+      if (this.sppQuickFilter === 'scholarship' && !s.isScholarship) return false;
 
-      let badgeHtml = '';
-      let actionButtons = '';
-
-      if (s.isScholarship) {
-        badgeHtml = `<span class="badge badge-info">⭐ Beasiswa Yatim</span>`;
-        actionButtons = `<span style="font-size: 0.75rem; color: var(--slate-400);">Bebas Biaya</span>`;
-      } else if (isPaid) {
-        badgeHtml = `<span class="badge badge-success">✓ Lunas (${sppStatus.record.method})</span>`;
-        actionButtons = `
-          <div style="display: flex; gap: 6px; justify-content: flex-end;">
-            <button class="btn btn-secondary btn-sm" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi">
-              🧾 Kuitansi
-            </button>
-            <button class="btn btn-whatsapp btn-sm" onclick="app.sendReceiptWA('${s.id}', '${sppStatus.record.id}')" title="Kirim WA Bukti Bayar">
-              📲 Kirim WA
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pembayaran / Ubah jadi Belum Lunas">
-              ↩️ Batal
-            </button>
-          </div>
-        `;
-      } else {
-        badgeHtml = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
-        actionButtons = `
-          <div style="display: flex; gap: 6px; justify-content: flex-end;">
-            <button class="btn btn-primary btn-sm" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')">
-              💳 Bayar SPP
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="app.sendSppReminderWA('${s.id}', '${selectedMonth}')" title="Kirim Pengingat WhatsApp">
-              💬 Pengingat WA
-            </button>
-          </div>
-        `;
+      // 2. Search Query
+      if (searchQuery && !(s.name.toLowerCase().includes(searchQuery) || s.parent.toLowerCase().includes(searchQuery) || s.nis.includes(searchQuery))) {
+        return false;
       }
 
-      rowsHtml += `
-        <tr>
-          <td style="font-weight: 700; color: var(--slate-500);">${s.nis}</td>
-          <td>
-            <div style="font-weight: 700; color: var(--slate-900);">${s.name}</div>
-          </td>
-          <td><span class="badge badge-neutral">${s.class}</span></td>
-          <td>
-            <div style="font-size: 0.82rem;">${s.parent}</div>
-            <div style="font-size: 0.72rem; color: var(--slate-400);">${s.phone}</div>
-          </td>
-          <td style="font-weight: 700;">${this.formatRp(s.sppAmount)}</td>
-          <td>${badgeHtml}</td>
-          <td style="text-align: right;">${actionButtons}</td>
-        </tr>
-      `;
+      // 3. Class Filter
+      if (classFilter && s.class !== classFilter) return false;
+
+      // 4. Status Filter Dropdown
+      if (statusFilter && statusFilter !== statusLabel) return false;
+
+      return true;
     });
 
-    if (matchCount === 0) {
-      rowsHtml = `<tr><td colspan="7" style="text-align: center; color: var(--slate-400); padding: 24px;">Tidak ada data santri yang sesuai filter.</td></tr>`;
+    // Toggle View Containers
+    if (this.sppView === 'cards') {
+      cardsContainer.style.display = 'grid';
+      if (tableContainer) tableContainer.style.display = 'none';
+
+      if (filteredStudents.length === 0) {
+        cardsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--slate-400); background: var(--slate-50); border-radius: 18px; border: 1px dashed var(--border-color);">Tidak ada santri yang sesuai filter.</div>`;
+      } else {
+        cardsContainer.innerHTML = filteredStudents.map(s => {
+          const sppStatus = window.db.getSppStatus(s.id, selectedMonth);
+          const isPaid = sppStatus.isPaid;
+          const initials = s.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+
+          let statusTag = '';
+          let footerActions = '';
+
+          if (s.isScholarship) {
+            statusTag = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
+            footerActions = `<span style="font-size: 0.74rem; font-weight: 700; color: var(--gold-600); background: var(--gold-50); padding: 5px 12px; border-radius: var(--radius-full);">Bebas Syahriah</span>`;
+          } else if (isPaid) {
+            statusTag = `<span class="badge badge-success">✓ Lunas (${sppStatus.record.method})</span>`;
+            footerActions = `
+              <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
+                  🧾 Kuitansi
+                </button>
+                <button type="button" class="btn btn-whatsapp btn-sm" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Preview & Kirim WA">
+                  📲 WA
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pelunasan" style="color: var(--danger);">
+                  ↩️
+                </button>
+              </div>
+            `;
+          } else {
+            statusTag = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
+            footerActions = `
+              <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')">
+                  💳 Bayar SPP
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Kirim Pesan Pengingat">
+                  💬 Pengingat WA
+                </button>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="student-visual-card">
+              <div>
+                <div class="std-card-header">
+                  <div class="std-avatar">${initials}</div>
+                  <div class="std-meta">
+                    <div class="std-name">${s.name}</div>
+                    <div class="std-nis-class">
+                      <span class="std-badge-nis">NIS: ${s.nis}</span>
+                      <span class="std-badge-class">${s.class}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="std-details-list">
+                  <div class="std-detail-item">
+                    <span class="lbl">Orang Tua / Wali</span>
+                    <span class="val">${s.parent}</span>
+                  </div>
+                  <div class="std-detail-item">
+                    <span class="lbl">Kontak WhatsApp</span>
+                    <span class="val">${s.phone}</span>
+                  </div>
+                  <div class="std-detail-item">
+                    <span class="lbl">Nominal SPP</span>
+                    <span class="val">${this.formatRp(s.sppAmount)}</span>
+                  </div>
+                  <div class="std-detail-item">
+                    <span class="lbl">Status</span>
+                    <div>${statusTag}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="std-card-footer">
+                ${footerActions}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    } else {
+      cardsContainer.style.display = 'none';
+      if (tableContainer) tableContainer.style.display = 'block';
+
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--slate-400); padding: 24px;">Tidak ada data santri yang sesuai filter.</td></tr>`;
+      } else {
+        tbody.innerHTML = filteredStudents.map(s => {
+          const sppStatus = window.db.getSppStatus(s.id, selectedMonth);
+          const isPaid = sppStatus.isPaid;
+          let badgeHtml = '';
+          let actionButtons = '';
+
+          if (s.isScholarship) {
+            badgeHtml = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
+            actionButtons = `<span style="font-size: 0.75rem; color: var(--slate-400);">Bebas Biaya</span>`;
+          } else if (isPaid) {
+            badgeHtml = `<span class="badge badge-success">✓ Lunas (${sppStatus.record.method})</span>`;
+            actionButtons = `
+              <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi">
+                  🧾 Kuitansi
+                </button>
+                <button type="button" class="btn btn-whatsapp btn-sm" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Kirim WA">
+                  📲 WA
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batal">
+                  ↩️
+                </button>
+              </div>
+            `;
+          } else {
+            badgeHtml = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
+            actionButtons = `
+              <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')">
+                  💳 Bayar SPP
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Pengingat WA">
+                  💬 Pengingat WA
+                </button>
+              </div>
+            `;
+          }
+
+          return `
+            <tr>
+              <td style="font-weight: 700; color: var(--slate-500);">${s.nis}</td>
+              <td><div style="font-weight: 700; color: var(--slate-900);">${s.name}</div></td>
+              <td><span class="badge badge-neutral">${s.class}</span></td>
+              <td>
+                <div style="font-size: 0.82rem;">${s.parent}</div>
+                <div style="font-size: 0.72rem; color: var(--slate-400);">${s.phone}</div>
+              </td>
+              <td style="font-weight: 700;">${this.formatRp(s.sppAmount)}</td>
+              <td>${badgeHtml}</td>
+              <td style="text-align: right;">${actionButtons}</td>
+            </tr>
+          `;
+        }).join('');
+      }
     }
 
-    tbody.innerHTML = rowsHtml;
-    document.getElementById('spp-filter-summary').innerText = `Menampilkan ${matchCount} Santri`;
+    const summaryEl = document.getElementById('spp-filter-summary');
+    if (summaryEl) summaryEl.innerText = `Menampilkan ${filteredStudents.length} Santri`;
   }
 
   // Buka Modal Bayar SPP
@@ -458,6 +689,10 @@ class SikadApp {
   showReceipt(record, student) {
     this.currentReceipt = { record, student };
 
+    const tpaInfo = window.db.getTPAInfo();
+    const rcpTpaEl = document.getElementById('rcp-tpa-name');
+    if (rcpTpaEl && tpaInfo) rcpTpaEl.innerText = (tpaInfo.nama || 'TPA').toUpperCase();
+
     document.getElementById('rcp-number').innerText = `No: ${record.receiptNo}`;
     document.getElementById('rcp-date').innerText = this.formatDateId(record.paidDate);
     document.getElementById('rcp-parent').innerText = student.parent;
@@ -468,7 +703,9 @@ class SikadApp {
     document.getElementById('rcp-amount').innerText = this.formatRp(record.amount);
 
     const btnWa = document.getElementById('btn-rcp-send-wa');
-    btnWa.onclick = () => this.sendReceiptWA(student.id, record.id);
+    if (btnWa) {
+      btnWa.onclick = () => this.openReceiptWaPreview(student.id, record.id);
+    }
 
     const btnCancel = document.getElementById('btn-rcp-cancel');
     if (btnCancel) {
@@ -491,16 +728,57 @@ class SikadApp {
     const student = window.db.getStudent(record.studentId);
     const studentName = student ? student.name : 'Santri';
 
-    if (confirm(`Batalkan pelunasan SPP Bulan ${this.formatMonthId(record.month)} untuk ${studentName}?\n\nStatus santri akan kembali menjadi 'Belum Lunas' (tombol Bayar SPP akan muncul kembali) dan saldo kas operasional akan disesuaikan.`)) {
+    if (confirm(`Batalkan pelunasan SPP Bulan ${this.formatMonthId(record.month)} untuk ${studentName}?\n\nStatus santri akan kembali menjadi 'Belum Lunas' dan saldo kas operasional akan disesuaikan.`)) {
       window.db.deleteSppRecord(recordId);
       this.closeModal('modal-receipt');
       this.renderAll();
-      alert(`Pembayaran SPP untuk ${studentName} berhasil dibatalkan. Tombol 'Bayar SPP' kini telah tersedia kembali.`);
+      this.showToast(`Pembayaran SPP untuk ${studentName} berhasil dibatalkan.`);
     }
   }
 
+  // Simulated WhatsApp Preview Window
+  openWaPreviewModal(name, phone, message) {
+    this.currentWaMsg = message;
+    this.currentWaPhone = phone;
+
+    const elName = document.getElementById('wa-preview-name');
+    if (elName) elName.innerText = name;
+
+    const elPhone = document.getElementById('wa-preview-phone');
+    if (elPhone) elPhone.innerText = phone;
+
+    const elBubble = document.getElementById('wa-preview-bubble-text');
+    if (elBubble) {
+      const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      elBubble.innerHTML = message.replace(/\n/g, '<br>') + `<div class="wa-bubble-time" id="wa-preview-time">${nowTime} ✓✓</div>`;
+    }
+
+    const elAvatar = document.getElementById('wa-preview-avatar');
+    if (elAvatar) {
+      elAvatar.innerText = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const finalPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+    const directBtn = document.getElementById('btn-wa-launch-direct');
+    if (directBtn) {
+      directBtn.href = `https://api.whatsapp.com/send?phone=${finalPhone}&text=${encodeURIComponent(message)}`;
+    }
+
+    this.openModal('modal-wa-preview');
+  }
+
+  copyWaPreviewText() {
+    if (!this.currentWaMsg) return;
+    navigator.clipboard.writeText(this.currentWaMsg).then(() => {
+      this.showToast('📋 Pesan WhatsApp berhasil disalin!');
+    }).catch(() => {
+      this.showToast('Pesan siap digunakan.');
+    });
+  }
+
   // WhatsApp Integration: Kirim Pengingat SPP
-  sendSppReminderWA(studentId, monthStr) {
+  openReminderWaPreview(studentId, monthStr) {
     const student = window.db.getStudent(studentId);
     const tpaInfo = window.db.getTPAInfo();
     if (!student) return;
@@ -511,7 +789,7 @@ class SikadApp {
 
 Yth. Bapak/Ibu Wali dari Ananda *${student.name}* (${student.class}),
 
-Semoga Bapak/Ibu sekeluarga senantiasa dalam limpahan rahmat dan kesehatan dari Allah SWT.
+Semoga Bapak/Ibu sekeluarga senantiasa dalam limpahan berkah dan kesehatan dari Allah SWT.
 
 Kami dari bagian administrasi & keuangan *${tpaInfo.nama}* menginformasikan mengenai kewajiban syahriah/SPP santri untuk bulan *${monthFormatted}* sebesar *${this.formatRp(student.sppAmount)}* yang saat ini belum tercatat lunas.
 
@@ -524,13 +802,11 @@ Konfirmasi pembayaran dapat dikirimkan ke nomor ini. Jazakumullah khairan katsir
 Wassalamu'alaikum Warahmatullahi Wabarakatuh.
 — Pengurus *${tpaInfo.nama}*`;
 
-    const cleanPhone = student.phone.replace(/[^0-9]/g, '');
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-    window.open(waUrl, '_blank');
+    this.openWaPreviewModal(student.parent, student.phone, message);
   }
 
   // WhatsApp Integration: Kirim Bukti Kwitansi Lunas
-  sendReceiptWA(studentId, recordId) {
+  openReceiptWaPreview(studentId, recordId) {
     const student = window.db.getStudent(studentId);
     const record = window.db.data.sppRecords.find(r => r.id === recordId);
     const tpaInfo = window.db.getTPAInfo();
@@ -560,13 +836,12 @@ Hormat kami,
 Bendahara *${tpaInfo.nama}*
 (${tpaInfo.bendahara})`;
 
-    const cleanPhone = student.phone.replace(/[^0-9]/g, '');
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-    window.open(waUrl, '_blank');
+    this.openWaPreviewModal(student.parent, student.phone, message);
   }
 
   broadcastSppReminder() {
-    alert("Fitur Pengingat WhatsApp Santri siap digunakan! Anda dapat mengklik tombol '💬 Pengingat WA' di samping nama setiap santri yang belum lunas untuk membuka pesan sopan otomatis langsung ke WhatsApp wali santri.");
+    const unpaidCount = document.getElementById('count-capsule-unpaid')?.innerText || '4';
+    alert(`Format Pengingat WhatsApp otomatis aktif!\nTerdapat ${unpaidCount} santri dengan tunggakan SPP. Klik tombol '💬 Pengingat WA' pada setiap kartu santri untuk menampilkan preview chat WhatsApp siap kirim.`);
   }
 
   // =========================================================================
@@ -1061,7 +1336,249 @@ Bendahara *${tpaInfo.nama}*
 
     this.closeModal('modal-tx');
     this.renderAll();
-    alert(`Transaksi ${category} sebesar ${this.formatRp(amount)} berhasil disimpan!`);
+    this.showToast(`Transaksi ${category} sebesar ${this.formatRp(amount)} berhasil disimpan!`);
+  }
+
+  // =========================================================================
+  // Multi-Theme Engine & Guide Helpers
+  // =========================================================================
+  initTheme() {
+    const savedTheme = localStorage.getItem('SIKAD_THEME_KEY') || 'royal';
+    this.applyTheme(savedTheme, false);
+    this.bindThemeEvents();
+  }
+
+  applyTheme(themeKey, showToastNotification = true) {
+    const themeNames = {
+      'royal': 'Royal Sapphire',
+      'persian': 'Persian Turquoise',
+      'terracotta': 'Moroccan Terracotta',
+      'midnight': 'Obsidian Midnight',
+      'emerald': 'Classic Emerald'
+    };
+
+    const targetTheme = themeNames[themeKey] ? themeKey : 'royal';
+    document.documentElement.setAttribute('data-theme', targetTheme);
+    localStorage.setItem('SIKAD_THEME_KEY', targetTheme);
+
+    // Update Label di UI
+    const labelEl = document.getElementById('current-theme-label');
+    if (labelEl) {
+      labelEl.innerText = themeNames[targetTheme];
+    }
+
+    // Update status active pada opsi menu tema
+    document.querySelectorAll('.theme-option').forEach(opt => {
+      opt.classList.toggle('active', opt.getAttribute('data-theme-val') === targetTheme);
+    });
+
+    if (showToastNotification) {
+      this.showToast(`Tema aktif: ${themeNames[targetTheme]}`);
+    }
+  }
+
+  bindThemeEvents() {
+    const toggleBtn = document.getElementById('btn-theme-dropdown');
+    const menuEl = document.getElementById('theme-dropdown-menu');
+
+    if (toggleBtn && menuEl) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuEl.classList.toggle('show');
+      });
+
+      // Tutup dropdown saat klik di luar
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#theme-dropdown-container')) {
+          menuEl.classList.remove('show');
+        }
+      });
+    }
+
+    // Klik opsi pilihan tema
+    document.querySelectorAll('.theme-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const themeVal = opt.getAttribute('data-theme-val');
+        if (themeVal) {
+          this.applyTheme(themeVal, true);
+          if (menuEl) menuEl.classList.remove('show');
+        }
+      });
+    });
+
+    // Tombol panduan cepat di header
+    const btnGuide = document.getElementById('btn-open-guide-modal');
+    if (btnGuide) {
+      btnGuide.addEventListener('click', () => {
+        this.openModal('modal-guide');
+      });
+    }
+  }
+
+  // =========================================================================
+  // SPOTLIGHT COMMAND PALETTE CONTROLLER (Ctrl+K)
+  // =========================================================================
+  initCommandPalette() {
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        this.openCommandPalette();
+      }
+      if (e.key === 'Escape') {
+        this.closeCommandPalette();
+      }
+    });
+
+    const searchInput = document.getElementById('command-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => this.filterCommandPalette());
+    }
+  }
+
+  openCommandPalette() {
+    const modal = document.getElementById('command-palette-modal');
+    const input = document.getElementById('command-search-input');
+    if (!modal) return;
+    modal.classList.add('active');
+    if (input) {
+      input.value = '';
+      setTimeout(() => input.focus(), 60);
+    }
+    this.renderCommandResults('');
+  }
+
+  closeCommandPalette() {
+    const modal = document.getElementById('command-palette-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  handleCmdBackdropClick(e) {
+    if (e.target.id === 'command-palette-modal') {
+      this.closeCommandPalette();
+    }
+  }
+
+  filterCommandPalette() {
+    const query = document.getElementById('command-search-input')?.value.toLowerCase().trim() || '';
+    this.renderCommandResults(query);
+  }
+
+  renderCommandResults(query) {
+    const list = document.getElementById('command-results-list');
+    if (!list) return;
+
+    const students = window.db.getStudents();
+    const teachers = window.db.getTeachers();
+
+    const navItems = [
+      { id: 'tab-dashboard', title: 'Dashboard Kas & Likuiditas', tag: 'Navigasi', icon: '📊' },
+      { id: 'tab-spp', title: 'SPP & Syahriah Santri (Dual View)', tag: 'Navigasi', icon: '📖' },
+      { id: 'tab-tabungan', title: 'Buku Tabungan Santri', tag: 'Navigasi', icon: '💰' },
+      { id: 'tab-infaq', title: 'Infaq, Sedekah & QRIS', tag: 'Navigasi', icon: '🤲' },
+      { id: 'tab-pengeluaran', title: 'Bisyarah Guru & Belanja Operasional', tag: 'Navigasi', icon: '💼' },
+      { id: 'tab-laporan', title: 'Laporan Keuangan Resmi & Rekap Cetak', tag: 'Navigasi', icon: '🖨️' },
+      { id: 'tab-master', title: 'Master Santri, Ustadz & Profil Lembaga', tag: 'Navigasi', icon: '🏢' },
+      { id: 'tab-panduan', title: 'Panduan Ubah Isi & Desain', tag: 'Bantuan', icon: '🧭' }
+    ];
+
+    const actions = [
+      { action: () => { this.closeCommandPalette(); this.openTxModal('in', 'ops'); }, title: 'Catat Pemasukan Kas Baru', tag: 'Aksi Cepat', icon: '➕' },
+      { action: () => { this.closeCommandPalette(); this.openTxModal('out', 'ops'); }, title: 'Catat Pengeluaran Kas Baru', tag: 'Aksi Cepat', icon: '➖' },
+      { action: () => { this.closeCommandPalette(); this.openSavingsModal('Setor'); }, title: 'Catat Setoran Tabungan Santri', tag: 'Aksi Cepat', icon: '💵' },
+      { action: () => { this.closeCommandPalette(); this.openSavingsModal('Tarik'); }, title: 'Catat Penarikan Tabungan Santri', tag: 'Aksi Cepat', icon: '💸' },
+      { action: () => { this.closeCommandPalette(); this.openQRISModal(); }, title: 'Tampilkan Barcode QRIS Infaq', tag: 'Aksi Cepat', icon: '📱' },
+      { action: () => { this.closeCommandPalette(); this.openStudentModal(); }, title: 'Tambah Santri Baru', tag: 'Aksi Cepat', icon: '👤' }
+    ];
+
+    let html = '';
+
+    // Quick Actions
+    const matchingActions = actions.filter(a => !query || a.title.toLowerCase().includes(query));
+    if (matchingActions.length > 0) {
+      html += `<div class="command-group-heading">Aksi Cepat Keuangan</div>`;
+      html += matchingActions.map((a, idx) => `
+        <div class="command-result-item" onclick="app.executeCmdAction(${idx})">
+          <div class="command-item-icon">${a.icon}</div>
+          <div class="command-item-info">
+            <div class="command-item-title">${a.title}</div>
+          </div>
+          <span class="command-item-tag">${a.tag}</span>
+        </div>
+      `).join('');
+      this._tempCmdActions = matchingActions;
+    }
+
+    // Navigation Menu
+    const matchingNav = navItems.filter(n => !query || n.title.toLowerCase().includes(query));
+    if (matchingNav.length > 0) {
+      html += `<div class="command-group-heading">Pintas Menu</div>`;
+      html += matchingNav.map(n => `
+        <div class="command-result-item" onclick="app.closeCommandPalette(); app.switchTab('${n.id}')">
+          <div class="command-item-icon">${n.icon}</div>
+          <div class="command-item-info">
+            <div class="command-item-title">${n.title}</div>
+          </div>
+          <span class="command-item-tag">${n.tag}</span>
+        </div>
+      `).join('');
+    }
+
+    // Santri Results
+    const matchingStudents = students.filter(s => !query || s.name.toLowerCase().includes(query) || s.nis.includes(query) || s.parent.toLowerCase().includes(query)).slice(0, 5);
+    if (matchingStudents.length > 0) {
+      html += `<div class="command-group-heading">Data Santri & SPP</div>`;
+      html += matchingStudents.map(s => `
+        <div class="command-result-item" onclick="app.closeCommandPalette(); app.switchTab('tab-spp');">
+          <div class="command-item-icon">👦</div>
+          <div class="command-item-info">
+            <div class="command-item-title">${s.name} (${s.class})</div>
+            <div class="command-item-sub">Wali: ${s.parent} • NIS: ${s.nis}</div>
+          </div>
+          <span class="command-item-tag">Santri</span>
+        </div>
+      `).join('');
+    }
+
+    // Teachers Results
+    const matchingTeachers = teachers.filter(t => !query || t.name.toLowerCase().includes(query) || t.role.toLowerCase().includes(query)).slice(0, 3);
+    if (matchingTeachers.length > 0) {
+      html += `<div class="command-group-heading">Ustadz & Guru</div>`;
+      html += matchingTeachers.map(t => `
+        <div class="command-result-item" onclick="app.closeCommandPalette(); app.switchTab('tab-pengeluaran');">
+          <div class="command-item-icon">👳</div>
+          <div class="command-item-info">
+            <div class="command-item-title">${t.name}</div>
+            <div class="command-item-sub">${t.role} • Bisyarah: ${this.formatRp(t.monthlyHonor)}</div>
+          </div>
+          <span class="command-item-tag">Guru</span>
+        </div>
+      `).join('');
+    }
+
+    if (!html) {
+      html = `<div style="text-align: center; color: var(--slate-400); padding: 30px; font-size: 0.85rem;">Tidak ditemukan hasil untuk "${query}"</div>`;
+    }
+
+    list.innerHTML = html;
+  }
+
+  executeCmdAction(idx) {
+    if (this._tempCmdActions && this._tempCmdActions[idx]) {
+      this._tempCmdActions[idx].action();
+    }
+  }
+
+  showToast(message) {
+    const toast = document.getElementById('app-toast');
+    const toastText = document.getElementById('app-toast-text');
+    if (toast && toastText) {
+      toastText.innerText = message;
+      toast.classList.add('show');
+      clearTimeout(this._toastTimeout);
+      this._toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
   }
 }
 
