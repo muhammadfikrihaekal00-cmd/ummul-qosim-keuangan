@@ -17,3 +17,6 @@ $RECYCLE.BIN/
 # Archives
 *.zip
 
+# Screenshots & temp test assets
+screenshot_*.png
+

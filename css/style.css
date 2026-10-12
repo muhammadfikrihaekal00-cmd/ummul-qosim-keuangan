@@ -563,26 +563,31 @@ body {
 
 /* Floating Top Header */
 .top-header {
-  height: var(--header-height);
+  min-height: 64px;
+  height: auto;
   background: var(--surface-card);
   border: 1px solid var(--border-color);
   border-radius: 18px;
-  margin-top: 14px;
+  margin-top: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 22px;
+  padding: 8px 18px;
   position: sticky;
-  top: 14px;
+  top: 12px;
   z-index: 40;
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(16px);
+  gap: 12px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  min-width: 0;
+  flex: 0 1 auto;
 }
 
 .mobile-toggle-btn {
@@ -594,32 +599,51 @@ body {
   padding: 6px;
 }
 
+.page-title {
+  min-width: 0;
+  max-width: 280px;
+}
 .page-title h2 {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--slate-900);
   letter-spacing: -0.02em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .page-title p {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--slate-500);
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+}
+@media (max-width: 1200px) {
+  .page-title p {
+    display: none;
+  }
 }
 
 /* Header Omni Search Bar */
 .header-omni-search {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: var(--slate-100);
   border: 1px solid var(--slate-200);
-  padding: 7px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
   color: var(--slate-500);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-normal);
-  min-width: 250px;
+  max-width: 220px;
+  flex: 0 1 200px;
 }
 .header-omni-search:hover {
   background: var(--slate-50);
@@ -629,19 +653,27 @@ body {
 }
 .header-omni-search kbd {
   margin-left: auto;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   background: var(--surface-card);
-  padding: 2px 6px;
-  border-radius: 6px;
+  padding: 2px 5px;
+  border-radius: 5px;
   border: 1px solid var(--border-color);
   color: var(--slate-600);
   font-weight: 700;
+}
+@media (max-width: 1100px) {
+  .header-omni-search {
+    display: none;
+  }
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 1 1 auto;
 }
 
 .date-badge {
@@ -1567,15 +1599,20 @@ select.select-app:focus {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 100;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 100000;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  pointer-events: none;
 }
 .modal-overlay.active {
-  display: flex;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 100000 !important;
 }
 
 .modal-box {
@@ -1590,6 +1627,9 @@ select.select-app:focus {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  position: relative !important;
+  z-index: 100001 !important;
+  pointer-events: auto !important;
 }
 
 @keyframes modalPop {
@@ -2421,6 +2461,8 @@ select.select-app:focus {
    SECURITY PIN LOCK SCREEN GATE
    ------------------------------------------------------------- */
 .pin-gate-overlay {
+  display: none !important;
+  pointer-events: none !important;
   position: fixed;
   top: 0;
   left: 0;
@@ -2429,13 +2471,13 @@ select.select-app:focus {
   background: radial-gradient(circle at 50% 30%, var(--surface-bg) 0%, rgba(15, 23, 42, 0.96) 100%);
   backdrop-filter: blur(20px);
   z-index: 99999;
-  display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 .pin-gate-overlay.unlocked {
+  display: none !important;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -2619,5 +2661,398 @@ select.select-app:focus {
   color: #fca5a5;
   border-color: rgba(239, 68, 68, 0.4);
 }
+
+/* -------------------------------------------------------------
+   KUSTOMISASI LOGO, QRIS UPLOAD & KWITANSI GAMBAR WHATSAPP
+   ------------------------------------------------------------- */
+.settings-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--slate-100);
+}
+.settings-section-divider h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-field-card {
+  background: var(--slate-50);
+  border: 1.5px dashed var(--slate-300);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.upload-field-card:hover {
+  border-color: var(--primary-500);
+  background: #f8fafc;
+}
+
+.preview-thumb-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+.preview-thumb-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid var(--slate-200);
+  background: #fff;
+  padding: 2px;
+}
+.preview-thumb-meta {
+  flex: 1;
+}
+.preview-thumb-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+.preview-thumb-sub {
+  font-size: 0.72rem;
+  color: var(--slate-500);
+}
+
+/* Sidebar & Lock screen dynamic logo */
+.sidebar-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.pin-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-full);
+}
+
+/* QRIS Modal display upgrade */
+.qris-uploaded-img {
+  max-width: 240px;
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 10px auto;
+  display: block;
+  background: #fff;
+}
+.qris-nmid-pill {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  margin: 6px 0 10px;
+}
+
+/* WhatsApp Receipt Image Bubble */
+.wa-receipt-img-container {
+  margin: -6px -8px 10px -8px;
+  border-radius: 10px 10px 6px 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  position: relative;
+  text-align: center;
+}
+.wa-receipt-img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  display: block;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.wa-receipt-img:hover {
+  transform: scale(1.015);
+}
+.wa-receipt-badge-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wa-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+.btn-share-mobile {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+  border: none;
+}
+.btn-share-mobile:hover {
+  background: linear-gradient(135deg, #22bf5b, #0f7a6e);
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------------------
+   WIDGET WAKTU REALTIME HEADER
+   ------------------------------------------------------------- */
+.header-realtime-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--slate-100);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--slate-700);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+}
+@media (max-width: 768px) {
+  .header-realtime-badge {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------
+   TABEL SPP TERPISAH PER 4 KELAS RQ
+   ------------------------------------------------------------- */
+.spp-class-tabs-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 14px 0;
+  margin-bottom: 6px;
+  scrollbar-width: thin;
+}
+.spp-class-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--slate-700);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-normal);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+.spp-class-tab-btn:hover {
+  border-color: var(--primary-500);
+  background: var(--slate-50);
+  transform: translateY(-1px);
+}
+.spp-class-tab-btn.active {
+  background: var(--primary-600);
+  color: #ffffff;
+  border-color: var(--primary-600);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.spp-class-tab-badge {
+  font-size: 0.7rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--slate-100);
+  color: var(--slate-700);
+}
+.spp-class-tab-btn.active .spp-class-tab-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.spp-class-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+.spp-class-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+.spp-class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(to right, #f8fafc, #ffffff);
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.spp-class-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.spp-class-icon {
+  font-size: 1.6rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--slate-100);
+  border-radius: 12px;
+}
+.spp-class-title-group h4 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spp-class-teacher {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+  margin-top: 3px;
+}
+.spp-class-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.spp-class-kpis {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.kpi-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.kpi-total {
+  background: var(--slate-100);
+  color: var(--slate-700);
+  border: 1px solid var(--slate-200);
+}
+.kpi-paid {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.kpi-unpaid {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+.spp-class-body {
+  padding: 0;
+  width: 100%;
+}
+.spp-class-empty {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--slate-400);
+  font-size: 0.85rem;
+}
+
+/* Modal form scroll fix for laptop screens */
+.modal-box form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+.modal-box form .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(85vh - 120px);
+  min-height: 0;
+}
+.modal-box .modal-footer {
+  flex-shrink: 0;
+}
+
+/* Tabel SPP Per-Kelas Profesional */
+.spp-table-perclass {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+.spp-table-perclass th {
+  background: var(--slate-50);
+  color: var(--slate-700);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+.spp-table-perclass td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  color: var(--slate-800);
+}
+.spp-table-perclass tbody tr:hover {
+  background: #f8fafc;
+}
+.spp-table-perclass tbody tr:last-child td {
+  border-bottom: none;
+}
+.spp-table-perclass .cell-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  align-items: center;
+  white-space: nowrap;
+}
+
+
 
 

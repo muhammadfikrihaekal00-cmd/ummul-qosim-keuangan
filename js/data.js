@@ -3,22 +3,69 @@
  * Mengelola penyimpanan localStorage dengan dataset awal (seed data) yang realistis.
  */
 
-const STORAGE_KEY = 'SIKAD_TPA_DATA_V1';
+const STORAGE_KEY = 'SIKAD_TPA_DATA_V2';
 
-// Seed Data Awal yang Lengkap dan Realistis
+// Seed Data Awal yang Lengkap dan Realistis untuk RQ Ummul Qosim
 const DEFAULT_DATA = {
   tpaInfo: {
+    appName: "SikadTPA Keuangan",
+    appLogo: "", // data URL Base64 atau kosong (default SVG)
     nama: "RQ Ummul Qosim",
-    masjid: "Masjid Jami' Ummul Qosim",
-    alamat: "Jl. Melati No. 45, Kompleks Griya Asri, Kota Bandung",
+    masjid: "-",
+    alamat: "Perumahan Maros Regency, Blok F no. 3",
     kontak: "0812-3456-7890",
     email: "rq.ummulqosim@gmail.com",
-    ketua: "Ustadz H. Abdul Malik, S.Pd.I",
-    bendahara: "Ibu Rahmawati, S.E.",
-    qrisUrl: "", // bisa diisi url gambar atau default canvas
-    rekening: "BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)",
+    ketua: "Al Akh M. Fikri Haekal, C.LQ",
+    bendahara: "Halisa Amelia",
+    qrisUrl: "", // URL / Data URL Base64 gambar barcode QRIS asli
+    qrisNmid: "ID1026091234567 • A01",
+    qrisMerchant: "RQ UMMUL QOSIM",
+    rekening: "MUAMALAT 8060019518 / BRI 022401017136537 / SULSELBAR 0102100000088413 ( Atas Nama : M Fikri Haekal )",
     securityPin: "060708"
   },
+  // 4 Kelas Resmi RQ Ummul Qosim
+  classes: [
+    {
+      id: 'K1',
+      name: 'Kelas Dasar Ikhwan',
+      shortName: 'Dasar Ikhwan',
+      teacher: 'Ustadz Muhammad Rizqi',
+      room: 'Ruang Shofa',
+      schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
+      color: 'emerald',
+      icon: '📖'
+    },
+    {
+      id: 'K2',
+      name: 'Kelas Menengah Akhowat',
+      shortName: 'Menengah Akhowat',
+      teacher: 'Ustadzah Siti Fatimah',
+      room: 'Ruang Marwah',
+      schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
+      color: 'royal',
+      icon: '📗'
+    },
+    {
+      id: 'K3',
+      name: 'Kelas Menengah Ikhwan',
+      shortName: 'Menengah Ikhwan',
+      teacher: 'Ustadz Ahmad Fauzi',
+      room: 'Aula Utama',
+      schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
+      color: 'persian',
+      icon: '🕌'
+    },
+    {
+      id: 'K4',
+      name: 'Kelas Dasar Ikhwan & Akhowat',
+      shortName: 'Dasar Gabungan',
+      teacher: 'Ustadzah Nurul Khadijah',
+      room: 'Serambi Utama',
+      schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
+      color: 'amber',
+      icon: '⭐'
+    }
+  ],
   // 4 Kantong Kas Utama
   wallets: [
     { id: 'ops', name: 'Kas Operasional', desc: 'Dana dari SPP untuk biaya harian TPA', balance: 3450000, icon: 'wallet' },
@@ -28,55 +75,93 @@ const DEFAULT_DATA = {
   ],
   // Data Pengajar / Ustadz
   teachers: [
-    { id: 'G-01', name: 'Ustadz Ahmad Fauzi', phone: '081298765431', role: 'Pengajar Tahsin & Al-Qur\'an', baseSalary: 600000, sessions: 16, status: 'Aktif' },
-    { id: 'G-02', name: 'Ustadzah Siti Fatimah', phone: '081387654322', role: 'Pengajar Jilid 3 - 4', baseSalary: 550000, sessions: 14, status: 'Aktif' },
-    { id: 'G-03', name: 'Ustadz Muhammad Rizqi', phone: '081976543213', role: 'Pengajar Jilid 1 - 2', baseSalary: 500000, sessions: 15, status: 'Aktif' },
-    { id: 'G-04', name: 'Ustadzah Nurul Khadijah', phone: '085265432104', role: 'Pengajar Tahfidz & Doa Harian', baseSalary: 600000, sessions: 16, status: 'Aktif' }
+    { id: 'G-01', name: 'Ustadz Ahmad Fauzi', phone: '081298765431', role: 'Pengajar Kelas Menengah Ikhwan', baseSalary: 600000, sessions: 16, status: 'Aktif' },
+    { id: 'G-02', name: 'Ustadzah Siti Fatimah', phone: '081387654322', role: 'Pengajar Kelas Menengah Akhowat', baseSalary: 550000, sessions: 14, status: 'Aktif' },
+    { id: 'G-03', name: 'Ustadz Muhammad Rizqi', phone: '081976543213', role: 'Pengajar Kelas Dasar Ikhwan', baseSalary: 500000, sessions: 15, status: 'Aktif' },
+    { id: 'G-04', name: 'Ustadzah Nurul Khadijah', phone: '085265432104', role: 'Pengajar Kelas Dasar Ikhwan & Akhowat', baseSalary: 600000, sessions: 16, status: 'Aktif' }
   ],
-  // Data Santri
+  // Data 36 Santri Resmi RQ Ummul Qosim
   students: [
-    { id: 'S-001', nis: '202601', name: 'Muhammad Zaki Pratama', class: 'Jilid 4', parent: 'Bpk. Hendra Gunawan', phone: '6281211112222', sppAmount: 50000, isScholarship: false, savingsBalance: 180000 },
-    { id: 'S-002', nis: '202602', name: 'Aisyah Putri Azzahra', class: 'Tahfidz Juz 30', parent: 'Ibu Ratna Dewi', phone: '6281222223333', sppAmount: 50000, isScholarship: false, savingsBalance: 420000 },
-    { id: 'S-003', nis: '202603', name: 'Fatih Al-Ghifari', class: 'Jilid 2', parent: 'Bpk. Bambang Suryo', phone: '6281233334444', sppAmount: 50000, isScholarship: false, savingsBalance: 125000 },
-    { id: 'S-004', nis: '202604', name: 'Maryam Syakira', class: 'Al-Qur\'an Dasar', parent: 'Ibu Nurlaila', phone: '6281244445555', sppAmount: 50000, isScholarship: false, savingsBalance: 310000 },
-    { id: 'S-005', nis: '202605', name: 'Bilal Habibi', class: 'Jilid 1', parent: 'Ibu Kurniawati (Yatim)', phone: '6281255556666', sppAmount: 0, isScholarship: true, savingsBalance: 90000 },
-    { id: 'S-006', nis: '202606', name: 'Khadijah Nayla', class: 'Jilid 3', parent: 'Bpk. Ridwan Hakim', phone: '6281266667777', sppAmount: 50000, isScholarship: false, savingsBalance: 250000 },
-    { id: 'S-007', nis: '202607', name: 'Umar Khalid', class: 'Jilid 5', parent: 'Bpk. Irfan Maulana', phone: '6281277778888', sppAmount: 50000, isScholarship: false, savingsBalance: 530000 },
-    { id: 'S-008', nis: '202608', name: 'Zahra Anindita', class: 'Jilid 2', parent: 'Ibu Maya Lestari', phone: '6281288889999', sppAmount: 50000, isScholarship: false, savingsBalance: 85000 },
-    { id: 'S-009', nis: '202609', name: 'Hasan Basri', class: 'Jilid 6', parent: 'Bpk. Darmawan', phone: '6281299990000', sppAmount: 50000, isScholarship: false, savingsBalance: 610000 },
-    { id: 'S-010', nis: '202610', name: 'Aliyya Salsabila', class: 'Tahfidz Juz 30', parent: 'Bpk. Teguh Wibowo', phone: '6281311112222', sppAmount: 50000, isScholarship: false, savingsBalance: 340000 }
+    // --- KELAS DASAR IKHWAN (K1) ---
+    { id: 'S-001', nis: '202601', name: 'Reyhan', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Reyhan', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-002', nis: '202602', name: 'Hafizh Regency', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Hafizh', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-003', nis: '202603', name: 'Rafa', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Rafa', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-004', nis: '202604', name: 'Fahri', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Fahri', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-005', nis: '202605', name: 'Ibad', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Ibad', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-006', nis: '202606', name: 'Sulaiman', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Sulaiman', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-007', nis: '202607', name: 'Fauzan', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Fauzan', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-008', nis: '202608', name: 'Koko', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Koko', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-009', nis: '202609', name: 'Rafasyah', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Rafasyah', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-010', nis: '202610', name: 'Hafizh Ramadhan', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Hafizh Ramadhan', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+
+    // --- KELAS MENENGAH AKHOWAT (K2) ---
+    { id: 'S-011', nis: '202611', name: 'Fadhiyah', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Fadhiyah', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-012', nis: '202612', name: 'Athifah', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Athifah', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-013', nis: '202613', name: 'Aura', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Aura', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-014', nis: '202614', name: 'Luthfia', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Luthfia', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-015', nis: '202615', name: 'Aulia', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Aulia', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-016', nis: '202616', name: 'Ayla', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Ayla', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-017', nis: '202617', name: 'Syifa', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Syifa', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-018', nis: '202618', name: 'Inayah', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Inayah', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-019', nis: '202619', name: 'Ruby', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Ruby', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-020', nis: '202620', name: 'Wafirah', classId: 'K2', class: 'Kelas Menengah Akhowat', parent: 'Wali Wafirah', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+
+    // --- KELAS MENENGAH IKHWAN (K3) ---
+    { id: 'S-021', nis: '202621', name: 'Aufar', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Aufar', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-022', nis: '202622', name: 'Marcel', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Marcel', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-023', nis: '202623', name: 'Ahmad', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Ahmad', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-024', nis: '202624', name: 'Dhaffa', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Dhaffa', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-025', nis: '202625', name: 'Shaka', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Shaka', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-026', nis: '202626', name: 'Iffath', classId: 'K3', class: 'Kelas Menengah Ikhwan', parent: 'Wali Iffath', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+
+    // --- KELAS DASAR IKHWAN & AKHOWAT (K4) ---
+    { id: 'S-027', nis: '202627', name: 'Ratu', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Ratu', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-028', nis: '202628', name: 'Queena', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Queena', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-029', nis: '202629', name: 'Keenan', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Keenan', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-030', nis: '202630', name: 'Indira', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Indira', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-031', nis: '202631', name: 'Harith', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Harith', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-032', nis: '202632', name: 'Khadijah', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Khadijah (Penerima Subsidi)', phone: '', sppAmount: 0, isScholarship: true, savingsBalance: 0 },
+    { id: 'S-033', nis: '202633', name: 'Firas', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Firas', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-034', nis: '202634', name: 'Razky', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Razky', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-035', nis: '202635', name: 'Aqmar (Titi)', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Aqmar', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-036', nis: '202636', name: 'Adibah', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Adibah', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 }
   ],
-  // Catatan SPP Bulanan (Key: studentId_monthYear, contoh: 'S-001_2026-09')
+  // Catatan SPP Bulanan (Otomatis santri subsidi terdata lunas Rp 0)
   sppRecords: [
-    { id: 'SPP-01', studentId: 'S-001', month: '2026-09', amount: 50000, paidDate: '2026-09-05', status: 'Lunas', method: 'Tunai', receiptNo: 'KW-2609-001' },
-    { id: 'SPP-02', studentId: 'S-002', month: '2026-09', amount: 50000, paidDate: '2026-09-04', status: 'Lunas', method: 'Transfer BSI', receiptNo: 'KW-2609-002' },
-    { id: 'SPP-03', studentId: 'S-004', month: '2026-09', amount: 50000, paidDate: '2026-09-07', status: 'Lunas', method: 'QRIS', receiptNo: 'KW-2609-003' },
-    { id: 'SPP-04', studentId: 'S-005', month: '2026-09', amount: 0, paidDate: '2026-09-01', status: 'Lunas', method: 'Beasiswa Yatim', receiptNo: 'KW-2609-004' },
-    { id: 'SPP-05', studentId: 'S-006', month: '2026-09', amount: 50000, paidDate: '2026-09-10', status: 'Lunas', method: 'Tunai', receiptNo: 'KW-2609-005' },
-    { id: 'SPP-06', studentId: 'S-007', month: '2026-09', amount: 50000, paidDate: '2026-09-08', status: 'Lunas', method: 'Tunai', receiptNo: 'KW-2609-006' }
-    // S-003, S-008, S-009, S-010 statusnya Belum Lunas untuk bulan 2026-09
+    { id: 'SPP-2610-032', studentId: 'S-032', month: '2026-10', amount: 0, paidDate: '2026-10-01', status: 'Lunas', method: 'Beasiswa / Subsidi', receiptNo: 'KW-2610-SUB01' }
   ],
   // Riwayat Tabungan Santri
-  savingsTransactions: [
-    { id: 'SAV-01', date: '2026-09-14', studentId: 'S-002', type: 'Setor', amount: 20000, note: 'Tabungan pekanan santri' },
-    { id: 'SAV-02', date: '2026-09-12', studentId: 'S-007', type: 'Setor', amount: 50000, note: 'Setoran saku santri' },
-    { id: 'SAV-03', date: '2026-09-10', studentId: 'S-001', type: 'Setor', amount: 15000, note: 'Tabungan koin' },
-    { id: 'SAV-04', date: '2026-09-08', studentId: 'S-009', type: 'Setor', amount: 30000, note: 'Setoran mingguan' },
-    { id: 'SAV-05', date: '2026-09-02', studentId: 'S-004', type: 'Tarik', amount: 50000, note: 'Beli jilid Iqro & pensil warna' }
-  ],
-  // Mutasi Kas Lengkap (Pemasukan & Pengeluaran)
+  savingsTransactions: [],
+  // Mutasi Kas Awal
   transactions: [
-    { id: 'TX-101', date: '2026-09-01', type: 'in', walletId: 'bangun', category: 'Donasi Pembangunan', amount: 1000000, desc: 'Donasi Hamba Allah untuk perbaikan rak Al-Qur\'an', ref: 'DN-01' },
-    { id: 'TX-102', date: '2026-09-04', type: 'in', walletId: 'infaq', category: 'Kotak Infaq Santri', amount: 245000, desc: 'Infaq Jumat santri pekan 1 September', ref: 'INF-01' },
-    { id: 'TX-103', date: '2026-09-05', type: 'in', walletId: 'ops', category: 'SPP Santri', amount: 300000, desc: 'Penerimaan SPP Bulan September (6 santri)', ref: 'SPP-REC' },
-    { id: 'TX-104', date: '2026-09-06', type: 'out', walletId: 'ops', category: 'Operasional ATK', amount: 145000, desc: 'Pembelian spidol whiteboard, penghapus, dan buku absen', ref: 'NOT-101' },
-    { id: 'TX-105', date: '2026-09-08', type: 'out', walletId: 'ops', category: 'Buku & Modul', amount: 320000, desc: 'Pengadaan 10 Eks Buku Iqro Jilid 1-6 & Juz Amma', ref: 'NOT-102' },
-    { id: 'TX-106', date: '2026-09-10', type: 'out', walletId: 'ops', category: 'Bisyarah Guru', amount: 2250000, desc: 'Bisyarah/Honor 4 Ustadz/Ustadzah periode Agustus', ref: 'BSY-08' },
-    { id: 'TX-107', date: '2026-09-11', type: 'in', walletId: 'infaq', category: 'Kotak Infaq Santri', amount: 210000, desc: 'Infaq Jumat santri pekan 2 September', ref: 'INF-02' },
-    { id: 'TX-108', date: '2026-09-12', type: 'out', walletId: 'ops', category: 'Kebersihan & Konsumsi', amount: 95000, desc: 'Beli sabun cuci tangan, galon air minum, dan camilan rapat ustadz', ref: 'NOT-103' },
-    { id: 'TX-109', date: '2026-09-13', type: 'in', walletId: 'bangun', category: 'Donasi Donatur Tetap', amount: 500000, desc: 'Donasi bulanan Bpk. H. Sukardi (Muhsinin)', ref: 'DN-02' }
+    { id: 'TX-101', date: '2026-10-01', type: 'in', walletId: 'bangun', category: 'Donasi Pembangunan', amount: 1000000, desc: 'Donasi Muhsinin untuk perbaikan fasilitas TPA', ref: 'DN-01' },
+    { id: 'TX-102', date: '2026-10-04', type: 'in', walletId: 'infaq', category: 'Kotak Infaq Santri', amount: 245000, desc: 'Infaq Jumat santri pekan 1 Oktober', ref: 'INF-01' }
   ]
 };
+
+// In-memory fallback untuk browser dengan mode privasi ketat / sandbox
+const _memStorage = {};
+function safeStorageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    return _memStorage[key] || null;
+  }
+}
+function safeStorageSet(key, val) {
+  try {
+    localStorage.setItem(key, val);
+  } catch (e) {
+    _memStorage[key] = val;
+  }
+}
+function safeStorageRemove(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    delete _memStorage[key];
+  }
+}
 
 // Modul Akses Data (Repository Pattern)
 class TPADatabase {
@@ -85,13 +170,102 @@ class TPADatabase {
   }
 
   load() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = null;
+    try {
+      raw = safeStorageGet(STORAGE_KEY);
+      if (!raw) {
+        // Cek migrasi dari versi V1 sebelumnya jika ada custom logo atau settingan
+        const oldV1 = safeStorageGet('SIKAD_TPA_DATA_V1');
+        if (oldV1) {
+          try {
+            const oldParsed = JSON.parse(oldV1);
+            const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            if (Array.isArray(oldParsed.wallets) && oldParsed.wallets.length > 0) fresh.wallets = oldParsed.wallets;
+            if (Array.isArray(oldParsed.transactions) && oldParsed.transactions.length > 0) fresh.transactions = oldParsed.transactions;
+            if (oldParsed.tpaInfo && oldParsed.tpaInfo.qrisUrl) fresh.tpaInfo.qrisUrl = oldParsed.tpaInfo.qrisUrl;
+            this.save(fresh);
+            return fresh;
+          } catch (e) {}
+        }
+      }
+    } catch (e) {
+      console.warn("Storage access notice:", e);
+    }
+
     if (!raw) {
       this.save(DEFAULT_DATA);
       return JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (!parsed.tpaInfo) parsed.tpaInfo = {};
+      parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
+      if (!Array.isArray(parsed.students)) parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
+      if (!Array.isArray(parsed.sppRecords)) parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
+      if (!Array.isArray(parsed.wallets)) parsed.wallets = JSON.parse(JSON.stringify(DEFAULT_DATA.wallets));
+      if (!Array.isArray(parsed.teachers)) parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
+      if (!Array.isArray(parsed.transactions)) parsed.transactions = JSON.parse(JSON.stringify(DEFAULT_DATA.transactions));
+      if (!Array.isArray(parsed.savingsTransactions)) parsed.savingsTransactions = JSON.parse(JSON.stringify(DEFAULT_DATA.savingsTransactions));
+
+      // Deteksi jika masih memuat data demo lama (Zaki Pratama) atau kurang dari 36 santri, otomatis perbarui ke 36 santri asli
+      const hasOldDemoData = parsed.students.some(s => s.name === 'Muhammad Zaki Pratama');
+      if (hasOldDemoData || parsed.students.length < 30) {
+        parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
+        parsed.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
+        parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
+        parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
+        parsed.tpaInfo.ketua = DEFAULT_DATA.tpaInfo.ketua;
+        parsed.tpaInfo.bendahara = DEFAULT_DATA.tpaInfo.bendahara;
+        parsed.tpaInfo.alamat = DEFAULT_DATA.tpaInfo.alamat;
+        parsed.tpaInfo.rekening = DEFAULT_DATA.tpaInfo.rekening;
+        parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
+        this.save(parsed);
+      }
+
+      // 4 Kelas Resmi RQ Ummul Qosim
+      if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
+        parsed.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
+      } else {
+        DEFAULT_DATA.classes.forEach(defCls => {
+          const existing = parsed.classes.find(c => c.id === defCls.id);
+          if (!existing) {
+            parsed.classes.push({ ...defCls });
+          } else {
+            if (!existing.shortName) existing.shortName = defCls.shortName;
+            if (!existing.icon) existing.icon = defCls.icon;
+            if (!existing.room) existing.room = defCls.room;
+            if (!existing.schedule) existing.schedule = defCls.schedule;
+            if (!existing.teacher) existing.teacher = defCls.teacher;
+            if (!existing.color) existing.color = defCls.color;
+          }
+        });
+      }
+
+      // Sinkronisasi kelas santri dengan daftar kelas aktif
+      parsed.students.forEach(s => {
+        if (!s.classId) {
+          const matched = parsed.classes.find(c => c.name === s.class || c.shortName === s.class);
+          if (matched) {
+            s.classId = matched.id;
+          } else if (s.class) {
+            const c = s.class.toLowerCase();
+            if (c.includes('dasar') && c.includes('gabungan') || c.includes('ikwan & akhowat') || c.includes('k4')) s.classId = 'K4';
+            else if (c.includes('menengah') && c.includes('ikhwan') || c.includes('k3')) s.classId = 'K3';
+            else if (c.includes('menengah') && c.includes('akhowat') || c.includes('k2')) s.classId = 'K2';
+            else s.classId = 'K1';
+          } else {
+            s.classId = 'K1';
+          }
+        }
+        
+        // Pastikan nama kelas santri konsisten
+        const targetCls = parsed.classes.find(c => c.id === s.classId);
+        if (targetCls && !s.class) {
+          s.class = targetCls.name;
+        }
+      });
+
+      return parsed;
     } catch (e) {
       console.error("Gagal membaca database lokal, mereset ke default:", e);
       this.save(DEFAULT_DATA);
@@ -103,14 +277,59 @@ class TPADatabase {
     if (dataToSave) {
       this.data = dataToSave;
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+    try {
+      safeStorageSet(STORAGE_KEY, JSON.stringify(this.data));
+    } catch (e) {
+      console.error("Gagal menyimpan ke penyimpanan lokal:", e);
+    }
   }
 
   resetToDefault() {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      safeStorageRemove(STORAGE_KEY);
+    } catch (e) {}
     this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
     this.save();
     return this.data;
+  }
+
+  // --- 4 Kelas Resmi RQ Ummul Qosim ---
+  getClasses() {
+    if (!this.data.classes || !Array.isArray(this.data.classes)) {
+      this.data.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
+      this.save();
+    }
+    return this.data.classes;
+  }
+
+  getClass(id) {
+    return this.getClasses().find(c => c.id === id) || null;
+  }
+
+  updateClass(classId, updateData) {
+    const classes = this.getClasses();
+    const idx = classes.findIndex(c => c.id === classId);
+    if (idx === -1) return null;
+
+    const oldName = classes[idx].name;
+    const oldShort = classes[idx].shortName;
+
+    classes[idx] = { ...classes[idx], ...updateData };
+
+    // Update seluruh santri yang berada di kelas ini secara otomatis
+    if (updateData.name && updateData.name !== oldName) {
+      if (Array.isArray(this.data.students)) {
+        this.data.students.forEach(s => {
+          if (s.classId === classId || s.class === oldName || s.class === oldShort) {
+            s.class = updateData.name;
+            s.classId = classId;
+          }
+        });
+      }
+    }
+
+    this.save();
+    return classes[idx];
   }
 
   // --- Wallets (Kas) ---
@@ -140,8 +359,46 @@ class TPADatabase {
   }
 
   addStudent(student) {
-    student.id = 'S-' + String(this.data.students.length + 1).padStart(3, '0');
-    student.savingsBalance = 0;
+    if (!this.data.students) this.data.students = [];
+    const students = this.data.students;
+
+    // Hitung nomor sequential tertinggi untuk ID unik tanpa risiko duplikasi
+    let maxIdNum = 0;
+    students.forEach(s => {
+      const match = String(s.id || '').match(/S-(\d+)/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (n > maxIdNum) maxIdNum = n;
+      }
+    });
+    student.id = 'S-' + String(maxIdNum + 1).padStart(3, '0');
+
+    // Generate NIS jika kosong
+    if (!student.nis || String(student.nis).trim() === '') {
+      const curYear = new Date().getFullYear();
+      let maxNisNum = 0;
+      students.forEach(s => {
+        const nisStr = String(s.nis || '');
+        if (nisStr.startsWith(String(curYear))) {
+          const suffix = parseInt(nisStr.slice(4), 10);
+          if (!isNaN(suffix) && suffix > maxNisNum) maxNisNum = suffix;
+        }
+      });
+      student.nis = `${curYear}${String(maxNisNum + 1).padStart(2, '0')}`;
+    }
+
+    student.savingsBalance = Number(student.savingsBalance || 0);
+    student.sppAmount = Number(student.sppAmount !== undefined ? student.sppAmount : 50000);
+    student.isScholarship = Boolean(student.isScholarship);
+    if (student.isScholarship) {
+      student.sppAmount = 0;
+    }
+
+    if (!student.classId) {
+      const matched = this.getClasses().find(c => c.name === student.class || c.shortName === student.class || c.id === student.class);
+      student.classId = matched ? matched.id : 'K1';
+    }
+
     this.data.students.push(student);
     this.save();
     return student;
@@ -176,7 +433,7 @@ class TPADatabase {
     };
   }
 
-  paySpp(studentId, monthStr, amount, method = 'Tunai', customReceiptNo = null) {
+  paySpp(studentId, monthStr, amount, method = 'Tunai', customReceiptNo = null, proofImage = null) {
     const student = this.getStudent(studentId);
     if (!student) return null;
 
@@ -189,7 +446,8 @@ class TPADatabase {
       paidDate: new Date().toISOString().split('T')[0],
       status: 'Lunas',
       method: method,
-      receiptNo: receiptNo
+      receiptNo: receiptNo,
+      proofImage: proofImage || null
     };
 
     this.data.sppRecords.push(newRecord);
@@ -328,16 +586,44 @@ class TPADatabase {
   }
 
   addTeacher(teacher) {
-    teacher.id = 'G-' + String(this.data.teachers.length + 1).padStart(2, '0');
+    if (!this.data.teachers) this.data.teachers = [];
+    let maxIdNum = 0;
+    this.data.teachers.forEach(t => {
+      const match = String(t.id || '').match(/\d+/);
+      if (match) {
+        const n = parseInt(match[0], 10);
+        if (n > maxIdNum) maxIdNum = n;
+      }
+    });
+    teacher.id = 'G-' + String(maxIdNum + 1).padStart(2, '0');
+    teacher.baseSalary = Number(teacher.baseSalary || 750000);
+    teacher.sessions = Number(teacher.sessions || 16);
     this.data.teachers.push(teacher);
     this.save();
     return teacher;
   }
 
+  deleteTeacher(id) {
+    if (!this.data.teachers) return;
+    this.data.teachers = this.data.teachers.filter(t => t.id !== id);
+    this.save();
+  }
+
   updateTeacher(id, updateData) {
     const t = this.data.teachers.find(item => item.id === id);
     if (t) {
+      const oldName = t.name;
       Object.assign(t, updateData);
+
+      // Jika nama ustadz berubah, sinkronkan ke kelas yang diampu
+      if (updateData.name && updateData.name !== oldName && Array.isArray(this.data.classes)) {
+        this.data.classes.forEach(c => {
+          if (c.teacher === oldName) {
+            c.teacher = updateData.name;
+          }
+        });
+      }
+
       this.save();
     }
     return t;
@@ -393,3 +679,5 @@ class TPADatabase {
 
 // Global instance
 window.db = new TPADatabase();
+var db = window.db;
+

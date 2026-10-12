@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SikadTPA - Aplikasi Pengelolaan Keuangan Taman Pendidikan Al-Qur'an</title>
   <meta name="description" content="Aplikasi pengelolaan keuangan modern dan terpadu untuk TPA/TPQ: kelola SPP/syahriah, multi-kas operasional vs tabungan santri, bisyarah guru, infaq, dan kwitansi digital WhatsApp.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2.6">
 </head>
 <body>
 
-  <!-- ==================== SECURITY PIN LOCK GATE ==================== -->
-  <div class="pin-gate-overlay" id="security-pin-screen">
+  <!-- ==================== SECURITY PIN LOCK GATE (DISABLED BY DEFAULT) ==================== -->
+  <div class="pin-gate-overlay unlocked" id="security-pin-screen" style="display: none !important;">
     <div class="pin-gate-box">
       <!-- Luxury Islamic Emblem Badge -->
-      <div class="pin-brand-badge">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          <circle cx="12" cy="16" r="1.5" fill="currentColor"></circle>
-        </svg>
+      <div class="pin-brand-badge" id="pin-brand-badge-box">
+        <div id="pin-brand-logo-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <circle cx="12" cy="16" r="1.5" fill="currentColor"></circle>
+          </svg>
+        </div>
       </div>
-      <h2 class="pin-title">Sikad<span>TPA</span> Keuangan</h2>
-      <p class="pin-subtitle">RQ Ummul Qosim • Sistem Kas Terpadu</p>
+      <h2 class="pin-title" id="pin-app-title">Sikad<span>TPA</span> Keuangan</h2>
+      <p class="pin-subtitle" id="pin-tpa-subtitle">RQ Ummul Qosim • Sistem Kas Terpadu</p>
 
       <div class="pin-prompt-box">
         <div class="pin-status-label" id="pin-status-message">Masukkan PIN Keamanan Bendahara</div>
@@ -58,6 +60,9 @@
 
       <div class="pin-footer-hint">
         <span>🔒 Kunci Keamanan Aktif (PIN: 060708)</span>
+        <div style="margin-top: 8px;">
+          <button type="button" class="btn btn-sm" onclick="app.quickUnlockDemo()" style="background: rgba(37, 99, 235, 0.15); color: var(--primary-700); border: 1px solid var(--primary-300); font-weight: 700; border-radius: 8px; padding: 6px 14px; cursor: pointer;">⚡ Klik Disini untuk Buka Cepat (PIN: 060708)</button>
+        </div>
       </div>
     </div>
   </div>
@@ -66,15 +71,17 @@
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="logo-badge" style="background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--slate-900); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            <circle cx="12" cy="8.5" r="2.2" fill="currentColor"></circle>
-          </svg>
+        <div class="logo-badge" id="sidebar-app-logo-box" style="background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--slate-900); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); overflow: hidden;">
+          <div id="sidebar-app-logo-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <circle cx="12" cy="8.5" r="2.2" fill="currentColor"></circle>
+            </svg>
+          </div>
         </div>
         <div class="logo-text">
-          <h1>Sikad<span>TPA</span></h1>
+          <h1 id="sidebar-app-title">Sikad<span>TPA</span></h1>
           <p id="sidebar-tpa-name">RQ Ummul Qosim</p>
         </div>
       </div>
@@ -146,10 +153,10 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="user-avatar" id="sidebar-user-avatar">RW</div>
+        <div class="user-avatar" id="sidebar-user-avatar">HA</div>
         <div class="user-info">
-          <div class="user-name" id="sidebar-user-name">Ibu Rahmawati, S.E.</div>
-          <div class="user-role">Bendahara TPA</div>
+          <div class="user-name" id="sidebar-user-name">Halisa Amelia</div>
+          <div class="user-role">Bendahara RQ</div>
         </div>
         <button type="button" class="btn-lock-sidebar" onclick="app.lockSession()" title="Kunci Aplikasi (PIN)">🔒 Kunci</button>
       </div>
@@ -177,6 +184,11 @@
         </div>
 
         <div class="header-right">
+          <!-- Realtime Date & Clock Badge -->
+          <div class="header-realtime-badge" id="header-realtime-clock" title="Waktu Sistem Realtime">
+            📅 Memuat waktu...
+          </div>
+
           <!-- Theme Switcher Dropdown -->
           <div class="theme-dropdown-container" id="theme-dropdown-container">
             <button class="btn-theme-toggle" id="btn-theme-dropdown" title="Ganti Tema Warna">
@@ -245,17 +257,18 @@
             <span>Panduan Isi</span>
           </button>
 
-          <div class="date-badge">
-            <span class="hijri" id="header-hijri-date">4 Rabi'ul Awwal 1448 H</span>
-            <span>•</span>
-            <span id="header-masehi-date">16 September 2026</span>
-          </div>
-          <button type="button" class="btn-lock-header" onclick="app.lockSession()" title="Kunci Aplikasi (PIN)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <!-- Quick Input Buttons directly on Header -->
+          <button type="button" class="btn btn-outline-primary btn-sm" id="btn-header-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 5px; font-weight: 700; border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; border-color: var(--primary-300);" title="Tambah Santri Baru">
+            <span>👤</span>
+            <span>+ Santri</span>
           </button>
-          <button class="btn-quick-add" id="btn-open-tx-modal">
+          <button type="button" class="btn btn-outline-primary btn-sm" id="btn-header-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" style="display: flex; align-items: center; gap: 5px; font-weight: 700; border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; border-color: var(--primary-300);" title="Tambah Pengajar / Ustadz Baru">
+            <span>👨‍🏫</span>
+            <span>+ Pengajar</span>
+          </button>
+          <button class="btn-quick-add" id="btn-open-tx-modal" data-action="open-tx-modal" data-tx-type="in" data-tx-wallet="ops" onclick="(window.app || app).openTxModal('in', 'ops')" title="Catat Mutasi Kas">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Catat Kas</span>
+            <span>+ Catat Kas</span>
           </button>
         </div>
       </header>
@@ -304,15 +317,15 @@
               </div>
 
               <div class="vault-actions-bar">
-                <button type="button" class="vault-action-btn primary" onclick="app.openTxModal('in', 'ops')">
+                <button type="button" class="vault-action-btn primary" id="btn-vault-income" data-action="open-tx-modal" data-tx-type="in" data-tx-wallet="ops" onclick="(window.app || app).openTxModal('in', 'ops')">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   <span>Pemasukan Baru</span>
                 </button>
-                <button type="button" class="vault-action-btn" onclick="app.openTxModal('out', 'ops')">
+                <button type="button" class="vault-action-btn" id="btn-vault-expense" data-action="open-tx-modal" data-tx-type="out" data-tx-wallet="ops" onclick="(window.app || app).openTxModal('out', 'ops')">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   <span>Pengeluaran Kas</span>
                 </button>
-                <button type="button" class="vault-action-btn" onclick="app.openQRISModal()">
+                <button type="button" class="vault-action-btn" id="btn-vault-qris" data-action="open-qris-modal" onclick="(window.app || app).openQRISModal()">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                   <span>QRIS Infaq</span>
                 </button>
@@ -409,7 +422,7 @@
           </div>
         </section>
 
-        <!-- ==================== TAB 2: SPP & SYAHRIAH (DUAL VIEW) ==================== -->
+        <!-- ==================== TAB 2: SPP & SYAHRIAH (TABEL 4 KELAS RQ) ==================== -->
         <section class="tab-view" id="tab-spp">
           <!-- Smart Toolbar: Segmented Filter Capsules & Dual View Toggle -->
           <div class="spp-toolbar-card">
@@ -432,21 +445,59 @@
               </button>
             </div>
 
-            <!-- View Switcher -->
-            <div class="view-switcher-group">
-              <button type="button" class="view-btn active" id="btn-view-cards" onclick="app.setSppView('cards')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                <span>Visual Kartu</span>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <!-- Tombol Tambah Santri Baru Langsung di Toolbar SPP -->
+              <button type="button" class="btn btn-primary" id="btn-spp-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>➕ Tambah Santri Baru</span>
               </button>
-              <button type="button" class="view-btn" id="btn-view-table" onclick="app.setSppView('table')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                <span>Tabel Data</span>
+
+              <!-- Tombol Database Spreadsheet (Google Sheets & Excel) -->
+              <button type="button" class="btn btn-secondary" onclick="app.openSpreadsheetModal()" style="display: flex; align-items: center; gap: 6px;" title="Kelola & Ekspor Database Spreadsheet">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>📊 Database Spreadsheet</span>
               </button>
+
+              <!-- View Switcher -->
+              <div class="view-switcher-group">
+                <button type="button" class="view-btn" id="btn-view-cards" onclick="app.setSppView('cards')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  <span>Visual Kartu</span>
+                </button>
+                <button type="button" class="view-btn active" id="btn-view-table" onclick="app.setSppView('table')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                  <span>Tabel Data Pro</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="card">
-            <!-- Filter Controls -->
+          <!-- Bilah Tab Navigasi 4 Kelas RQ -->
+          <div class="spp-class-tabs-bar" id="spp-class-filter-bar">
+            <button type="button" class="spp-class-tab-btn active" data-class-filter="all" onclick="app.setSppClassFilter('all')">
+              <span>🏢 Semua 4 Kelas</span>
+              <span class="spp-class-tab-badge" id="badge-class-all">10</span>
+            </button>
+            <button type="button" class="spp-class-tab-btn" data-class-filter="K1" onclick="app.setSppClassFilter('K1')">
+              <span>📖 Kelas 1 (Jilid 1 - 2)</span>
+              <span class="spp-class-tab-badge" id="badge-class-k1">0</span>
+            </button>
+            <button type="button" class="spp-class-tab-btn" data-class-filter="K2" onclick="app.setSppClassFilter('K2')">
+              <span>📗 Kelas 2 (Jilid 3 - 4)</span>
+              <span class="spp-class-tab-badge" id="badge-class-k2">0</span>
+            </button>
+            <button type="button" class="spp-class-tab-btn" data-class-filter="K3" onclick="app.setSppClassFilter('K3')">
+              <span>🕌 Kelas 3 (Al-Qur'an & Tahsin)</span>
+              <span class="spp-class-tab-badge" id="badge-class-k3">0</span>
+            </button>
+            <button type="button" class="spp-class-tab-btn" data-class-filter="K4" onclick="app.setSppClassFilter('K4')">
+              <span>⭐ Kelas 4 (Tahfidz Juz 30)</span>
+              <span class="spp-class-tab-badge" id="badge-class-k4">0</span>
+            </button>
+          </div>
+
+          <!-- Filter Pencarian & Bulan Tagihan Realtime -->
+          <div class="card" style="margin-bottom: 20px;">
             <div class="filter-bar">
               <div class="filter-left">
                 <div class="input-search-wrap">
@@ -454,31 +505,15 @@
                   <input type="text" id="filter-spp-search" placeholder="Cari santri / wali...">
                 </div>
 
-                <select class="select-app" id="filter-spp-month">
-                  <option value="2026-12">Desember 2026</option>
-                  <option value="2026-11">November 2026</option>
-                  <option value="2026-10">Oktober 2026</option>
-                  <option value="2026-09" selected>September 2026</option>
-                  <option value="2026-08">Agustus 2026</option>
-                  <option value="2026-07">Juli 2026</option>
+                <!-- Bulan Tagihan (Dinamis Realtime oleh JS) -->
+                <select class="select-app" id="filter-spp-month" onchange="app.renderSppTable()">
+                  <!-- Terisi otomatis oleh initDynamicDates() -->
                 </select>
 
-                <select class="select-app" id="filter-spp-class">
-                  <option value="">Semua Kelas/Jilid</option>
-                  <option value="Jilid 1">Jilid 1</option>
-                  <option value="Jilid 2">Jilid 2</option>
-                  <option value="Jilid 3">Jilid 3</option>
-                  <option value="Jilid 4">Jilid 4</option>
-                  <option value="Jilid 5">Jilid 5</option>
-                  <option value="Jilid 6">Jilid 6</option>
-                  <option value="Al-Qur'an Dasar">Al-Qur'an Dasar</option>
-                  <option value="Tahfidz Juz 30">Tahfidz Juz 30</option>
-                </select>
-
-                <select class="select-app" id="filter-spp-status">
-                  <option value="">Semua Status</option>
-                  <option value="Lunas">Lunas</option>
-                  <option value="Belum Lunas">Belum Lunas</option>
+                <select class="select-app" id="filter-spp-status" onchange="app.renderSppTable()">
+                  <option value="">Semua Status Bayar</option>
+                  <option value="Lunas">Hanya Lunas</option>
+                  <option value="Belum Lunas">Hanya Belum Lunas</option>
                 </select>
               </div>
 
@@ -489,31 +524,11 @@
                 <span class="badge badge-neutral" id="spp-filter-summary">Menampilkan 10 Santri</span>
               </div>
             </div>
+          </div>
 
-            <!-- VIEW 1: Visual Identity Cards Grid -->
-            <div id="spp-cards-container" class="student-cards-grid">
-              <!-- Dynamically populated by app.js -->
-            </div>
-
-            <!-- VIEW 2: Data Table View -->
-            <div id="spp-table-container" class="table-responsive" style="display: none; margin-top: 10px;">
-              <table class="table-app">
-                <thead>
-                  <tr>
-                    <th>NIS</th>
-                    <th>Nama Santri</th>
-                    <th>Kelas</th>
-                    <th>Nama Wali & Kontak</th>
-                    <th>Nominal SPP</th>
-                    <th>Status</th>
-                    <th style="text-align: right;">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="spp-table-body">
-                  <!-- Dynamic render -->
-                </tbody>
-              </table>
-            </div>
+          <!-- WADAH UTAMA: TABEL MASING-MASING KELAS TERPISAH (4 KELAS RQ) -->
+          <div id="spp-classes-wrapper">
+            <!-- Dynamically populated per-class tables by app.renderSppTable() -->
           </div>
         </section>
 
@@ -533,10 +548,10 @@
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <button class="btn btn-primary" onclick="app.openSavingsModal('Setor')">
+                  <button class="btn btn-primary" id="btn-tabungan-setor" data-action="open-savings-modal" data-savings-type="Setor" onclick="(window.app || app).openSavingsModal('Setor')">
                     ➕ Catat Setoran Tabungan
                   </button>
-                  <button class="btn btn-warning" onclick="app.openSavingsModal('Tarik')">
+                  <button class="btn btn-warning" id="btn-tabungan-tarik" data-action="open-savings-modal" data-savings-type="Tarik" onclick="(window.app || app).openSavingsModal('Tarik')">
                     ➖ Catat Penarikan Tabungan
                   </button>
                 </div>
@@ -612,10 +627,10 @@
                 <div class="card-subtitle">Pencatatan sedekah sukarela santri, donatur tetap muhsinin, dan QRIS</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary" onclick="app.openQRISModal()">
+                <button class="btn btn-secondary" id="btn-infaq-show-qris" data-action="open-qris-modal" onclick="(window.app || app).openQRISModal()">
                   📱 Tampilkan QRIS TPA
                 </button>
-                <button class="btn btn-primary" onclick="app.openInfaqModal()">
+                <button class="btn btn-primary" id="btn-infaq-add-tx" data-action="open-infaq-modal" onclick="(window.app || app).openInfaqModal()">
                   ➕ Catat Infaq / Donasi Baru
                 </button>
               </div>
@@ -668,6 +683,9 @@
                   <h3>Honorarium & Bisyarah Ustadz / Ustadzah</h3>
                   <div class="card-subtitle">Kompensasi bagi para pengajar Al-Qur'an (Dibayarkan dari Kas Operasional)</div>
                 </div>
+                <button type="button" class="btn btn-primary" id="btn-expense-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()">
+                  ➕ Tambah Pengajar / Ustadz
+                </button>
               </div>
 
               <div class="table-responsive">
@@ -697,7 +715,7 @@
                   <h3>Pengeluaran Operasional & Belanja ATK / Modul</h3>
                   <div class="card-subtitle">Pencatatan pengeluaran buku Iqro, spidol, konsumsi, kebersihan dll</div>
                 </div>
-                <button class="btn btn-primary" onclick="app.openExpenseModal()">
+                <button class="btn btn-primary" id="btn-expense-add-expense" data-action="open-expense-modal" onclick="(window.app || app).openExpenseModal()">
                   ➕ Catat Pengeluaran Baru
                 </button>
               </div>
@@ -822,46 +840,127 @@
               <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 40px; text-align: center; font-size: 0.85rem;">
                 <div>
                   <p>Mengetahui,</p>
-                  <p style="font-weight: 700;" id="rep-sign-title-ketua">Ketua TPA Al-Hidayah</p>
+                  <p style="font-weight: 700;" id="rep-sign-title-ketua">Mudir / Ketua RQ Ummul Qosim</p>
                   <div style="height: 60px;"></div>
-                  <p style="font-weight: 700; text-decoration: underline;" id="rep-sign-ketua">Ustadz H. Abdul Malik, S.Pd.I</p>
+                  <p style="font-weight: 700; text-decoration: underline;" id="rep-sign-ketua">Al Akh M. Fikri Haekal, C.LQ</p>
                 </div>
                 <div>
-                  <p>Bandung, <span id="rep-sign-date">16 September 2026</span></p>
-                  <p style="font-weight: 700;">Bendahara TPA</p>
+                  <p>Maros, <span id="rep-sign-date">16 September 2026</span></p>
+                  <p style="font-weight: 700;">Bendahara RQ</p>
                   <div style="height: 60px;"></div>
-                  <p style="font-weight: 700; text-decoration: underline;" id="rep-sign-bendahara">Ibu Rahmawati, S.E.</p>
+                  <p style="font-weight: 700; text-decoration: underline;" id="rep-sign-bendahara">Halisa Amelia</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- ==================== TAB 7: MASTER DATA ==================== -->
+        <!-- ==================== TAB 7: MASTER DATA & PROFIL ==================== -->
         <section class="tab-view" id="tab-master">
-          <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 22px;">
-            <!-- Data Santri -->
-            <div class="card">
-              <div class="card-header">
+          <!-- Bilah Navigasi Pintas Master Data -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--slate-500); margin-right: 4px;">Pintas Bagian:</span>
+            <a href="#card-master-teachers" class="btn btn-sm btn-outline-secondary" style="border-radius: var(--radius-full); font-size: 0.75rem; text-decoration: none;">👳 Dewan Ustadz & Pengajar</a>
+            <a href="#card-master-classes" class="btn btn-sm btn-outline-secondary" style="border-radius: var(--radius-full); font-size: 0.75rem; text-decoration: none;">🏫 Pengaturan Kelas RQ</a>
+            <a href="#card-master-students" class="btn btn-sm btn-outline-secondary" style="border-radius: var(--radius-full); font-size: 0.75rem; text-decoration: none;">👦 Master Data Santri</a>
+            <a href="#card-master-institution" class="btn btn-sm btn-outline-secondary" style="border-radius: var(--radius-full); font-size: 0.75rem; text-decoration: none;">🏢 Profil Lembaga & QRIS</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
+            
+            <!-- 1. Master Data Pengajar / Ustadz (Full Width, Tidak Terpotong) -->
+            <div class="card" id="card-master-teachers" style="width: 100%;">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
-                  <h3>Master Data Santri</h3>
-                  <div class="card-subtitle">Pengelolaan identitas santri & beasiswa yatim/dhuafa</div>
+                  <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <span>👳</span>
+                    <span>Master Data Ustadz & Dewan Pengajar</span>
+                  </h3>
+                  <div class="card-subtitle">Kelola nama pengajar, tugas kelas, nomor WhatsApp, jumlah sesi, dan standar bisyarah bulanan</div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="app.openStudentModal()">
-                  ➕ Tambah Santri
+                <button type="button" class="btn btn-primary btn-sm" id="btn-master-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" style="display: flex; align-items: center; gap: 6px;">
+                  <span>➕ Tambah Pengajar Baru</span>
                 </button>
               </div>
 
               <div class="table-responsive">
-                <table class="table-app">
+                <table class="table-app" style="width: 100%; min-width: 680px;">
                   <thead>
                     <tr>
-                      <th>NIS</th>
+                      <th style="width: 80px;">ID Guru</th>
+                      <th>Nama Ustadz / Ustadzah</th>
+                      <th>Tugas Mengajar / Kelas</th>
+                      <th>No. WhatsApp</th>
+                      <th style="text-align: center; width: 110px;">Sesi / Bulan</th>
+                      <th style="width: 150px;">Standar Bisyarah</th>
+                      <th style="text-align: right; width: 180px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-teachers-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. Master Pengaturan Kelas RQ (Full Width, Tidak Terpotong) -->
+            <div class="card" id="card-master-classes" style="width: 100%;">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <span>🏫</span>
+                    <span>Master Pengaturan Nama & Info Kelas</span>
+                  </h3>
+                  <div class="card-subtitle">Ubah nama lengkap kelas, label tab SPP, ustadz pengampu, ruang halaqah, dan jadwal KBM</div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--slate-500); background: var(--slate-100); padding: 5px 12px; border-radius: 8px; font-weight: 600;">
+                  💡 Klik tombol <strong>✏️ Ubah Nama</strong> pada kelas yang ingin disesuaikan
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table-app" style="width: 100%; min-width: 680px;">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">ID</th>
+                      <th>Nama Lengkap Kelas & Label Tab</th>
+                      <th>Ustadz Pengampu & Ruang</th>
+                      <th>Jadwal KBM</th>
+                      <th style="text-align: center; width: 130px;">Santri Aktif</th>
+                      <th style="text-align: right; width: 160px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-classes-body">
+                    <!-- Terisi otomatis oleh app.renderMasterData() -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3. Master Data Santri (Full Width, Tidak Terpotong) -->
+            <div class="card" id="card-master-students" style="width: 100%;">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                  <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <span>👦</span>
+                    <span>Master Data Santri</span>
+                  </h3>
+                  <div class="card-subtitle">Pengelolaan identitas santri, penempatan kelas, tarif SPP & status beasiswa yatim/dhuafa</div>
+                </div>
+                <button class="btn btn-primary btn-sm" id="btn-master-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 6px;">
+                  <span>➕ Tambah Santri Baru</span>
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table-app" style="width: 100%; min-width: 720px;">
+                  <thead>
+                    <tr>
+                      <th style="width: 90px;">NIS</th>
                       <th>Nama Santri</th>
                       <th>Kelas</th>
                       <th>Wali & No WA</th>
-                      <th>Tarif SPP</th>
-                      <th style="text-align: right;">Aksi</th>
+                      <th style="width: 130px;">Tarif SPP</th>
+                      <th style="text-align: right; width: 170px;">Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="master-students-body">
@@ -871,18 +970,51 @@
               </div>
             </div>
 
-            <!-- Profil Lembaga TPA -->
-            <div class="card">
+            <!-- 4. Profil Lembaga TPA & Kustomisasi Branding (Full Width) -->
+            <div class="card" id="card-master-institution" style="width: 100%;">
               <div class="card-header">
-                <h3>Informasi Lembaga TPA</h3>
+                <h3>Pengaturan Lembaga, Logo & QRIS</h3>
               </div>
               <form id="form-tpa-info" onsubmit="app.saveTpaInfo(event)">
+                
+                <!-- BAGIAN 1: IDENTITAS APLIKASI & LOGO -->
+                <div class="settings-section-divider" style="margin-top: 0;">
+                  <h4><span>🎨</span> <span>Kustomisasi Nama Sistem & Logo Aplikasi</span></h4>
+                </div>
+
                 <div class="form-group">
-                  <label>Nama Lembaga TPA</label>
+                  <label>Nama Sistem / Judul Aplikasi</label>
+                  <input type="text" class="form-control" id="info-app-name" placeholder="Contoh: RQ Ummul Qosim Keuangan atau SikadTPA" required>
+                  <small style="color: var(--slate-500); font-size: 0.72rem;">Nama ini akan tampil di sudut kiri atas sidebar, tab browser, dan layar kunci PIN.</small>
+                </div>
+
+                <div class="form-group">
+                  <label>Logo Aplikasi / Lambang RQ</label>
+                  <div class="upload-field-card">
+                    <input type="file" class="form-control" id="info-app-logo" accept="image/*" onchange="app.handleAppLogoUpload(event)">
+                    <small style="color: var(--slate-500); font-size: 0.72rem;">Format: PNG, JPG, atau WebP (Disarankan resolusi persegi 512x512 px dengan latar transparan atau putih).</small>
+                    <div id="info-app-logo-preview-box" class="preview-thumb-box" style="display: none;">
+                      <img id="info-app-logo-preview" class="preview-thumb-img" alt="Logo Preview">
+                      <div class="preview-thumb-meta">
+                        <div class="preview-thumb-title">Logo Kustom Terpasang</div>
+                        <div class="preview-thumb-sub">Akan muncul di sidebar, kop cetak, dan kwitansi.</div>
+                      </div>
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="app.resetAppLogo()">🗑️ Reset Bawaan</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- BAGIAN 2: IDENTITAS & KONTAK LEMBAGA -->
+                <div class="settings-section-divider">
+                  <h4><span>🏢</span> <span>Profil & Pengurus Lembaga</span></h4>
+                </div>
+
+                <div class="form-group">
+                  <label>Nama Lembaga Resmi</label>
                   <input type="text" class="form-control" id="info-tpa-name" required>
                 </div>
                 <div class="form-group">
-                  <label>Masjid Naungan</label>
+                  <label>Masjid / Yayasan Naungan</label>
                   <input type="text" class="form-control" id="info-tpa-masjid" required>
                 </div>
                 <div class="form-group">
@@ -890,11 +1022,11 @@
                   <input type="text" class="form-control" id="info-tpa-alamat" required>
                 </div>
                 <div class="form-group">
-                  <label>Rekening Donasi / Bank</label>
-                  <input type="text" class="form-control" id="info-tpa-rekening" required>
+                  <label>Nomor Kontak / WhatsApp Resmi</label>
+                  <input type="text" class="form-control" id="info-tpa-kontak" placeholder="0812-3456-7890">
                 </div>
                 <div class="form-group">
-                  <label>Nama Ketua TPA</label>
+                  <label>Nama Ketua / Mudir</label>
                   <input type="text" class="form-control" id="info-tpa-ketua" required>
                 </div>
                 <div class="form-group">
@@ -904,10 +1036,47 @@
                 <div class="form-group">
                   <label>PIN Keamanan Bendahara (6 Digit)</label>
                   <input type="password" class="form-control" id="info-tpa-pin" maxlength="6" placeholder="060708" required>
-                  <small style="color: var(--slate-500); font-size: 0.72rem;">PIN saat ini: <strong>060708</strong> (bisa diubah kapan saja)</small>
+                  <small style="color: var(--slate-500); font-size: 0.72rem;">PIN saat ini: <strong>060708</strong> (dapat diganti kapan saja)</small>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                  💾 Simpan Perubahan Profil
+
+                <!-- BAGIAN 3: PENGATURAN QRIS & REKENING RESMI -->
+                <div class="settings-section-divider">
+                  <h4><span>📱</span> <span>Barcode QRIS Resmi & Rekening Donasi</span></h4>
+                </div>
+
+                <div class="form-group">
+                  <label>Upload Barcode QRIS Resmi (Foto / Gambar)</label>
+                  <div class="upload-field-card">
+                    <input type="file" class="form-control" id="info-qris-file" accept="image/*" onchange="app.handleQrisUpload(event)">
+                    <small style="color: var(--slate-500); font-size: 0.72rem;">Pilih foto QRIS resmi dari galeri HP atau komputer (format JPG, PNG). Gambar otomatis tersimpan aman di aplikasi.</small>
+                    <div id="info-qris-preview-box" class="preview-thumb-box" style="display: none;">
+                      <img id="info-qris-preview" class="preview-thumb-img" alt="QRIS Preview">
+                      <div class="preview-thumb-meta">
+                        <div class="preview-thumb-title">QRIS Resmi Terpasang</div>
+                        <div class="preview-thumb-sub">Siap ditampilkan di modal bayar & lembar cetak infaq.</div>
+                      </div>
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="app.resetQrisImage()">🗑️ Reset Contoh</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Nomor NMID QRIS Resmi</label>
+                  <input type="text" class="form-control" id="info-qris-nmid" placeholder="Contoh: ID1026091234567 • A01">
+                </div>
+
+                <div class="form-group">
+                  <label>Nama Merchant Terdaftar di QRIS</label>
+                  <input type="text" class="form-control" id="info-qris-merchant" placeholder="Contoh: RQ UMMUL QOSIM">
+                </div>
+
+                <div class="form-group">
+                  <label>Rekening Bank & Donasi Resmi</label>
+                  <input type="text" class="form-control" id="info-tpa-rekening" placeholder="Contoh: BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px; padding: 12px; font-weight: 700;">
+                  💾 Simpan Seluruh Pengaturan Lembaga & QRIS
                 </button>
               </form>
             </div>
@@ -1094,13 +1263,26 @@
               <option value="QRIS">QRIS TPA</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>Foto Bukti / Struk Bayar (Opsional)</label>
+            <input type="file" class="form-control" id="pay-spp-proof" accept="image/*" onchange="app.handleSppProofUpload(event)">
+            <small style="color: var(--slate-500); font-size: 0.72rem;">Unggah foto struk transfer / nota fisik jika ada. Kwitansi digital bergambar otomatis dibuatkan sistem.</small>
+            <div id="pay-proof-preview-box" class="preview-thumb-box" style="display: none; margin-top: 8px;">
+              <img id="pay-proof-img" class="preview-thumb-img" alt="Bukti Pembayaran">
+              <div class="preview-thumb-meta">
+                <div class="preview-thumb-title">Foto Bukti Terlampir</div>
+                <div class="preview-thumb-sub">Tersimpan dalam arsip tanda terima SPP</div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="app.removeSppProof()">✕ Batal</button>
+            </div>
+          </div>
           <p style="font-size: 0.75rem; color: var(--slate-500);">
-            *Setelah dibayar, saldo akan langsung masuk ke <strong>Kas Operasional</strong> dan struk kwitansi siap dikirim via WhatsApp.
+            *Setelah dibayar, saldo akan langsung masuk ke <strong>Kas Operasional</strong> dan <strong>Kwitansi Gambar Digital HD</strong> siap dikirimkan ke WhatsApp orang tua santri.
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-pay-spp')">Batal</button>
-          <button type="submit" class="btn btn-primary">Konfirmasi Pembayaran</button>
+          <button type="button" class="btn btn-secondary" onclick="(window.app || app).closeModal('modal-pay-spp')">Batal</button>
+          <button type="submit" id="btn-save-pay-spp" class="btn btn-primary">Konfirmasi Pembayaran</button>
         </div>
       </form>
     </div>
@@ -1113,7 +1295,7 @@
         <h3 id="modal-tx-title">Catat Transaksi Kas Baru</h3>
         <button class="btn-close-modal" onclick="app.closeModal('modal-tx')">&times;</button>
       </div>
-      <form id="form-tx" onsubmit="app.submitTx(event)">
+      <form id="form-tx" onsubmit="app.submitTx(event); return false;">
         <div class="modal-body">
           <div class="form-group">
             <label>Jenis Transaksi</label>
@@ -1132,15 +1314,15 @@
           </div>
           <div class="form-group">
             <label>Kategori</label>
-            <input type="text" class="form-control" id="tx-category" placeholder="Contoh: Kotak Jumat, Pembelian ATK, Listrik" required>
+            <input type="text" class="form-control" id="tx-category" placeholder="Contoh: Kotak Jumat, Pembelian ATK, Listrik">
           </div>
           <div class="form-group">
-            <label>Nominal (Rp)</label>
-            <input type="number" class="form-control" id="tx-amount" placeholder="0" min="1000" required>
+            <label>Nominal (Rp) <span style="color: var(--danger);">*</span></label>
+            <input type="number" class="form-control" id="tx-amount" placeholder="Contoh: 50000">
           </div>
           <div class="form-group">
             <label>Tanggal Transaksi</label>
-            <input type="date" class="form-control" id="tx-date" required>
+            <input type="date" class="form-control" id="tx-date">
           </div>
           <div class="form-group">
             <label>Keterangan / Catatan</label>
@@ -1148,8 +1330,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-tx')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan Transaksi</button>
+          <button type="button" class="btn btn-secondary" onclick="(window.app || app).closeModal('modal-tx')">Batal</button>
+          <button type="button" id="btn-save-tx" class="btn btn-primary" onclick="(window.app || app).submitTx(event)">Simpan Transaksi</button>
         </div>
       </form>
     </div>
@@ -1181,8 +1363,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-savings')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan Tabungan</button>
+          <button type="button" class="btn btn-secondary" onclick="(window.app || app).closeModal('modal-savings')">Batal</button>
+          <button type="submit" id="btn-save-savings" class="btn btn-primary">Simpan Tabungan</button>
         </div>
       </form>
     </div>
@@ -1190,55 +1372,72 @@
 
   <!-- 4. Modal QRIS TPA -->
   <div class="modal-overlay" id="modal-qris">
-    <div class="modal-box" style="max-width: 420px;">
+    <div class="modal-box" style="max-width: 440px;">
       <div class="modal-header">
-        <h3>QRIS Resmi TPA</h3>
+        <h3>QRIS Resmi Pembayaran & Infaq</h3>
         <button class="btn-close-modal" onclick="app.closeModal('modal-qris')">&times;</button>
       </div>
       <div class="modal-body">
         <div class="qris-card-box">
           <div class="qris-badge-top">QRIS</div>
-          <h4 style="font-weight: 800; font-size: 1.1rem; color: #1e293b;" id="qris-tpa-name">TPA AL-HIDAYAH</h4>
-          <p style="font-size: 0.78rem; color: #64748b;">NMID: ID1026091234567 • A01</p>
+          <h4 style="font-weight: 800; font-size: 1.15rem; color: #1e293b; margin-bottom: 2px;" id="qris-tpa-name">RQ UMMUL QOSIM</h4>
+          <div class="qris-nmid-pill" id="qris-tpa-nmid">NMID: ID1026091234567 • A01</div>
           
-          <!-- Mock QR Code SVG -->
-          <div class="qris-qr-image">
-            <svg viewBox="0 0 100 100" width="100%" height="100%" fill="#000">
-              <!-- Corner Finder 1 -->
-              <rect x="5" y="5" width="28" height="28" fill="#000"/>
-              <rect x="9" y="9" width="20" height="20" fill="#fff"/>
-              <rect x="13" y="13" width="12" height="12" fill="#000"/>
-              <!-- Corner Finder 2 -->
-              <rect x="67" y="5" width="28" height="28" fill="#000"/>
-              <rect x="71" y="9" width="20" height="20" fill="#fff"/>
-              <rect x="75" y="13" width="12" height="12" fill="#000"/>
-              <!-- Corner Finder 3 -->
-              <rect x="5" y="67" width="28" height="28" fill="#000"/>
-              <rect x="9" y="71" width="20" height="20" fill="#fff"/>
-              <rect x="13" y="75" width="12" height="12" fill="#000"/>
-              <!-- Random Data Dots -->
-              <rect x="40" y="8" width="6" height="6"/>
-              <rect x="50" y="8" width="6" height="12"/>
-              <rect x="40" y="22" width="12" height="6"/>
-              <rect x="8" y="40" width="12" height="6"/>
-              <rect x="25" y="45" width="6" height="15"/>
-              <rect x="40" y="40" width="18" height="18" fill="#059669"/>
-              <rect x="68" y="40" width="8" height="8"/>
-              <rect x="82" y="42" width="10" height="6"/>
-              <rect x="40" y="65" width="12" height="6"/>
-              <rect x="56" y="65" width="6" height="12"/>
-              <rect x="42" y="80" width="16" height="8"/>
-              <rect x="68" y="68" width="8" height="8"/>
-              <rect x="82" y="78" width="10" height="14"/>
-            </svg>
+          <!-- Area Render Barcode QRIS: Foto Asli atau Mockup Default -->
+          <div id="qris-display-container">
+            <div class="qris-qr-image" id="qris-default-mockup">
+              <svg viewBox="0 0 100 100" width="100%" height="100%" fill="#000">
+                <!-- Corner Finder 1 -->
+                <rect x="5" y="5" width="28" height="28" fill="#000"/>
+                <rect x="9" y="9" width="20" height="20" fill="#fff"/>
+                <rect x="13" y="13" width="12" height="12" fill="#000"/>
+                <!-- Corner Finder 2 -->
+                <rect x="67" y="5" width="28" height="28" fill="#000"/>
+                <rect x="71" y="9" width="20" height="20" fill="#fff"/>
+                <rect x="75" y="13" width="12" height="12" fill="#000"/>
+                <!-- Corner Finder 3 -->
+                <rect x="5" y="67" width="28" height="28" fill="#000"/>
+                <rect x="9" y="71" width="20" height="20" fill="#fff"/>
+                <rect x="13" y="75" width="12" height="12" fill="#000"/>
+                <!-- Random Data Dots -->
+                <rect x="40" y="8" width="6" height="6"/>
+                <rect x="50" y="8" width="6" height="12"/>
+                <rect x="40" y="22" width="12" height="6"/>
+                <rect x="8" y="40" width="12" height="6"/>
+                <rect x="25" y="45" width="6" height="15"/>
+                <rect x="40" y="40" width="18" height="18" fill="#059669"/>
+                <rect x="68" y="40" width="8" height="8"/>
+                <rect x="82" y="42" width="10" height="6"/>
+                <rect x="40" y="65" width="12" height="6"/>
+                <rect x="56" y="65" width="6" height="12"/>
+                <rect x="42" y="80" width="16" height="8"/>
+                <rect x="68" y="68" width="8" height="8"/>
+                <rect x="82" y="78" width="10" height="14"/>
+              </svg>
+            </div>
+            <img id="qris-real-img" class="qris-uploaded-img" style="display: none;" alt="QRIS Resmi">
           </div>
           
-          <p style="font-size: 0.78rem; font-weight: 600; color: #334155;">Menerima Pembayaran dari Semua Aplikasi:</p>
-          <p style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">BSI Mobile, GoPay, OVO, Dana, ShopeePay, BCA, Mandiri dll</p>
+          <div id="qris-notice-upload" style="font-size: 0.72rem; color: var(--slate-500); margin: 6px 0;">
+            *Barcode contoh. Anda dapat mengunggah foto QRIS asli di menu <strong>Master > Informasi Lembaga</strong>.
+          </div>
+
+          <p style="font-size: 0.78rem; font-weight: 600; color: #334155; margin-top: 8px;">Menerima Pembayaran dari Semua Aplikasi:</p>
+          <p style="font-size: 0.72rem; color: #64748b; margin-top: 4px;" id="qris-accepted-apps">BSI Mobile, GoPay, OVO, Dana, ShopeePay, BCA, Mandiri dll</p>
         </div>
       </div>
-      <div class="modal-footer" style="justify-content: center;">
-        <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak Lembar QRIS</button>
+      <div class="modal-footer" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="app.closeModal('modal-qris'); app.switchTab('tab-master');">
+          ⚙️ Atur / Upload QRIS
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-download-qris" onclick="app.downloadQrisImage()">
+            📸 Unduh QRIS
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
+            🖨️ Cetak Lembar QRIS
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1302,56 +1501,127 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="flex-wrap: wrap; gap: 8px;">
         <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-receipt')">Tutup</button>
         <button type="button" class="btn btn-danger btn-sm" id="btn-rcp-cancel" style="margin-right: auto;">↩️ Batal Lunas</button>
-        <button type="button" class="btn btn-whatsapp" id="btn-rcp-send-wa">📲 Preview & Kirim WA</button>
-        <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Cetak Kuitansi</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-rcp-view-proof" style="display: none;" onclick="app.viewCurrentProofImage()">👁️ Lihat Bukti Transfer</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-rcp-download-img" onclick="app.downloadCurrentReceiptImage()">⬇️ Unduh Gambar (PNG)</button>
+        <button type="button" class="btn btn-whatsapp" id="btn-rcp-send-wa">📸 Kirim Gambar Kwitansi ke WA</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Cetak Fisik</button>
       </div>
     </div>
   </div>
 
-  <!-- 6. Modal Tambah Santri Baru -->
+  <!-- Modal Ubah Nama & Rincian Kelas (Ditiap Masing-Masing Kelas) -->
+  <div class="modal-overlay" id="modal-edit-class">
+    <div class="modal-box" style="max-width: 560px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="badge badge-primary" id="edit-class-badge" style="font-size: 0.85rem; padding: 4px 12px; font-weight: 800;">K1</span>
+          <h3 style="margin: 0;">Ubah Nama & Informasi Kelas</h3>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="app.closeModal('modal-edit-class')">&times;</button>
+      </div>
+      <form id="form-edit-class" onsubmit="app.submitEditClass(event); return false;">
+        <input type="hidden" id="edit-class-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nama Lengkap Kelas <span style="color: var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="edit-class-name" placeholder="Contoh: Kelas 1: Jilid 1 - 2 (Iqro Dasar)" required>
+            <small style="color: var(--slate-500); font-size: 0.73rem; margin-top: 4px; display: block;">Nama ini akan tampil di judul kartu SPP santri, kuitansi, dan identitas kelas santri.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Nama Singkat / Label Tab SPP <span style="color: var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="edit-class-short" placeholder="Contoh: Kelas 1 (Jilid 1-2)" required>
+            <small style="color: var(--slate-500); font-size: 0.73rem; margin-top: 4px; display: block;">Label ringkas untuk bilah tab filter atas dan badge.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Ikon Emoji Kelas</label>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="text" class="form-control" id="edit-class-icon" style="width: 80px; text-align: center; font-size: 1.3rem;" value="📖" maxlength="4">
+              <div class="emoji-quick-picker" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('📖')" style="padding: 4px 9px; font-size: 1rem;">📖</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('📗')" style="padding: 4px 9px; font-size: 1rem;">📗</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('🕌')" style="padding: 4px 9px; font-size: 1rem;">🕌</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('⭐')" style="padding: 4px 9px; font-size: 1rem;">⭐</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('📚')" style="padding: 4px 9px; font-size: 1rem;">📚</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('🌙')" style="padding: 4px 9px; font-size: 1rem;">🌙</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('🕋')" style="padding: 4px 9px; font-size: 1rem;">🕋</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('💎')" style="padding: 4px 9px; font-size: 1rem;">💎</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="app.setEditClassIcon('🕊️')" style="padding: 4px 9px; font-size: 1rem;">🕊️</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Ustadz / Ustadzah Pengampu</label>
+            <select class="form-control" id="edit-class-teacher-select" onchange="app.onEditClassTeacherSelectChange()" style="margin-bottom: 8px;">
+              <!-- Terisi otomatis -->
+            </select>
+            <input type="text" class="form-control" id="edit-class-teacher" placeholder="Nama pengampu kelas...">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Ruangan / Lokasi Halaqah</label>
+              <input type="text" class="form-control" id="edit-class-room" placeholder="Contoh: Ruang Shofa">
+            </div>
+            <div class="form-group">
+              <label>Jadwal Belajar (KBM)</label>
+              <input type="text" class="form-control" id="edit-class-schedule" placeholder="Contoh: Senin - Kamis (16:00 - 17:15 WIB)">
+            </div>
+          </div>
+
+          <div class="alert-box-info" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 10px; padding: 10px 14px; font-size: 0.74rem; color: var(--slate-700); display: flex; gap: 8px; align-items: flex-start; margin-top: 10px;">
+            <span style="font-size: 1rem;">💡</span>
+            <span><strong>Sinkronisasi Aman & Otomatis:</strong> Mengubah nama kelas akan secara otomatis memperbarui label tab di menu SPP, header kartu kelas, dan data seluruh santri yang terdaftar di kelas ini tanpa menghilangkan riwayat pembayaran SPP mereka.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-edit-class')">Batal</button>
+          <button type="button" class="btn btn-primary" onclick="app.submitEditClass(event)">💾 Simpan Perubahan Kelas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Modal Tambah / Ubah Santri -->
   <div class="modal-overlay" id="modal-student">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>Tambah Data Santri Baru</h3>
+        <h3 id="modal-student-title">Tambah Data Santri Baru</h3>
         <button class="btn-close-modal" onclick="app.closeModal('modal-student')">&times;</button>
       </div>
-      <form id="form-student" onsubmit="app.submitStudent(event)">
+      <form id="form-student" onsubmit="app.submitStudent(event); return false;">
+        <input type="hidden" id="std-id">
         <div class="modal-body">
           <div class="form-group">
             <label>Nomor Induk Santri (NIS)</label>
-            <input type="text" class="form-control" id="std-nis" placeholder="Contoh: 202611" required>
+            <input type="text" class="form-control" id="std-nis" placeholder="Otomatis (contoh: 202611)">
           </div>
           <div class="form-group">
-            <label>Nama Lengkap Santri</label>
-            <input type="text" class="form-control" id="std-name" required>
+            <label>Nama Lengkap Santri <span style="color: var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="std-name" placeholder="Masukkan nama santri...">
           </div>
           <div class="form-group">
-            <label>Kelas / Jilid</label>
+            <label>Kelas / Jilid RQ Ummul Qosim</label>
             <select class="form-control" id="std-class">
-              <option value="Jilid 1">Jilid 1</option>
-              <option value="Jilid 2">Jilid 2</option>
-              <option value="Jilid 3">Jilid 3</option>
-              <option value="Jilid 4">Jilid 4</option>
-              <option value="Jilid 5">Jilid 5</option>
-              <option value="Jilid 6">Jilid 6</option>
-              <option value="Al-Qur'an Dasar">Al-Qur'an Dasar</option>
-              <option value="Tahfidz Juz 30">Tahfidz Juz 30</option>
+              <!-- Populated dynamically -->
             </select>
           </div>
           <div class="form-group">
             <label>Nama Orang Tua / Wali</label>
-            <input type="text" class="form-control" id="std-parent" required>
+            <input type="text" class="form-control" id="std-parent" placeholder="Contoh: Bpk. Bambang Suryo">
           </div>
           <div class="form-group">
-            <label>No. WhatsApp Wali (Contoh: 628123456789)</label>
-            <input type="text" class="form-control" id="std-phone" required>
+            <label>No. WhatsApp Wali (Bisa 08... atau 628...)</label>
+            <input type="text" class="form-control" id="std-phone" placeholder="Contoh: 08123456789">
           </div>
           <div class="form-group">
             <label>Tarif SPP Bulanan (Rp)</label>
-            <input type="number" class="form-control" id="std-spp" value="50000" required>
+            <input type="number" class="form-control" id="std-spp" value="50000">
           </div>
           <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" id="std-scholarship" style="width: 18px; height: 18px;">
@@ -1360,9 +1630,228 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-student')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan Data Santri</button>
+          <button type="button" id="btn-save-student" class="btn btn-primary" onclick="app.submitStudent(event)">Simpan Data Santri</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Tambah / Ubah Ustadz & Pengajar -->
+  <div class="modal-overlay" id="modal-teacher">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-teacher-title">Tambah Pengajar / Ustadz Baru</h3>
+        <button class="btn-close-modal" onclick="app.closeModal('modal-teacher')">&times;</button>
+      </div>
+      <form id="form-teacher" onsubmit="app.submitTeacher(event); return false;">
+        <input type="hidden" id="teacher-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nama Lengkap Ustadz / Ustadzah <span style="color: var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="teacher-name" placeholder="Contoh: Ustadz Ahmad Fauzi, S.Pd.I">
+          </div>
+          <div class="form-group">
+            <label>Tugas Mengajar / Kelas</label>
+            <select class="form-control" id="teacher-role">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label>No. WhatsApp Pengajar (Bisa 08... atau 628...)</label>
+            <input type="text" class="form-control" id="teacher-phone" placeholder="Contoh: 081234567890">
+          </div>
+          <div class="form-group">
+            <label>Jumlah Sesi / Pertemuan per Bulan</label>
+            <input type="number" class="form-control" id="teacher-sessions" value="16">
+          </div>
+          <div class="form-group">
+            <label>Standar Bisyarah / Honor Bulanan (Rp)</label>
+            <input type="number" class="form-control" id="teacher-salary" value="750000">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="(window.app || app).closeModal('modal-teacher')">Batal</button>
+          <button type="button" id="btn-save-teacher" class="btn btn-primary" onclick="(window.app || app).submitTeacher(event)">Simpan Data Pengajar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 8. MODAL DATABASE SPREADSHEET (EXCEL & GOOGLE SHEETS) ==================== -->
+  <div class="modal-overlay" id="modal-spreadsheet">
+    <div class="modal-box" style="max-width: 740px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">📊</span>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem;">Database Spreadsheet (Google Sheets & Excel)</h3>
+            <div style="font-size: 0.74rem; color: var(--slate-500); margin-top: 2px;">Ekspor CSV/Excel, Live Webhook Google Sheets & Impor Santri</div>
+          </div>
+        </div>
+        <button class="btn-close-modal" onclick="app.closeModal('modal-spreadsheet')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <!-- Spreadsheet Sub-nav tabs -->
+        <div class="spp-class-tabs-bar" style="margin-bottom: 16px;">
+          <button type="button" class="spp-class-tab-btn active" id="btn-sheet-tab-export" onclick="app.switchSpreadsheetTab('export')">
+            <span>📥 Ekspor ke Spreadsheet</span>
+          </button>
+          <button type="button" class="spp-class-tab-btn" id="btn-sheet-tab-sync" onclick="app.switchSpreadsheetTab('sync')">
+            <span>☁️ Integrasi Google Sheets</span>
+          </button>
+          <button type="button" class="spp-class-tab-btn" id="btn-sheet-tab-import" onclick="app.switchSpreadsheetTab('import')">
+            <span>📤 Impor Santri (CSV)</span>
+          </button>
+        </div>
+
+        <!-- Section 1: Ekspor Spreadsheet -->
+        <div id="sheet-section-export">
+          <div style="background: var(--primary-50); border: 1px solid var(--primary-200); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+            <div style="font-weight: 700; color: var(--primary-900); font-size: 0.85rem; margin-bottom: 4px;">⚡ Ekspor Cepat ke Spreadsheet</div>
+            <div style="font-size: 0.75rem; color: var(--slate-600);">File format CSV (UTF-8 BOM) yang kompatibel 100% langsung dibuka di Microsoft Excel, Google Spreadsheet, WPS Office, maupun LibreOffice Calc.</div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 16px;">
+            <div style="background: var(--slate-50); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-weight: 700; color: var(--slate-800); font-size: 0.86rem; display: flex; align-items: center; gap: 6px;">
+                  <span>👥</span> Data Santri 4 Kelas
+                </div>
+                <div style="font-size: 0.72rem; color: var(--slate-500); margin: 6px 0 12px 0;">Seluruh identitas santri: NIS, nama, kelas, nama wali, WhatsApp, tarif SPP, dan status beasiswa.</div>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.exportStudentsCsv()" style="width: 100%;">
+                📥 Unduh Sheet Santri (.csv)
+              </button>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-weight: 700; color: var(--slate-800); font-size: 0.86rem; display: flex; align-items: center; gap: 6px;">
+                  <span>🧾</span> Rekap Pembayaran SPP
+                </div>
+                <div style="font-size: 0.72rem; color: var(--slate-500); margin: 6px 0 12px 0;">Daftar lengkap status pelunasan SPP per santri, bulan tagihan, tanggal bayar, metode & nomor kwitansi.</div>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.exportSppRecordsCsv()" style="width: 100%;">
+                📥 Unduh Sheet SPP (.csv)
+              </button>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-weight: 700; color: var(--slate-800); font-size: 0.86rem; display: flex; align-items: center; gap: 6px;">
+                  <span>💰</span> Buku Kas & Transaksi
+                </div>
+                <div style="font-size: 0.72rem; color: var(--slate-500); margin: 6px 0 12px 0;">Seluruh mutasi kas operasional, tabungan santri, infaq sedekah, dan dana pembangunan.</div>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.exportCashflowCsv()" style="width: 100%;">
+                📥 Unduh Sheet Arus Kas (.csv)
+              </button>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-weight: 700; color: var(--slate-800); font-size: 0.86rem; display: flex; align-items: center; gap: 6px;">
+                  <span>🏦</span> Buku Tabungan Santri
+                </div>
+                <div style="font-size: 0.72rem; color: var(--slate-500); margin: 6px 0 12px 0;">Rekap saldo simpanan tabungan santri dan mutasi setor / tarik perorangan.</div>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.exportSavingsCsv()" style="width: 100%;">
+                📥 Unduh Sheet Tabungan (.csv)
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" onclick="app.exportAllDatabaseJsonCsv()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span>⚡ Unduh Seluruh Database Lengkap Sekaligus (.csv)</span>
+          </button>
+        </div>
+
+        <!-- Section 2: Integrasi Google Sheets -->
+        <div id="sheet-section-sync" style="display: none;">
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+            <div style="font-weight: 700; color: #166534; font-size: 0.85rem; margin-bottom: 4px;">☁️ Sinkronisasi Langsung ke Google Spreadsheet Anda</div>
+            <div style="font-size: 0.75rem; color: #15803d;">Setiap kali data santri bertambah atau ada pembayaran SPP, data dapat langsung dikirim ke spreadsheet online Google Sheets Anda secara otomatis tanpa perlu input ulang manual.</div>
+          </div>
+
+          <div class="form-group">
+            <label>URL Web App Google Apps Script (Webhook)</label>
+            <input type="url" class="form-control" id="sheet-sync-url" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+            <small style="color: var(--slate-500); font-size: 0.72rem;">URL deployment Apps Script dari spreadsheet Google Anda. Tersimpan aman di browser.</small>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <button type="button" class="btn btn-primary" onclick="app.syncToGoogleSheets()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <span>🚀 Kirim & Sinkronkan Sekarang</span>
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="app.saveGoogleSheetsUrl()">
+              <span>💾 Simpan URL</span>
+            </button>
+          </div>
+
+          <div id="sheet-sync-status" style="font-size: 0.76rem; color: var(--slate-600); margin-bottom: 16px; padding: 8px 12px; background: var(--slate-100); border-radius: 8px;">
+            Status: Belum ada URL sinkronisasi tersimpan.
+          </div>
+
+          <!-- Code Box Google Apps Script -->
+          <div style="background: #0f172a; color: #f8fafc; border-radius: 12px; padding: 14px; font-size: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; color: #38bdf8;">📋 Kode Google Apps Script (Tinggal Salin ke Google Sheet):</span>
+              <button type="button" class="btn btn-sm" onclick="app.copyGoogleScriptCode()" style="background: rgba(255,255,255,0.15); color: #fff; padding: 3px 8px; font-size: 0.7rem;">
+                Salin Kode
+              </button>
+            </div>
+            <pre style="margin: 0; max-height: 140px; overflow-y: auto; font-family: monospace; font-size: 0.7rem; color: #cbd5e1; white-space: pre-wrap;" id="google-apps-script-code">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
+    // 1. Sheet Santri
+    var sheetSantri = ss.getSheetByName("Data Santri") || ss.insertSheet("Data Santri");
+    sheetSantri.clear();
+    sheetSantri.appendRow(["ID", "NIS", "Nama Santri", "Kelas", "Wali", "No WA", "Tarif SPP", "Beasiswa"]);
+    data.students.forEach(function(s) {
+      sheetSantri.appendRow([s.id, s.nis, s.name, s.class, s.parent, s.phone, s.sppAmount, s.isScholarship ? "Ya" : "Tidak"]);
+    });
+    
+    // 2. Sheet SPP
+    var sheetSpp = ss.getSheetByName("Rekap SPP") || ss.insertSheet("Rekap SPP");
+    sheetSpp.clear();
+    sheetSpp.appendRow(["ID", "Santri ID", "Bulan", "Nominal", "Tgl Bayar", "Status", "Metode", "No Kwitansi"]);
+    data.sppRecords.forEach(function(r) {
+      sheetSpp.appendRow([r.id, r.studentId, r.month, r.amount, r.paidDate, r.status, r.method, r.receiptNo]);
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({status: "success", message: "Sinkronisasi berhasil!"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+          </div>
+        </div>
+
+        <!-- Section 3: Impor Massal CSV -->
+        <div id="sheet-section-import" style="display: none;">
+          <div style="background: var(--slate-50); border: 1px dashed var(--primary-500); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 16px;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">📂</div>
+            <div style="font-weight: 700; color: var(--slate-800); font-size: 0.9rem;">Unggah File CSV Santri</div>
+            <div style="font-size: 0.74rem; color: var(--slate-500); margin: 4px 0 14px 0;">Impor banyak santri sekaligus dari Microsoft Excel atau Google Spreadsheet.</div>
+            <input type="file" id="sheet-import-file" accept=".csv" style="display: none;" onchange="app.handleImportCsv(event)">
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('sheet-import-file').click()">
+              Pilih File CSV...
+            </button>
+            <div style="margin-top: 10px;">
+              <button type="button" class="btn btn-link btn-sm" onclick="app.downloadCsvTemplate()" style="font-size: 0.72rem; color: var(--primary-600); text-decoration: underline;">
+                📥 Unduh Template Contoh CSV Santri
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-spreadsheet')">Tutup</button>
+      </div>
     </div>
   </div>
 
@@ -1468,19 +1957,63 @@
             </div>
           </div>
           <div class="wa-chat-canvas">
-            <div class="wa-chat-bubble" id="wa-preview-bubble-text">
-              Pesan kuitansi atau pengingat...
+            <div class="wa-chat-bubble" id="wa-preview-bubble">
+              <!-- Kwitansi Image Card (Tampil jika jenis pesan adalah bukti kwitansi) -->
+              <div class="wa-receipt-img-container" id="wa-receipt-img-box" style="display: none;">
+                <div class="wa-receipt-badge-overlay">
+                  <span>📸</span>
+                  <span>Kwitansi Gambar Digital HD</span>
+                </div>
+                <img id="wa-receipt-preview-image" class="wa-receipt-img" alt="Kwitansi SPP" onclick="app.viewFullReceiptImage()" title="Klik untuk perbesar kwitansi">
+              </div>
+
+              <!-- Message text -->
+              <div id="wa-preview-bubble-text">
+                Pesan kuitansi atau pengingat...
+              </div>
               <div class="wa-bubble-time" id="wa-preview-time">12:00 ✓✓</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="modal-footer" style="background: #f0f2f5;">
-        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-wa-preview')">Tutup</button>
-        <button type="button" class="btn btn-secondary" id="btn-wa-copy" onclick="app.copyWaPreviewText()">📋 Salin Teks</button>
-        <a href="#" target="_blank" class="btn btn-whatsapp" id="btn-wa-launch-direct">
-          🚀 Buka WhatsApp Langsung
-        </a>
+      <div class="modal-footer" style="background: #f0f2f5; flex-direction: column; gap: 10px;">
+        <!-- Action Grid untuk Pengiriman Gambar Kwitansi -->
+        <div class="wa-action-grid" id="wa-receipt-actions" style="display: none;">
+          <button type="button" class="btn btn-share-mobile" id="btn-wa-share-mobile" onclick="app.shareReceiptImageMobile()">
+            📲 Kirim Gambar ke WA (HP)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-wa-copy-image" onclick="app.copyReceiptImageToClipboard()">
+            📋 Salin Gambar (Ctrl+V)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-wa-download-image" onclick="app.downloadReceiptImage()">
+            ⬇️ Unduh Foto (PNG)
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 8px; width: 100%; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-wa-preview')">Tutup</button>
+          <button type="button" class="btn btn-secondary" id="btn-wa-copy" onclick="app.copyWaPreviewText()">📋 Salin Teks</button>
+          <a href="#" target="_blank" class="btn btn-whatsapp" id="btn-wa-launch-direct">
+            🚀 Buka WhatsApp Langsung
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Pratinjau Gambar Penuh -->
+  <div class="modal-overlay" id="modal-image-viewer">
+    <div class="modal-box" style="max-width: 600px; text-align: center;">
+      <div class="modal-header">
+        <h3 id="image-viewer-title">Pratinjau Gambar</h3>
+        <button class="btn-close-modal" onclick="app.closeModal('modal-image-viewer')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 16px;">
+        <img id="image-viewer-src" style="max-width: 100%; max-height: 70vh; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" alt="Viewer">
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 10px;">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-image-viewer')">Tutup</button>
+        <button type="button" class="btn btn-primary" id="image-viewer-download-btn">⬇️ Unduh Gambar</button>
       </div>
     </div>
   </div>
@@ -1492,7 +2025,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/data.js?v=2.6"></script>
+  <script src="js/app.js?v=2.6"></script>
 </body>
 </html>
