@@ -444,6 +444,11 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>
               </button>
 
+              <!-- Tombol Link Formulir Online Wali Santri -->
+              <button type="button" class="btn btn-secondary btn-icon-only" onclick="app.openStudentLinksModal()" title="Bagikan Tautan Formulir Mandiri ke Wali Santri">
+                <span style="font-size: 1.05rem;">🔗</span>
+              </button>
+
               <!-- View Switcher -->
               <div class="view-switcher-group">
                 <button type="button" class="view-btn btn-icon-only" id="btn-view-cards" onclick="app.setSppView('cards')" title="Mode Visual Kartu">
@@ -930,9 +935,14 @@
                   </h3>
                   <div class="card-subtitle">Pengelolaan identitas santri, penempatan kelas, tarif SPP & status beasiswa yatim/dhuafa</div>
                 </div>
-                <button class="btn btn-primary btn-sm btn-icon-only" id="btn-master-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" title="Tambah Santri Baru">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </button>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.openStudentLinksModal()" style="display: inline-flex; align-items: center; gap: 6px;" title="Generator Link Formulir Online 36 Santri">
+                    <span>🔗</span> <span>Link Form 36 Santri</span>
+                  </button>
+                  <button class="btn btn-primary btn-sm btn-icon-only" id="btn-master-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" title="Tambah Santri Baru">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                </div>
               </div>
 
               <div class="table-responsive">
@@ -1586,8 +1596,12 @@
             <input type="text" class="form-control" id="std-nis" placeholder="Otomatis (contoh: 202611)">
           </div>
           <div class="form-group">
-            <label>Nama Lengkap Santri <span style="color: var(--danger);">*</span></label>
-            <input type="text" class="form-control" id="std-name" placeholder="Masukkan nama santri...">
+            <label>Nama Santri (Panggilan di TPA) <span style="color: var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="std-name" placeholder="Nama panggilan (contoh: Reyhan)">
+          </div>
+          <div class="form-group">
+            <label>Nama Lengkap Santri (Sesuai Akta / KK)</label>
+            <input type="text" class="form-control" id="std-fullname" placeholder="Contoh: Muhammad Reyhan Al-Farisi">
           </div>
           <div class="form-group">
             <label>Kelas / Jilid RQ Ummul Qosim</label>
@@ -1998,6 +2012,132 @@
       <div class="modal-footer" style="justify-content: center; gap: 10px;">
         <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-image-viewer')">Tutup</button>
         <button type="button" class="btn btn-primary" id="image-viewer-download-btn">⬇️ Unduh Gambar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Generator Link Formulir Online 36 Santri -->
+  <div class="modal-overlay" id="modal-student-links">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.4rem;">🔗</span>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem;">Formulir & Link Wali Online (36 Santri)</h3>
+            <div style="font-size: 0.74rem; color: var(--slate-500); margin-top: 2px;">Cukup 3 data: Nama Lengkap Anak, Nama Orang Tua, & No. Telepon</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="app.closeModal('modal-student-links')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px;">
+        <!-- Tab Navigasi Modal -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 1.5px solid var(--border-color); padding-bottom: 8px;">
+          <button type="button" class="btn btn-sm active" id="btn-tab-link-gen" onclick="app.switchStudentLinkTab('links')" style="font-weight: 700;">
+            🔗 Bagikan Tautan ke Orang Tua
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" id="btn-tab-link-quick" onclick="app.switchStudentLinkTab('quick')" style="font-weight: 700;">
+            ⚡ Input Cepat Data Wali (Admin)
+          </button>
+        </div>
+
+        <!-- Section 1: Daftar Tautan -->
+        <div id="section-student-links">
+          <div style="background: var(--primary-50); border: 1px solid var(--primary-200); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;">
+            <div style="font-weight: 700; color: var(--primary-900); font-size: 0.84rem; margin-bottom: 2px;">💡 Cara Kerja Tautan Simpel:</div>
+            <div style="font-size: 0.76rem; color: var(--slate-600); line-height: 1.5;">
+              Orang tua hanya perlu membuka tautan ananda, lalu mengisi <strong>Nama Lengkap Anak</strong>, <strong>Nama Orang Tua</strong>, dan <strong>Nomor Telepon</strong>. Saat dikirim via WA, link sinkronisasi otomatis akan langsung meng-update data santri di aplikasi ini tanpa Anda ketik ulang.
+            </div>
+          </div>
+
+          <!-- Filter Kelas & Tombol Aksi Cepat -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <select class="select-app" id="student-links-filter-class" onchange="app.renderStudentLinksList(this.value)">
+                <option value="all">Semua 4 Kelas</option>
+                <option value="K1">Kelas Dasar Ikhwan (10)</option>
+                <option value="K2">Kelas Menengah Akhowat (10)</option>
+                <option value="K3">Kelas Menengah Ikhwan (6)</option>
+                <option value="K4">Kelas Dasar Gabungan (10)</option>
+              </select>
+              <span class="badge badge-neutral" id="student-links-count-badge">36 Santri</span>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="app.copyAllStudentFormLinks(document.getElementById('student-links-filter-class')?.value || 'all')" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>📋</span> <span>Salin Semua Link (Format WA)</span>
+            </button>
+          </div>
+
+          <!-- Daftar Santri & Tautan -->
+          <div id="student-links-list-body" style="max-height: 340px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 12px; background: #fff;">
+            <!-- Populated by app.renderStudentLinksList() -->
+          </div>
+        </div>
+
+        <!-- Section 2: Input Cepat Langsung di Aplikasi -->
+        <div id="section-student-quick-input" style="display: none;">
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 16px;">
+            <div style="font-weight: 800; font-size: 0.92rem; color: var(--slate-800); margin-bottom: 4px;">
+              ⚡ Input Cepat Data Wali Santri
+            </div>
+            <div style="font-size: 0.76rem; color: var(--slate-500); margin-bottom: 14px;">
+              Gunakan form ini jika orang tua mengirim chat WhatsApp biasa dan Anda ingin langsung memasukkannya ke apk.
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="font-size: 0.8rem; font-weight: 700;">Pilih Nama Santri (Panggilan di Apk):</label>
+              <select class="form-control" id="quick-input-student-id" onchange="app.onQuickInputStudentSelect(this.value)">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="font-size: 0.8rem; font-weight: 700;">1. Nama Lengkap Anak:</label>
+              <input type="text" class="form-control" id="quick-input-child-fullname" placeholder="Contoh: Muhammad Reyhan Al-Farisi">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="font-size: 0.8rem; font-weight: 700;">2. Nama Orang Tua / Wali:</label>
+              <input type="text" class="form-control" id="quick-input-parent-name" placeholder="Contoh: Ahmad Fauzi / Ibu Fatimah">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="font-size: 0.8rem; font-weight: 700;">3. Nomor Telepon / WhatsApp:</label>
+              <input type="tel" class="form-control" id="quick-input-parent-phone" placeholder="Contoh: 081234567890">
+            </div>
+
+            <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="app.saveQuickInputStudent()">
+              💾 Simpan Langsung ke Aplikasi
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-student-links')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Sukses Update Otomatis Santri -->
+  <div class="modal-overlay" id="modal-auto-update-success">
+    <div class="modal-box" style="max-width: 500px; text-align: center;">
+      <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: #ecfdf5; color: #16a34a; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+          ✓
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px;">
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #15803d; margin-bottom: 4px;">Update Otomatis Berhasil!</h3>
+        <p style="font-size: 0.82rem; color: var(--slate-600); margin-bottom: 12px;">Data orang tua / wali santri telah otomatis diperbarui dari formulir:</p>
+        
+        <div id="auto-update-info-text">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" class="btn btn-primary" onclick="app.closeModal('modal-auto-update-success')" style="min-width: 140px;">
+          Alhamdulillah, Tutup
+        </button>
       </div>
     </div>
   </div>

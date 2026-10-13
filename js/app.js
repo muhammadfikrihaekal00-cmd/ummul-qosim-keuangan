@@ -87,6 +87,7 @@ class SikadApp {
       this.initCommandPalette();
       this.loadTPAInfoToUI();
       this.renderAll();
+      this.checkUrlAutoUpdate();
     } catch (err) {
       console.error("Initialization error:", err);
     }
@@ -1029,11 +1030,21 @@ class SikadApp {
 
               if (s.isScholarship) {
                 statusTag = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
-                footerActions = `<span style="font-size: 0.74rem; font-weight: 700; color: var(--gold-600); background: var(--gold-50); padding: 5px 12px; border-radius: var(--radius-full);">Bebas Syahriah</span>`;
+                footerActions = `
+                  <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end; align-items: center;">
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                      🔗
+                    </button>
+                    <span style="font-size: 0.74rem; font-weight: 700; color: var(--gold-600); background: var(--gold-50); padding: 5px 12px; border-radius: var(--radius-full);">Bebas Syahriah</span>
+                  </div>
+                `;
               } else if (isPaid) {
                 statusTag = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                      🔗
+                    </button>
                     <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
                       🧾
                     </button>
@@ -1049,6 +1060,9 @@ class SikadApp {
                 statusTag = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                      🔗
+                    </button>
                     <button type="button" class="btn btn-primary btn-sm btn-icon-only" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')" title="Catat Pembayaran SPP">
                       💳
                     </button>
@@ -1110,7 +1124,7 @@ class SikadApp {
                   <th>Wali & No. WhatsApp</th>
                   <th style="width: 120px;">Tarif SPP</th>
                   <th style="width: 165px;">Status (${this.formatMonthId(selectedMonth)})</th>
-                  <th style="text-align: right; width: 130px;">Aksi</th>
+                  <th style="text-align: right; width: 175px;">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -1122,11 +1136,21 @@ class SikadApp {
 
                   if (s.isScholarship) {
                     badgeHtml = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
-                    actionButtons = `<span style="font-size: 0.75rem; color: var(--slate-400); font-weight: 600;">Bebas Biaya</span>`;
+                    actionButtons = `
+                      <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                          🔗
+                        </button>
+                        <span style="font-size: 0.75rem; color: var(--slate-400); font-weight: 600;">Bebas Biaya</span>
+                      </div>
+                    `;
                   } else if (isPaid) {
                     badgeHtml = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
                     actionButtons = `
                       <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                          🔗
+                        </button>
                         <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
                           🧾
                         </button>
@@ -1142,6 +1166,9 @@ class SikadApp {
                     badgeHtml = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
                     actionButtons = `
                       <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                          🔗
+                        </button>
                         <button type="button" class="btn btn-primary btn-sm btn-icon-only" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')" title="Catat Pembayaran SPP">
                           💳
                         </button>
@@ -2378,7 +2405,8 @@ Bendahara *${tpaInfo.nama}*
         <tr>
           <td style="font-weight: 700; color: var(--slate-500);">${s.nis}</td>
           <td>
-            <div style="font-weight: 700; color: var(--slate-900);">${s.name}</div>
+            <div style="font-weight: 700; color: var(--slate-900); font-size: 0.92rem;">${s.name}</div>
+            ${s.fullName && s.fullName !== s.name ? `<div style="font-size: 0.72rem; color: var(--primary-700); font-weight: 600; margin-top: 2px;">📌 Lengkap: ${s.fullName}</div>` : ''}
             ${s.isScholarship ? '<span class="badge badge-info" style="font-size: 0.65rem;">Beasiswa Yatim</span>' : ''}
           </td>
           <td><span class="badge badge-neutral">${s.class}</span></td>
@@ -2389,6 +2417,9 @@ Bendahara *${tpaInfo.nama}*
           <td style="font-weight: 700;">${this.formatRp(s.sppAmount)}</td>
           <td style="text-align: right; white-space: nowrap;">
             <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
+              <button class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
+                🔗
+              </button>
               <button class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openStudentModal('${s.id}', true)" title="Ubah Data Santri">
                 ✏️
               </button>
@@ -2548,6 +2579,7 @@ Bendahara *${tpaInfo.nama}*
     const saveBtn = document.getElementById('btn-save-student');
     const nisInput = document.getElementById('std-nis');
     const nameInput = document.getElementById('std-name');
+    const fullNameInput = document.getElementById('std-fullname');
     const classSelect = document.getElementById('std-class');
     const parentInput = document.getElementById('std-parent');
     const phoneInput = document.getElementById('std-phone');
@@ -2563,6 +2595,7 @@ Bendahara *${tpaInfo.nama}*
       if (saveBtn) saveBtn.innerText = '💾 Simpan Perubahan Santri';
       if (nisInput) nisInput.value = studentToEdit.nis || '';
       if (nameInput) nameInput.value = studentToEdit.name || '';
+      if (fullNameInput) fullNameInput.value = studentToEdit.fullName || '';
       if (parentInput) parentInput.value = studentToEdit.parent || '';
       if (phoneInput) phoneInput.value = studentToEdit.phone || '';
       if (sppInput) sppInput.value = studentToEdit.sppAmount !== undefined ? studentToEdit.sppAmount : 50000;
@@ -2587,6 +2620,7 @@ Bendahara *${tpaInfo.nama}*
 
       if (nisInput) nisInput.value = `${curYear}${String(maxNisNum + 1).padStart(2, '0')}`;
       if (nameInput) nameInput.value = '';
+      if (fullNameInput) fullNameInput.value = '';
       if (parentInput) parentInput.value = '';
       if (phoneInput) phoneInput.value = '628';
       if (sppInput) sppInput.value = '50000';
@@ -2621,6 +2655,7 @@ Bendahara *${tpaInfo.nama}*
     const id = document.getElementById('std-id')?.value.trim();
     const nis = document.getElementById('std-nis')?.value.trim();
     const name = document.getElementById('std-name')?.value.trim();
+    const fullName = document.getElementById('std-fullname')?.value.trim() || '';
     const stdClass = document.getElementById('std-class')?.value;
     const parent = document.getElementById('std-parent')?.value.trim();
     let phone = document.getElementById('std-phone')?.value.trim() || '';
@@ -2650,6 +2685,7 @@ Bendahara *${tpaInfo.nama}*
         window.db.updateStudent(id, {
           nis: nis || undefined,
           name: name,
+          fullName: fullName || undefined,
           classId: clsKey,
           class: stdClass || (this.rqClasses[0] ? this.rqClasses[0].name : 'Kelas 1'),
           parent: parent || ('Wali ' + name),
@@ -2666,6 +2702,7 @@ Bendahara *${tpaInfo.nama}*
         const added = window.db.addStudent({
           nis: nis || undefined,
           name: name,
+          fullName: fullName || undefined,
           classId: clsKey,
           class: stdClass || (this.rqClasses[0] ? this.rqClasses[0].name : 'Kelas 1'),
           parent: parent || ('Wali ' + name),
@@ -3699,6 +3736,319 @@ Bendahara *${tpaInfo.nama}*
     };
     reader.readAsText(file, 'UTF-8');
   }
+
+  // =========================================================================
+  // FITUR AUTO-UPDATE DATA SANTRI DARI LINK FORMULIR WALI
+  // =========================================================================
+  checkUrlAutoUpdate() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const studentId = params.get('update_santri') || params.get('sync_santri') || params.get('id');
+      const newParent = params.get('parent') || params.get('wali');
+      const newPhone = params.get('phone') || params.get('hp');
+      const newFullName = params.get('fullName') || params.get('full_name') || params.get('nama_lengkap') || params.get('namaLengkap');
+
+      if (studentId && (newParent || newPhone || newFullName)) {
+        const student = window.db.getStudents().find(s => s.id === studentId || s.nis === studentId);
+        if (student) {
+          const oldParent = student.parent;
+          const oldPhone = student.phone;
+          const cleanParent = newParent ? decodeURIComponent(newParent).trim() : student.parent;
+          const cleanPhone = newPhone ? decodeURIComponent(newPhone).trim() : student.phone;
+          const cleanFullName = newFullName ? decodeURIComponent(newFullName).trim() : (student.fullName || '');
+
+          const updatePayload = {
+            parent: cleanParent,
+            phone: cleanPhone
+          };
+          if (cleanFullName) {
+            updatePayload.fullName = cleanFullName;
+          }
+
+          window.db.updateStudent(student.id, updatePayload);
+
+          // Segarkan tampilan antarmuka
+          this.renderAll();
+
+          // Tampilkan notifikasi toast & dialog sukses
+          this.showToast(`🎉 Data santri ${student.name} berhasil diperbarui otomatis.`);
+          this.showAutoUpdateSuccessModal(student, cleanParent, cleanPhone, oldParent, oldPhone, cleanFullName);
+
+          // Bersihkan URL query parameter agar rapi
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+      }
+    } catch (e) {
+      console.error("Gagal auto-update data santri dari URL:", e);
+    }
+  }
+
+  showAutoUpdateSuccessModal(student, newParent, newPhone, oldParent, oldPhone, newFullName = '') {
+    const modal = document.getElementById('modal-auto-update-success');
+    if (!modal) return;
+    const infoEl = document.getElementById('auto-update-info-text');
+    if (infoEl) {
+      infoEl.innerHTML = `
+        <div style="background: var(--success-bg); border: 1.5px solid #86efac; border-radius: 14px; padding: 16px; margin: 16px 0; text-align: left;">
+          <div style="font-weight: 800; font-size: 1.05rem; color: #166534; margin-bottom: 8px;">
+            👦 ${student.name} <span style="font-size: 0.8rem; font-weight: 600; color: #047857;">(${student.class})</span>
+          </div>
+          <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+            ${newFullName ? `
+            <tr>
+              <td style="color: var(--slate-500); width: 130px; padding: 4px 0;">Nama Lengkap Anak:</td>
+              <td style="font-weight: 700; color: #1e3a8a; padding: 4px 0;">${newFullName}</td>
+            </tr>` : ''}
+            <tr>
+              <td style="color: var(--slate-500); width: 130px; padding: 4px 0;">Nama Orang Tua:</td>
+              <td style="font-weight: 700; color: #0f172a; padding: 4px 0;">${newParent}</td>
+            </tr>
+            <tr>
+              <td style="color: var(--slate-500); padding: 4px 0;">No. WhatsApp:</td>
+              <td style="font-weight: 700; color: #0f172a; font-family: monospace; padding: 4px 0;">${newPhone}</td>
+            </tr>
+          </table>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--slate-500); line-height: 1.5; margin: 0;">
+          Data ini telah otomatis tersimpan ke dalam database aplikasi Anda tanpa perlu input manual.
+        </p>
+      `;
+    }
+    this.openModal('modal-auto-update-success');
+  }
+
+  // =========================================================================
+  // GENERATOR LINK FORMULIR WALI UNTUK 36 SANTRI
+  // =========================================================================
+  getStudentFormBaseUrl() {
+    let host = window.location.origin;
+    if (host.startsWith('file:') || host.includes('localhost') || host.includes('127.0.0.1')) {
+      return 'https://ummul-qosim-keuangan.vercel.app';
+    }
+    return host;
+  }
+
+  getStudentFormUrl(studentId) {
+    const baseUrl = this.getStudentFormBaseUrl();
+    return `${baseUrl}/isi-data.html?id=${encodeURIComponent(studentId)}`;
+  }
+
+  openStudentLinksModal(selectedClass = 'all') {
+    const modal = document.getElementById('modal-student-links');
+    if (!modal) return;
+
+    this.switchStudentLinkTab('links');
+
+    const filterSelect = document.getElementById('student-links-filter-class');
+    if (filterSelect) filterSelect.value = selectedClass;
+
+    this.renderStudentLinksList(selectedClass);
+    this.populateQuickInputStudentDropdown();
+    this.openModal('modal-student-links');
+  }
+
+  switchStudentLinkTab(tab) {
+    const btnLinks = document.getElementById('btn-tab-link-gen');
+    const btnQuick = document.getElementById('btn-tab-link-quick');
+    const secLinks = document.getElementById('section-student-links');
+    const secQuick = document.getElementById('section-student-quick-input');
+
+    if (tab === 'links') {
+      if (btnLinks) { btnLinks.classList.add('active'); btnLinks.classList.remove('btn-secondary'); }
+      if (btnQuick) { btnQuick.classList.remove('active'); btnQuick.classList.add('btn-secondary'); }
+      if (secLinks) secLinks.style.display = 'block';
+      if (secQuick) secQuick.style.display = 'none';
+    } else {
+      if (btnLinks) { btnLinks.classList.remove('active'); btnLinks.classList.add('btn-secondary'); }
+      if (btnQuick) { btnQuick.classList.add('active'); btnQuick.classList.remove('btn-secondary'); }
+      if (secLinks) secLinks.style.display = 'none';
+      if (secQuick) secQuick.style.display = 'block';
+    }
+  }
+
+  populateQuickInputStudentDropdown() {
+    const select = document.getElementById('quick-input-student-id');
+    if (!select) return;
+    const students = window.db.getStudents();
+    select.innerHTML = '<option value="">-- Silakan Pilih Santri --</option>' +
+      students.map(s => `<option value="${s.id}">${s.name} (${s.class})</option>`).join('');
+  }
+
+  onQuickInputStudentSelect(studentId) {
+    if (!studentId) return;
+    const student = window.db.getStudent(studentId);
+    if (!student) return;
+
+    const fnInput = document.getElementById('quick-input-child-fullname');
+    const pInput = document.getElementById('quick-input-parent-name');
+    const phInput = document.getElementById('quick-input-parent-phone');
+
+    if (fnInput) fnInput.value = student.fullName || '';
+    if (pInput) pInput.value = (student.parent && !student.parent.startsWith('Wali ')) ? student.parent : '';
+    if (phInput) phInput.value = student.phone || '';
+  }
+
+  saveQuickInputStudent() {
+    const select = document.getElementById('quick-input-student-id');
+    const studentId = select ? select.value : '';
+    if (!studentId) {
+      alert('Silakan pilih nama santri terlebih dahulu.');
+      return;
+    }
+
+    const student = window.db.getStudent(studentId);
+    if (!student) return;
+
+    const fullName = document.getElementById('quick-input-child-fullname')?.value.trim();
+    const parent = document.getElementById('quick-input-parent-name')?.value.trim();
+    let phone = document.getElementById('quick-input-parent-phone')?.value.trim() || '';
+
+    if (!fullName) {
+      alert('Mohon isi nama lengkap anak.');
+      document.getElementById('quick-input-child-fullname')?.focus();
+      return;
+    }
+    if (!parent) {
+      alert('Mohon isi nama lengkap orang tua / wali.');
+      document.getElementById('quick-input-parent-name')?.focus();
+      return;
+    }
+
+    let cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
+    if (!cleanPhone.startsWith('62') && cleanPhone) cleanPhone = '62' + cleanPhone;
+
+    window.db.updateStudent(student.id, {
+      fullName: fullName,
+      parent: parent,
+      phone: cleanPhone || student.phone
+    });
+
+    this.renderAll();
+    this.renderStudentLinksList();
+    this.showToast(`✅ Data santri ${student.name} (${fullName}) berhasil disimpan ke apk!`);
+    this.closeModal('modal-student-links');
+  }
+
+  renderStudentLinksList(classFilter = 'all') {
+    const container = document.getElementById('student-links-list-body');
+    if (!container) return;
+
+    const students = window.db.getStudents();
+    const filtered = classFilter === 'all' 
+      ? students 
+      : students.filter(s => this.normalizeClassKey(s.class) === classFilter);
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align: center; padding: 24px; color: var(--slate-400);">Tidak ada santri di kelas ini.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(s => {
+      const link = this.getStudentFormUrl(s.id);
+      return `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--slate-100); gap: 10px; flex-wrap: wrap;">
+          <div style="min-width: 170px; flex: 1;">
+            <div style="font-weight: 700; color: var(--slate-900); font-size: 0.88rem;">${s.name}</div>
+            ${s.fullName && s.fullName !== s.name ? `<div style="font-size: 0.72rem; color: var(--primary-700); font-weight: 600;">${s.fullName}</div>` : ''}
+            <div style="font-size: 0.72rem; color: var(--slate-500);">${s.class} • NIS: ${s.nis}</div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Tautan Khusus ${s.name}">
+              📋 Salin Link
+            </button>
+            <button type="button" class="btn btn-whatsapp btn-sm" onclick="app.openStudentFormWa('${s.id}')" title="Kirim Tautan ke WhatsApp">
+              📲 Kirim WA
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const countBadge = document.getElementById('student-links-count-badge');
+    if (countBadge) countBadge.innerText = `${filtered.length} Santri`;
+  }
+
+  copyStudentFormLink(studentId) {
+    const student = window.db.getStudents().find(s => s.id === studentId);
+    if (!student) return;
+
+    const link = this.getStudentFormUrl(student.id);
+    const textToCopy = `Assalamu'alaikum Warahmatullahi Wabarakatuh.\nMohon kesediaan Ayah/Bunda dari ananda *${student.name}* (${student.class}) untuk melengkapi nama lengkap ananda, nama orang tua, dan nomor telepon melalui formulir ringkas RQ Ummul Qosim berikut:\n\n👉 ${link}\n\n(Hanya perlu mengisi Nama Lengkap Anak, Nama Orang Tua, & No. HP)\nJazaakumullahu khairan katsiran.`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        this.showToast(`✅ Link formulir ${student.name} berhasil disalin!`);
+      }).catch(() => {
+        this.fallbackCopyText(textToCopy);
+        this.showToast(`✅ Link formulir ${student.name} berhasil disalin!`);
+      });
+    } else {
+      this.fallbackCopyText(textToCopy);
+      this.showToast(`✅ Link formulir ${student.name} berhasil disalin!`);
+    }
+  }
+
+  openStudentFormWa(studentId) {
+    const student = window.db.getStudents().find(s => s.id === studentId);
+    if (!student) return;
+
+    const link = this.getStudentFormUrl(student.id);
+    const msg = `Assalamu'alaikum Warahmatullahi Wabarakatuh.\nMohon kesediaan Ayah/Bunda dari ananda *${student.name}* (${student.class}) untuk melengkapi nama lengkap ananda, nama orang tua, dan nomor telepon melalui formulir ringkas RQ Ummul Qosim berikut:\n\n👉 ${link}\n\n(Hanya perlu mengisi Nama Lengkap Anak, Nama Orang Tua, & No. HP)\nJazaakumullahu khairan katsiran.`;
+
+    let targetPhone = student.phone ? student.phone.replace(/[^\d]/g, '') : '';
+    if (targetPhone.startsWith('0')) targetPhone = '62' + targetPhone.slice(1);
+
+    const waUrl = targetPhone 
+      ? `https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`
+      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+    window.open(waUrl, '_blank');
+  }
+
+  copyAllStudentFormLinks(classFilter = 'all') {
+    const students = window.db.getStudents();
+    const filtered = classFilter === 'all' 
+      ? students 
+      : students.filter(s => this.normalizeClassKey(s.class) === classFilter);
+
+    let output = `DAFTAR TAUTAN FORMULIR WALI SANTRI RQ UMMUL QOSIM\n`;
+    output += `Total: ${filtered.length} Santri\n(Orang tua cukup isi: Nama Lengkap Anak, Nama Orang Tua, & No. HP)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    filtered.forEach((s, idx) => {
+      const link = this.getStudentFormUrl(s.id);
+      output += `${idx + 1}. ${s.name} (${s.class})\n   👉 ${link}\n\n`;
+    });
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(output).then(() => {
+        this.showToast(`✅ Berhasil menyalin ${filtered.length} link formulir santri!`);
+      }).catch(() => {
+        this.fallbackCopyText(output);
+        this.showToast(`✅ Berhasil menyalin ${filtered.length} link formulir santri!`);
+      });
+    } else {
+      this.fallbackCopyText(output);
+      this.showToast(`✅ Berhasil menyalin ${filtered.length} link formulir santri!`);
+    }
+  }
+
+  fallbackCopyText(text) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) {
+      console.warn("Fallback copy error:", e);
+    }
+  }
 }
 
 // Inisialisasi Aplikasi Terpadu (Aman & Siap di Semua State Dokumen)
@@ -3796,5 +4146,21 @@ window.submitEditClass = function(e) {
 window.setEditClassIcon = function(emoji) {
   const inst = window.app || initSikadApp();
   if (inst) inst.setEditClassIcon(emoji);
+};
+window.openStudentLinksModal = function(classId = 'all') {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.openStudentLinksModal(classId);
+};
+window.copyStudentFormLink = function(studentId) {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.copyStudentFormLink(studentId);
+};
+window.openStudentFormWa = function(studentId) {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.openStudentFormWa(studentId);
+};
+window.copyAllStudentFormLinks = function(classFilter = 'all') {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.copyAllStudentFormLinks(classFilter);
 };
 

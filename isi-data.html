@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulir Data Santri & Wali - RQ Ummul Qosim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 16px 14px 48px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .portal-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .portal-hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #1d4ed8 100%);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.35);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .portal-hero::after {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.28) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .hero-desc {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+      margin: 0 auto;
+      max-width: 420px;
+    }
+
+    /* Kartu Santri Aktif */
+    .child-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 12px -3px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    .child-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      color: #1d4ed8;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #bfdbfe;
+      flex-shrink: 0;
+    }
+    .child-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .child-label-sub {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .child-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .child-meta {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .child-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .child-tag.class-tag {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .btn-change-student {
+      font-size: 0.74rem;
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .btn-change-student:hover {
+      background: #dbeafe;
+    }
+
+    /* Formulir Utama */
+    .portal-form-box {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 22px 18px;
+      box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.06);
+    }
+    .form-header-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field-group {
+      margin-bottom: 18px;
+    }
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .field-label span.req {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+    .field-input, .field-select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.94rem;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .field-input:focus, .field-select:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+    }
+    .field-hint {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+    .btn-submit-portal {
+      width: 100%;
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 8px 18px -4px rgba(22, 163, 74, 0.35);
+      margin-top: 10px;
+    }
+    .btn-submit-portal:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
+    /* Feedback Berhasil */
+    .success-card {
+      display: none;
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: 16px;
+      padding: 24px 18px;
+      text-align: center;
+      margin-top: 14px;
+      box-shadow: 0 8px 24px -6px rgba(22, 163, 74, 0.2);
+    }
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: #16a34a;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .success-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 6px;
+    }
+    .success-desc {
+      font-size: 0.85rem;
+      color: #15803d;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .summary-box {
+      background: #ffffff;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.74rem;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="portal-container">
+    <!-- Header Hero -->
+    <div class="portal-hero">
+      <div class="hero-badge">🕌 RQ Ummul Qosim</div>
+      <h1 class="hero-title">Pembaruan Data Santri</h1>
+      <p class="hero-desc">Mohon kesediaan Ayah/Bunda untuk melengkapi nama lengkap ananda, nama orang tua, dan nomor telepon aktif.</p>
+    </div>
+
+    <!-- Dropdown Selector (Jika ingin ganti anak atau link umum) -->
+    <div id="select-student-container" style="display: none; margin-bottom: 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 14px;">
+      <label class="field-label" for="select-student-dropdown">
+        👦 Pilih Nama Santri (Panggilan di TPA): <span class="req">*</span>
+      </label>
+      <select class="field-select" id="select-student-dropdown" onchange="onStudentSelectChanged(this.value)">
+        <!-- Populated via JS -->
+      </select>
+    </div>
+
+    <!-- Child Identity Card -->
+    <div class="child-card" id="child-display-card">
+      <div class="child-avatar" id="disp-avatar">S</div>
+      <div class="child-info">
+        <div class="child-label-sub">Santri yang Dipilih:</div>
+        <div class="child-name" id="disp-name">Memuat nama santri...</div>
+        <div class="child-meta">
+          <span class="child-tag" id="disp-nis">NIS: -</span>
+          <span class="child-tag class-tag" id="disp-class">Kelas: -</span>
+        </div>
+      </div>
+      <button type="button" class="btn-change-student" onclick="toggleStudentPicker()" id="btn-toggle-picker" title="Ganti pilihan santri">
+        🔄 Ganti
+      </button>
+    </div>
+
+    <!-- Main Form Box: Hanya 3 Input Sederhana Sesuai Permintaan -->
+    <div class="portal-form-box" id="form-container">
+      <div class="form-header-title">
+        <span>📝</span>
+        <span>Lengkapi 3 Data Singkat Berikut</span>
+      </div>
+
+      <form id="portal-form" onsubmit="handlePortalSubmit(event); return false;">
+        
+        <!-- 1. NAMA LENGKAP ANAK -->
+        <div class="field-group">
+          <label class="field-label" for="input-child-fullname">
+            1. Nama Lengkap Anak <span class="req">*</span>
+          </label>
+          <input type="text" class="field-input" id="input-child-fullname" placeholder="Contoh: Muhammad Reyhan Al-Farisi" required autocomplete="name">
+          <div class="field-hint">Nama lengkap ananda sesuai akta kelahiran / kartu keluarga.</div>
+        </div>
+
+        <!-- 2. NAMA ORANG TUA / WALI -->
+        <div class="field-group">
+          <label class="field-label" for="input-parent-name">
+            2. Nama Lengkap Orang Tua / Wali <span class="req">*</span>
+          </label>
+          <input type="text" class="field-input" id="input-parent-name" placeholder="Contoh: Ahmad Fauzi / Ibu Fatimah" required>
+          <div class="field-hint">Nama lengkap Ayah, Ibu, atau Wali yang bersangkutan.</div>
+        </div>
+
+        <!-- 3. NOMOR TELEPON / WHATSAPP -->
+        <div class="field-group">
+          <label class="field-label" for="input-parent-phone">
+            3. Nomor Telepon / WhatsApp <span class="req">*</span>
+          </label>
+          <input type="tel" class="field-input" id="input-parent-phone" placeholder="Contoh: 081234567890" required autocomplete="tel">
+          <div class="field-hint">Nomor aktif untuk informasi kegiatan TPA & kuitansi SPP.</div>
+        </div>
+
+        <!-- TOMBOL SIMPAN -->
+        <button type="submit" class="btn-submit-portal" id="btn-submit-form">
+          <span>💾</span>
+          <span>Simpan & Kirim Data ke Ustadz</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Success Feedback Card -->
+    <div class="success-card" id="success-box">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Alhamdulillah, Berhasil!</div>
+      <div class="success-desc" id="success-message">
+        Data ananda telah tersusun dan siap dikirimkan ke Ustadz Muhammad Fikri Haekal.
+      </div>
+
+      <div class="summary-box" id="success-summary">
+        <!-- Rincian data yang diinput -->
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a id="btn-reopen-wa" href="#" target="_blank" class="btn btn-whatsapp" style="width: 100%; text-decoration: none; padding: 13px; font-weight: 700; border-radius: 12px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem;">
+          <span>📲 Buka WhatsApp Sekarang</span>
+        </a>
+        <button type="button" class="btn btn-secondary" onclick="resetFormForEdit()" style="width: 100%; padding: 10px; font-size: 0.8rem; border-radius: 10px;">
+          ✏️ Edit Ulang Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">
+      Rumah Qur'an Ummul Qosim • SikadTPA<br>
+      Kompleks Perumahan Maros Regency, Blok F no. 3 • Kontak Ustadz: 0821-8948-0869
+    </div>
+  </div>
+
+  <script>
+    // 36 Santri Resmi RQ Ummul Qosim
+    const OFFICIAL_STUDENTS = [
+      { id: 'S-001', nis: '202601', name: 'Reyhan', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-002', nis: '202602', name: 'Hafizh Regency', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-003', nis: '202603', name: 'Rafa', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-004', nis: '202604', name: 'Fahri', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-005', nis: '202605', name: 'Ibad', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-006', nis: '202606', name: 'Sulaiman', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-007', nis: '202607', name: 'Fauzan', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-008', nis: '202608', name: 'Koko', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-009', nis: '202609', name: 'Rafasyah', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-010', nis: '202610', name: 'Hafizh Ramadhan', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+
+      { id: 'S-011', nis: '202611', name: 'Fadhiyah', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-012', nis: '202612', name: 'Athifah', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-013', nis: '202613', name: 'Aura', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-014', nis: '202614', name: 'Luthfia', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-015', nis: '202615', name: 'Aulia', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-016', nis: '202616', name: 'Ayla', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-017', nis: '202617', name: 'Syifa', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-018', nis: '202618', name: 'Inayah', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-019', nis: '202619', name: 'Ruby', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-020', nis: '202620', name: 'Wafirah', class: 'Kelas Menengah Akhowat', parent: '', phone: '', fullName: '' },
+
+      { id: 'S-021', nis: '202621', name: 'Aufar', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-022', nis: '202622', name: 'Marcel', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-023', nis: '202623', name: 'Ahmad', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-024', nis: '202624', name: 'Dhaffa', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-025', nis: '202625', name: 'Shaka', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-026', nis: '202626', name: 'Iffath', class: 'Kelas Menengah Ikhwan', parent: '', phone: '', fullName: '' },
+
+      { id: 'S-027', nis: '202627', name: 'Ratu', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-028', nis: '202628', name: 'Queena', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-029', nis: '202629', name: 'Keenan', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-030', nis: '202630', name: 'Indira', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-031', nis: '202631', name: 'Harith', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-032', nis: '202632', name: 'Khadijah', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-033', nis: '202633', name: 'Firas', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-034', nis: '202634', name: 'Razky', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-035', nis: '202635', name: 'Aqmar (Titi)', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' },
+      { id: 'S-036', nis: '202636', name: 'Adibah', class: 'Kelas Dasar Ikhwan & Akhowat', parent: '', phone: '', fullName: '' }
+    ];
+
+    const ADMIN_WA_PHONE = '6282189480869'; // Ustadz Muhammad Fikri Haekal
+    let currentStudent = null;
+    let studentList = OFFICIAL_STUDENTS;
+
+    // Cek apakah ada data lokal yang lebih update dari LocalStorage apk
+    function loadLocalStudentsIfAvailable() {
+      try {
+        const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.students) && parsed.students.length > 0) {
+            studentList = parsed.students;
+          }
+        }
+      } catch (e) {
+        console.warn('Menggunakan dataset santri default:', e);
+      }
+    }
+
+    function initPage() {
+      loadLocalStudentsIfAvailable();
+      populateDropdown();
+
+      const params = new URLSearchParams(window.location.search);
+      const studentId = params.get('id') || params.get('nis') || params.get('santri');
+      const paramName = params.get('nama');
+
+      if (studentId) {
+        currentStudent = studentList.find(s => s.id.toLowerCase() === studentId.toLowerCase() || s.nis === studentId);
+      } else if (paramName) {
+        currentStudent = studentList.find(s => s.name.toLowerCase() === paramName.toLowerCase().trim());
+      }
+
+      if (currentStudent) {
+        renderStudentCard(currentStudent);
+        document.getElementById('select-student-container').style.display = 'none';
+      } else {
+        // Jika link umum, buka pilihan dropdown dan pilih santri pertama
+        document.getElementById('select-student-container').style.display = 'block';
+        currentStudent = studentList[0];
+        renderStudentCard(currentStudent);
+      }
+
+      // Pre-fill jika ada parameter query
+      if (params.get('fullName') || params.get('nama_lengkap')) {
+        document.getElementById('input-child-fullname').value = params.get('fullName') || params.get('nama_lengkap');
+      }
+      if (params.get('parent') || params.get('wali')) {
+        document.getElementById('input-parent-name').value = params.get('parent') || params.get('wali');
+      }
+      if (params.get('phone') || params.get('hp')) {
+        document.getElementById('input-parent-phone').value = params.get('phone') || params.get('hp');
+      }
+    }
+
+    function populateDropdown() {
+      const selectEl = document.getElementById('select-student-dropdown');
+      if (!selectEl) return;
+      selectEl.innerHTML = studentList.map(s => {
+        return `<option value="${s.id}">${s.name} (${s.class || 'RQ Ummul Qosim'})</option>`;
+      }).join('');
+    }
+
+    function toggleStudentPicker() {
+      const container = document.getElementById('select-student-container');
+      const isHidden = container.style.display === 'none';
+      container.style.display = isHidden ? 'block' : 'none';
+      if (isHidden) {
+        document.getElementById('select-student-dropdown').focus();
+      }
+    }
+
+    function renderStudentCard(student) {
+      if (!student) return;
+      document.getElementById('disp-name').innerText = student.name;
+      document.getElementById('disp-nis').innerText = `NIS: ${student.nis}`;
+      document.getElementById('disp-class').innerText = student.class || 'RQ Ummul Qosim';
+      document.getElementById('disp-avatar').innerText = student.name.charAt(0).toUpperCase();
+
+      const selectEl = document.getElementById('select-student-dropdown');
+      if (selectEl) selectEl.value = student.id;
+
+      // Isi input jika sudah ada data sebelumnya
+      if (student.fullName) {
+        document.getElementById('input-child-fullname').value = student.fullName;
+      }
+      if (student.parent && !student.parent.startsWith('Wali ')) {
+        document.getElementById('input-parent-name').value = student.parent;
+      }
+      if (student.phone) {
+        document.getElementById('input-parent-phone').value = student.phone;
+      }
+    }
+
+    function onStudentSelectChanged(studentId) {
+      const found = studentList.find(s => s.id === studentId);
+      if (found) {
+        currentStudent = found;
+        renderStudentCard(currentStudent);
+      }
+    }
+
+    function handlePortalSubmit(e) {
+      if (e) e.preventDefault();
+      if (!currentStudent) {
+        alert('Silakan pilih nama santri terlebih dahulu.');
+        return;
+      }
+
+      const childFullName = document.getElementById('input-child-fullname').value.trim();
+      const parentName = document.getElementById('input-parent-name').value.trim();
+      const phoneRaw = document.getElementById('input-parent-phone').value.trim();
+
+      if (!childFullName) {
+        alert('Mohon isi nama lengkap anak.');
+        document.getElementById('input-child-fullname').focus();
+        return;
+      }
+      if (!parentName) {
+        alert('Mohon isi nama lengkap orang tua / wali.');
+        document.getElementById('input-parent-name').focus();
+        return;
+      }
+
+      let phoneClean = phoneRaw.replace(/[^\d+]/g, '');
+      if (phoneClean.startsWith('0')) phoneClean = '62' + phoneClean.slice(1);
+      if (!phoneClean) {
+        alert('Mohon isi nomor telepon / WhatsApp aktif.');
+        document.getElementById('input-parent-phone').focus();
+        return;
+      }
+
+      // 1. Simpan langsung ke LocalStorage browser jika halaman dibuka di browser yang sama dengan aplikasi
+      try {
+        const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
+        if (raw) {
+          const db = JSON.parse(raw);
+          if (db && Array.isArray(db.students)) {
+            const idx = db.students.findIndex(s => s.id === currentStudent.id);
+            if (idx !== -1) {
+              db.students[idx].fullName = childFullName;
+              db.students[idx].parent = parentName;
+              db.students[idx].phone = phoneClean;
+              localStorage.setItem('SIKAD_TPA_DATA_V3', JSON.stringify(db));
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal simpan langsung ke LocalStorage lokal:', err);
+      }
+
+      // 2. Bangun link auto-sync ke aplikasi utama
+      let hostUrl = window.location.origin;
+      if (hostUrl.startsWith('file:') || hostUrl.includes('localhost') || hostUrl.includes('127.0.0.1')) {
+        hostUrl = 'https://ummul-qosim-keuangan.vercel.app';
+      }
+
+      const autoSyncUrl = `${hostUrl}/index.html?update_santri=${encodeURIComponent(currentStudent.id)}&fullName=${encodeURIComponent(childFullName)}&parent=${encodeURIComponent(parentName)}&phone=${encodeURIComponent(phoneClean)}`;
+
+      // 3. Susun pesan WhatsApp yang rapi dan sopan
+      let waMessage = `*Pembaruan Data Santri RQ Ummul Qosim*\n\n`;
+      waMessage += `Assalamu'alaikum Warahmatullahi Wabarakatuh, Ustadz.\n`;
+      waMessage += `Berikut pembaruan data ananda santri:\n\n`;
+      waMessage += `👦 *Nama Panggilan:* ${currentStudent.name} (${currentStudent.class})\n`;
+      waMessage += `📝 *Nama Lengkap Anak:* ${childFullName}\n`;
+      waMessage += `👤 *Nama Orang Tua/Wali:* ${parentName}\n`;
+      waMessage += `📱 *No. WhatsApp:* ${phoneClean}\n\n`;
+      waMessage += `━━━━━━━━━━━━━━━━━━\n`;
+      waMessage += `👉 *Link Simpan Otomatis ke Apk:* \n${autoSyncUrl}\n`;
+      waMessage += `━━━━━━━━━━━━━━━━━━\n`;
+      waMessage += `_Jazaakumullahu khairan katsiran._`;
+
+      const encodedMsg = encodeURIComponent(waMessage);
+      const waUrl = `https://wa.me/${ADMIN_WA_PHONE}?text=${encodedMsg}`;
+
+      // Buka WA
+      window.open(waUrl, '_blank');
+
+      // Tampilkan feedback sukses
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('child-display-card').style.display = 'none';
+      document.getElementById('select-student-container').style.display = 'none';
+
+      const successBox = document.getElementById('success-box');
+      successBox.style.display = 'block';
+
+      document.getElementById('success-summary').innerHTML = `
+        <div class="summary-row">
+          <span style="color: #64748b;">Nama Panggilan (TPA):</span>
+          <strong style="color: #0f172a;">${currentStudent.name}</strong>
+        </div>
+        <div class="summary-row">
+          <span style="color: #64748b;">Nama Lengkap Anak:</span>
+          <strong style="color: #1e3a8a;">${childFullName}</strong>
+        </div>
+        <div class="summary-row">
+          <span style="color: #64748b;">Orang Tua / Wali:</span>
+          <strong style="color: #0f172a;">${parentName}</strong>
+        </div>
+        <div class="summary-row">
+          <span style="color: #64748b;">No. Telepon / WA:</span>
+          <strong style="color: #0f172a; font-family: monospace;">${phoneClean}</strong>
+        </div>
+      `;
+
+      document.getElementById('btn-reopen-wa').href = waUrl;
+    }
+
+    function resetFormForEdit() {
+      document.getElementById('form-container').style.display = 'block';
+      document.getElementById('child-display-card').style.display = 'flex';
+      document.getElementById('success-box').style.display = 'none';
+    }
+
+    window.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>
