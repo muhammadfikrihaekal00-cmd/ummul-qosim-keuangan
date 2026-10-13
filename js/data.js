@@ -22,7 +22,7 @@ const DEFAULT_DATA = {
     qrisMerchant: "RQ UMMUL QOSIM",
     rekening: "MUAMALAT 8060019518 / BRI 022401017136537 / SULSELBAR 0102100000088413 ( Atas Nama : M Fikri Haekal )",
     securityPin: "060708",
-    sheetSyncUrl: ""
+    sheetSyncUrl: "https://script.google.com/macros/s/AKfycbzTA8y6CTrRE8RgaPx1ZBj6Abl_Urrm_zF5c_6PQUbzw0sws3X9BLEtL6ToJt5cheC9/exec"
   },
   // 4 Kelas Resmi RQ Ummul Qosim
   classes: [
@@ -183,6 +183,10 @@ class TPADatabase {
       const parsed = JSON.parse(raw);
       if (!parsed.tpaInfo) parsed.tpaInfo = {};
       parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
+      if (!parsed.tpaInfo.sheetSyncUrl) {
+        parsed.tpaInfo.sheetSyncUrl = DEFAULT_DATA.tpaInfo.sheetSyncUrl;
+      }
+      safeStorageSet('SIKAD_SHEET_URL', DEFAULT_DATA.tpaInfo.sheetSyncUrl);
       if (!Array.isArray(parsed.students) || parsed.students.length < 30) {
         parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
       }
@@ -274,13 +278,13 @@ class TPADatabase {
 
   getSyncUrl() {
     try {
-      const fromStorage = localStorage.getItem('SIKAD_SHEET_URL');
+      const fromStorage = safeStorageGet('SIKAD_SHEET_URL');
       if (fromStorage && fromStorage.trim()) return fromStorage.trim();
     } catch (e) {}
     if (this.data && this.data.tpaInfo && this.data.tpaInfo.sheetSyncUrl) {
       return this.data.tpaInfo.sheetSyncUrl.trim();
     }
-    return '';
+    return DEFAULT_DATA.tpaInfo.sheetSyncUrl || '';
   }
 
   setSyncUrl(url) {

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3.6.0">
+  <link rel="stylesheet" href="css/style.css?v=3.7.0">
   <style>
     body {
       background: #f1f5f9;
@@ -411,7 +411,7 @@
   </div>
 
   <!-- Data & Persistence Engine -->
-  <script src="js/data.js?v=3.6.0"></script>
+  <script src="js/data.js?v=3.7.0"></script>
   <script>
     // 36 Santri Resmi RQ Ummul Qosim
     const OFFICIAL_STUDENTS = [
@@ -642,14 +642,22 @@
       // Kirim pembaruan otomatis ke Spreadsheet di latar belakang jika URL tersedia
       try {
         let syncUrl = localStorage.getItem('SIKAD_SHEET_URL') || '';
+        if (!syncUrl && window.db && typeof window.db.getSyncUrl === 'function') {
+          syncUrl = window.db.getSyncUrl();
+        }
         if (!syncUrl) {
           const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
           if (raw) {
-            const db = JSON.parse(raw);
-            if (db && db.tpaInfo && db.tpaInfo.sheetSyncUrl) {
-              syncUrl = db.tpaInfo.sheetSyncUrl;
-            }
+            try {
+              const db = JSON.parse(raw);
+              if (db && db.tpaInfo && db.tpaInfo.sheetSyncUrl) {
+                syncUrl = db.tpaInfo.sheetSyncUrl;
+              }
+            } catch(e) {}
           }
+        }
+        if (!syncUrl) {
+          syncUrl = "https://script.google.com/macros/s/AKfycbzTA8y6CTrRE8RgaPx1ZBj6Abl_Urrm_zF5c_6PQUbzw0sws3X9BLEtL6ToJt5cheC9/exec";
         }
         if (syncUrl && syncUrl.startsWith('http')) {
           fetch(syncUrl, {
