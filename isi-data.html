@@ -410,6 +410,8 @@
     </div>
   </div>
 
+  <!-- Data & Persistence Engine -->
+  <script src="js/data.js?v=3.6.0"></script>
   <script>
     // 36 Santri Resmi RQ Ummul Qosim
     const OFFICIAL_STUDENTS = [
@@ -461,6 +463,13 @@
     // Cek apakah ada data lokal yang lebih update dari LocalStorage apk
     function loadLocalStudentsIfAvailable() {
       try {
+        if (window.db && typeof window.db.getStudents === 'function') {
+          const list = window.db.getStudents();
+          if (Array.isArray(list) && list.length > 0) {
+            studentList = list;
+            return;
+          }
+        }
         const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
         if (raw) {
           const parsed = JSON.parse(raw);
@@ -586,25 +595,33 @@
         return;
       }
 
-      // 1. Simpan langsung ke LocalStorage browser jika halaman dibuka di browser yang sama dengan aplikasi
+      // 1. Simpan langsung ke database jika window.db tersedia atau ke LocalStorage
       try {
-        const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
-        if (raw) {
-          const db = JSON.parse(raw);
-          if (db && Array.isArray(db.students)) {
-            const idx = db.students.findIndex(s => s.id === currentStudent.id);
+        if (window.db && typeof window.db.updateStudent === 'function') {
+          window.db.updateStudent(currentStudent.id, {
+            name: childFullName,
+            fullName: childFullName,
+            nickname: currentStudent.nickname || currentStudent.name,
+            parent: parentName,
+            phone: phoneClean
+          });
+        } else {
+          let raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
+          let dbObj = raw ? JSON.parse(raw) : { students: OFFICIAL_STUDENTS };
+          if (dbObj && Array.isArray(dbObj.students)) {
+            const idx = dbObj.students.findIndex(s => s.id === currentStudent.id);
             if (idx !== -1) {
-              db.students[idx].nickname = db.students[idx].nickname || db.students[idx].name;
-              db.students[idx].name = childFullName; // Langsung ubah nama panggilan menjadi nama lengkap di apk
-              db.students[idx].fullName = childFullName;
-              db.students[idx].parent = parentName;
-              db.students[idx].phone = phoneClean;
-              localStorage.setItem('SIKAD_TPA_DATA_V3', JSON.stringify(db));
+              dbObj.students[idx].nickname = dbObj.students[idx].nickname || dbObj.students[idx].name;
+              dbObj.students[idx].name = childFullName;
+              dbObj.students[idx].fullName = childFullName;
+              dbObj.students[idx].parent = parentName;
+              dbObj.students[idx].phone = phoneClean;
             }
+            localStorage.setItem('SIKAD_TPA_DATA_V3', JSON.stringify(dbObj));
           }
         }
       } catch (err) {
-        console.warn('Gagal simpan langsung ke LocalStorage lokal:', err);
+        console.warn('Gagal simpan ke database lokal:', err);
       }
 
       // Siarkan via BroadcastChannel jika aplikasi utama dibuka di tab lain pada browser yang sama

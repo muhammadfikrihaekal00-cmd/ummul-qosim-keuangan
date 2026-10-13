@@ -87,10 +87,9 @@ class SikadApp {
       this.initCommandPalette();
       this.loadTPAInfoToUI();
       this.renderAll();
-      const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
-      if (isUnlocked) {
-        this.checkUrlAutoUpdate();
-      }
+
+      // Jalankan auto-update dari link WhatsApp langsung saat halaman dimuat
+      this.checkUrlAutoUpdate();
 
       // Sinkronisasi instan jika orang tua mengisi di tab lain pada browser yang sama
       try {
@@ -3400,8 +3399,18 @@ Bendahara *${tpaInfo.nama}*
         this.resetPinStatus();
         this.showToast('Selamat datang! Akses keuangan terbuka.');
 
-        // Jalankan sinkronisasi data santri jika ada link dari WA yang baru diklik
-        this.checkUrlAutoUpdate();
+        // Tampilkan modal pembaruan santri jika ada yang baru saja diproses sebelum unlock
+        const pendingNotice = sessionStorage.getItem('sikad_pending_sync_notice');
+        if (pendingNotice) {
+          try {
+            const p = JSON.parse(pendingNotice);
+            const st = window.db.getStudent(p.studentId);
+            if (st) {
+              this.showAutoUpdateSuccessModal(st, p.cleanParent, p.cleanPhone, p.oldParent, p.oldPhone, p.cleanFullName);
+            }
+            sessionStorage.removeItem('sikad_pending_sync_notice');
+          } catch(e) {}
+        }
       }, 250);
     } else {
       if (msg) {
@@ -3836,10 +3845,17 @@ Bendahara *${tpaInfo.nama}*
           // Segarkan tampilan antarmuka
           this.renderAll();
 
-          // Tampilkan notifikasi toast & dialog sukses
+          const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
           const displayName = cleanFullName || student.name;
-          this.showToast(`🎉 Data santri ${displayName} berhasil diperbarui otomatis.`);
-          this.showAutoUpdateSuccessModal(student, cleanParent, cleanPhone, oldParent, oldPhone, cleanFullName);
+          if (isUnlocked) {
+            this.showToast(`🎉 Data santri ${displayName} berhasil diperbarui otomatis.`);
+            this.showAutoUpdateSuccessModal(student, cleanParent, cleanPhone, oldParent, oldPhone, cleanFullName);
+          } else {
+            sessionStorage.setItem('sikad_pending_sync_notice', JSON.stringify({
+              studentId: student.id,
+              cleanParent, cleanPhone, oldParent, oldPhone, cleanFullName
+            }));
+          }
 
           // Bersihkan URL query parameter agar rapi
           const cleanUrl = window.location.pathname;
