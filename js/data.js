@@ -3,7 +3,7 @@
  * Mengelola penyimpanan localStorage dengan dataset awal (seed data) yang realistis.
  */
 
-const STORAGE_KEY = 'SIKAD_TPA_DATA_V2';
+const STORAGE_KEY = 'SIKAD_TPA_DATA_V3';
 
 // Seed Data Awal yang Lengkap dan Realistis untuk RQ Ummul Qosim
 const DEFAULT_DATA = {
@@ -66,12 +66,12 @@ const DEFAULT_DATA = {
       icon: '⭐'
     }
   ],
-  // 4 Kantong Kas Utama
+  // 4 Kantong Kas Utama (Saldo Bersih Awal Rp 0)
   wallets: [
-    { id: 'ops', name: 'Kas Operasional', desc: 'Dana dari SPP untuk biaya harian TPA', balance: 3450000, icon: 'wallet' },
-    { id: 'tabungan', name: 'Kas Tabungan Santri', desc: 'Dana amanah titipan santri (tidak boleh terpakai ops)', balance: 4120000, icon: 'piggy' },
-    { id: 'infaq', name: 'Kas Infaq & Sedekah', desc: 'Kotak amal Jumat & donasi sukarela', balance: 1850000, icon: 'heart' },
-    { id: 'bangun', name: 'Kas Sarana & Pembangunan', desc: 'Khusus renovasi, meja Al-Quran & sarana', balance: 5200000, icon: 'building' }
+    { id: 'ops', name: 'Kas Operasional', desc: 'Dana dari SPP untuk biaya harian TPA', balance: 0, icon: 'wallet' },
+    { id: 'tabungan', name: 'Kas Tabungan Santri', desc: 'Dana amanah titipan santri (tidak boleh terpakai ops)', balance: 0, icon: 'piggy' },
+    { id: 'infaq', name: 'Kas Infaq & Sedekah', desc: 'Kotak amal Jumat & donasi sukarela', balance: 0, icon: 'heart' },
+    { id: 'bangun', name: 'Kas Sarana & Pembangunan', desc: 'Khusus renovasi, meja Al-Quran & sarana', balance: 0, icon: 'building' }
   ],
   // Data Pengajar / Ustadz
   teachers: [
@@ -126,17 +126,14 @@ const DEFAULT_DATA = {
     { id: 'S-035', nis: '202635', name: 'Aqmar (Titi)', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Aqmar', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
     { id: 'S-036', nis: '202636', name: 'Adibah', classId: 'K4', class: 'Kelas Dasar Ikhwan & Akhowat', parent: 'Wali Adibah', phone: '', sppAmount: 200000, isScholarship: false, savingsBalance: 0 }
   ],
-  // Catatan SPP Bulanan (Otomatis santri subsidi terdata lunas Rp 0)
+  // Catatan SPP Bulanan (Hanya santri subsidi Khadijah yang otomatis terdata Lunas Rp 0)
   sppRecords: [
     { id: 'SPP-2610-032', studentId: 'S-032', month: '2026-10', amount: 0, paidDate: '2026-10-01', status: 'Lunas', method: 'Beasiswa / Subsidi', receiptNo: 'KW-2610-SUB01' }
   ],
-  // Riwayat Tabungan Santri
+  // Riwayat Tabungan Santri Awal Bersih
   savingsTransactions: [],
-  // Mutasi Kas Awal
-  transactions: [
-    { id: 'TX-101', date: '2026-10-01', type: 'in', walletId: 'bangun', category: 'Donasi Pembangunan', amount: 1000000, desc: 'Donasi Muhsinin untuk perbaikan fasilitas TPA', ref: 'DN-01' },
-    { id: 'TX-102', date: '2026-10-04', type: 'in', walletId: 'infaq', category: 'Kotak Infaq Santri', amount: 245000, desc: 'Infaq Jumat santri pekan 1 Oktober', ref: 'INF-01' }
-  ]
+  // Mutasi Kas Awal Bersih (Tanpa data dummy)
+  transactions: []
 };
 
 // In-memory fallback untuk browser dengan mode privasi ketat / sandbox
@@ -173,21 +170,6 @@ class TPADatabase {
     let raw = null;
     try {
       raw = safeStorageGet(STORAGE_KEY);
-      if (!raw) {
-        // Cek migrasi dari versi V1 sebelumnya jika ada custom logo atau settingan
-        const oldV1 = safeStorageGet('SIKAD_TPA_DATA_V1');
-        if (oldV1) {
-          try {
-            const oldParsed = JSON.parse(oldV1);
-            const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
-            if (Array.isArray(oldParsed.wallets) && oldParsed.wallets.length > 0) fresh.wallets = oldParsed.wallets;
-            if (Array.isArray(oldParsed.transactions) && oldParsed.transactions.length > 0) fresh.transactions = oldParsed.transactions;
-            if (oldParsed.tpaInfo && oldParsed.tpaInfo.qrisUrl) fresh.tpaInfo.qrisUrl = oldParsed.tpaInfo.qrisUrl;
-            this.save(fresh);
-            return fresh;
-          } catch (e) {}
-        }
-      }
     } catch (e) {
       console.warn("Storage access notice:", e);
     }
@@ -200,28 +182,21 @@ class TPADatabase {
       const parsed = JSON.parse(raw);
       if (!parsed.tpaInfo) parsed.tpaInfo = {};
       parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
-      if (!Array.isArray(parsed.students)) parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
-      if (!Array.isArray(parsed.sppRecords)) parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
-      if (!Array.isArray(parsed.wallets)) parsed.wallets = JSON.parse(JSON.stringify(DEFAULT_DATA.wallets));
-      if (!Array.isArray(parsed.teachers)) parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
-      if (!Array.isArray(parsed.transactions)) parsed.transactions = JSON.parse(JSON.stringify(DEFAULT_DATA.transactions));
-      if (!Array.isArray(parsed.savingsTransactions)) parsed.savingsTransactions = JSON.parse(JSON.stringify(DEFAULT_DATA.savingsTransactions));
-
-      // Deteksi jika masih memuat data demo lama (Zaki Pratama) atau kurang dari 36 santri, otomatis perbarui ke 36 santri asli
-      const hasOldDemoData = parsed.students.some(s => s.name === 'Muhammad Zaki Pratama');
-      if (hasOldDemoData || parsed.students.length < 30) {
+      if (!Array.isArray(parsed.students) || parsed.students.length < 30) {
         parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
-        parsed.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
-        parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
-        parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
-        parsed.tpaInfo.ketua = DEFAULT_DATA.tpaInfo.ketua;
-        parsed.tpaInfo.bendahara = DEFAULT_DATA.tpaInfo.bendahara;
-        parsed.tpaInfo.alamat = DEFAULT_DATA.tpaInfo.alamat;
-        parsed.tpaInfo.rekening = DEFAULT_DATA.tpaInfo.rekening;
-        parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
-        this.save(parsed);
       }
-
+      if (!Array.isArray(parsed.sppRecords)) parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
+      
+      // Bersihkan dan nol-kan saldo kas jika masih ada sisa demo
+      if (!Array.isArray(parsed.wallets) || parsed.wallets.some(w => w.balance > 0 && (w.balance === 3450000 || w.balance === 4120000 || w.balance === 1850000 || w.balance === 5200000))) {
+        parsed.wallets = JSON.parse(JSON.stringify(DEFAULT_DATA.wallets));
+      }
+      // Kosongkan riwayat mutasi kas dummy
+      if (!Array.isArray(parsed.transactions) || parsed.transactions.some(tx => tx.ref === 'DN-01' || tx.ref === 'INF-01')) {
+        parsed.transactions = [];
+      }
+      if (!Array.isArray(parsed.savingsTransactions)) parsed.savingsTransactions = [];
+      if (!Array.isArray(parsed.teachers)) parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
       // 4 Kelas Resmi RQ Ummul Qosim
       if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
         parsed.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
@@ -265,6 +240,7 @@ class TPADatabase {
         }
       });
 
+      this.save(parsed);
       return parsed;
     } catch (e) {
       console.error("Gagal membaca database lokal, mereset ke default:", e);

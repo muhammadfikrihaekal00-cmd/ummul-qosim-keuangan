@@ -649,10 +649,10 @@ class SikadApp {
     const infaqW = wallets.find(w => w.id === 'infaq') || { balance: 0 };
     const bangunW = wallets.find(w => w.id === 'bangun') || { balance: 0 };
 
-    const pctOps = Math.round((opsW.balance / safeTotal) * 100);
-    const pctTabungan = Math.round((tabunganW.balance / safeTotal) * 100);
-    const pctInfaq = Math.round((infaqW.balance / safeTotal) * 100);
-    const pctBangun = Math.max(0, 100 - (pctOps + pctTabungan + pctInfaq));
+    const pctOps = totalAllBalances > 0 ? Math.round((opsW.balance / safeTotal) * 100) : 0;
+    const pctTabungan = totalAllBalances > 0 ? Math.round((tabunganW.balance / safeTotal) * 100) : 0;
+    const pctInfaq = totalAllBalances > 0 ? Math.round((infaqW.balance / safeTotal) * 100) : 0;
+    const pctBangun = totalAllBalances > 0 ? Math.max(0, 100 - (pctOps + pctTabungan + pctInfaq)) : 0;
 
     // Update Allocation Bar Segments
     const allocOps = document.getElementById('alloc-ops');
@@ -1007,13 +1007,13 @@ class SikadApp {
                 statusTag = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
-                      🧾 Kuitansi
+                    <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
+                      🧾
                     </button>
-                    <button type="button" class="btn btn-whatsapp btn-sm" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Preview & Kirim WA">
-                      📲 WA
+                    <button type="button" class="btn btn-whatsapp btn-sm btn-icon-only" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Kirim WA Kuitansi">
+                      📲
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pelunasan" style="color: var(--danger);">
+                    <button type="button" class="btn btn-danger btn-sm btn-icon-only" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pelunasan">
                       ↩️
                     </button>
                   </div>
@@ -1022,11 +1022,11 @@ class SikadApp {
                 statusTag = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')">
-                      💳 Bayar SPP
+                    <button type="button" class="btn btn-primary btn-sm btn-icon-only" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')" title="Catat Pembayaran SPP">
+                      💳
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Kirim Pengingat WA">
-                      💬 Pengingat WA
+                    <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Kirim Tagihan Pengingat WA">
+                      💬
                     </button>
                   </div>
                 `;
@@ -1083,7 +1083,7 @@ class SikadApp {
                   <th>Wali & No. WhatsApp</th>
                   <th style="width: 120px;">Tarif SPP</th>
                   <th style="width: 165px;">Status (${this.formatMonthId(selectedMonth)})</th>
-                  <th style="text-align: right; width: 235px;">Aksi Pembayaran</th>
+                  <th style="text-align: right; width: 130px;">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -1099,14 +1099,14 @@ class SikadApp {
                   } else if (isPaid) {
                     badgeHtml = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
                     actionButtons = `
-                      <div class="cell-actions">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi">
-                          🧾 Kuitansi
+                      <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.showReceiptById('${sppStatus.record.id}')" title="Cetak Kuitansi Struk">
+                          🧾
                         </button>
-                        <button type="button" class="btn btn-whatsapp btn-sm" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Kirim WA">
-                          📲 WA
+                        <button type="button" class="btn btn-whatsapp btn-sm btn-icon-only" onclick="app.openReceiptWaPreview('${s.id}', '${sppStatus.record.id}')" title="Kirim WA Kuitansi">
+                          📲
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batal">
+                        <button type="button" class="btn btn-danger btn-sm btn-icon-only" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pelunasan">
                           ↩️
                         </button>
                       </div>
@@ -1114,12 +1114,12 @@ class SikadApp {
                   } else {
                     badgeHtml = `<span class="badge badge-danger">✕ Belum Lunas</span>`;
                     actionButtons = `
-                      <div class="cell-actions">
-                        <button type="button" class="btn btn-primary btn-sm" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')">
-                          💳 Bayar SPP
+                      <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-primary btn-sm btn-icon-only" onclick="app.openPaySppModal('${s.id}', '${selectedMonth}')" title="Catat Pembayaran SPP">
+                          💳
                         </button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Pengingat WA">
-                          💬 Pengingat WA
+                        <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Kirim Tagihan Pengingat WA">
+                          💬
                         </button>
                       </div>
                     `;
@@ -2091,13 +2091,13 @@ Bendahara *${tpaInfo.nama}*
           <td style="font-weight: 800; color: var(--primary-700);">${this.formatRp(t.baseSalary)}</td>
           <td style="text-align: right; white-space: nowrap;">
             <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
-              <button class="btn btn-outline-primary btn-sm" onclick="app.openTeacherModal('${t.id}')" title="Ubah Nama & Data Ustadz" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
-                <span>✏️</span> <span>Ubah</span>
+              <button class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openTeacherModal('${t.id}')" title="Ubah Nama & Data Ustadz">
+                ✏️
               </button>
-              <button class="btn btn-primary btn-sm" onclick="app.payTeacherBisyarahPrompt('${t.id}')" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
-                <span>💵</span> <span>Bayar Bisyarah</span>
+              <button class="btn btn-primary btn-sm btn-icon-only" onclick="app.payTeacherBisyarahPrompt('${t.id}')" title="Bayar Bisyarah Ustadz">
+                💵
               </button>
-              <button class="btn btn-danger btn-sm" onclick="app.deleteTeacher('${t.id}')" title="Hapus Data Pengajar" style="padding: 4px 8px;">
+              <button class="btn btn-danger btn-sm btn-icon-only" onclick="app.deleteTeacher('${t.id}')" title="Hapus Data Pengajar">
                 🗑️
               </button>
             </div>
@@ -2335,8 +2335,8 @@ Bendahara *${tpaInfo.nama}*
               <span class="badge badge-neutral" style="font-weight: 700; font-size: 0.75rem;">👥 ${studentCount} Santri</span>
             </td>
             <td style="text-align: right;">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="app.openEditClassModal('${c.id}')" title="Ubah Nama & Rincian ${c.shortName}">
-                ✏️ Ubah Nama
+              <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openEditClassModal('${c.id}')" title="Ubah Nama & Rincian ${c.shortName}">
+                ✏️
               </button>
             </td>
           </tr>
@@ -2362,10 +2362,10 @@ Bendahara *${tpaInfo.nama}*
           <td style="font-weight: 700;">${this.formatRp(s.sppAmount)}</td>
           <td style="text-align: right; white-space: nowrap;">
             <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
-              <button class="btn btn-outline-primary btn-sm" onclick="app.openStudentModal('${s.id}', true)" title="Ubah Data Santri" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
-                <span>✏️</span> <span>Ubah</span>
+              <button class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openStudentModal('${s.id}', true)" title="Ubah Data Santri">
+                ✏️
               </button>
-              <button class="btn btn-danger btn-sm" onclick="app.deleteStudent('${s.id}')" title="Hapus Data Santri" style="padding: 4px 8px;">
+              <button class="btn btn-danger btn-sm btn-icon-only" onclick="app.deleteStudent('${s.id}')" title="Hapus Data Santri">
                 🗑️
               </button>
             </div>
@@ -2387,10 +2387,10 @@ Bendahara *${tpaInfo.nama}*
           <td style="font-weight: 700; color: var(--primary-700);">${this.formatRp(t.baseSalary)}</td>
           <td style="text-align: right; white-space: nowrap;">
             <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
-              <button class="btn btn-primary btn-sm" onclick="app.openTeacherModal('${t.id}')" title="Ubah Nama & Data Ustadz" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; font-weight: 700;">
-                <span>✏️</span> <span>Ubah Data</span>
+              <button class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openTeacherModal('${t.id}')" title="Ubah Nama & Data Ustadz">
+                ✏️
               </button>
-              <button class="btn btn-danger btn-sm" onclick="app.deleteTeacher('${t.id}')" title="Hapus Ustadz" style="padding: 4px 8px;">
+              <button class="btn btn-danger btn-sm btn-icon-only" onclick="app.deleteTeacher('${t.id}')" title="Hapus Ustadz">
                 🗑️
               </button>
             </div>

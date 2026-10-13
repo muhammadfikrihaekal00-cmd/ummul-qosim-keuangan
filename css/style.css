@@ -698,6 +698,39 @@ body {
   font-size: 0.95rem;
 }
 
+/* Sleek Icon-Only Buttons (Modern & Space-Saving) */
+.btn-icon-only {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-full) !important;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+.btn-icon-only:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+.btn-icon-only svg {
+  width: 17px;
+  height: 17px;
+}
+
+.btn-sm.btn-icon-only {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+}
+.btn-sm.btn-icon-only svg {
+  width: 15px;
+  height: 15px;
+}
+
 .btn-quick-add {
   background: var(--btn-primary-gradient);
   color: #fff;

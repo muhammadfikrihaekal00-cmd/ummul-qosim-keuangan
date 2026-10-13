@@ -176,25 +176,17 @@
           </div>
         </div>
 
-        <!-- Spotlight Omnibar Search -->
-        <div class="header-omni-search" id="btn-trigger-omni-search" onclick="app.openCommandPalette()" title="Tekan Ctrl + K untuk cari cepat">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <span style="opacity: 0.85;">Cari santri, kas, menu, transaksi...</span>
-          <kbd>Ctrl K</kbd>
-        </div>
-
         <div class="header-right">
           <!-- Realtime Date & Clock Badge -->
           <div class="header-realtime-badge" id="header-realtime-clock" title="Waktu Sistem Realtime">
-            📅 Memuat waktu...
+            📅 Memuat...
           </div>
 
-          <!-- Theme Switcher Dropdown -->
+          <!-- Theme Switcher Dropdown (Icon Only) -->
           <div class="theme-dropdown-container" id="theme-dropdown-container">
-            <button class="btn-theme-toggle" id="btn-theme-dropdown" title="Ganti Tema Warna">
+            <button class="btn-theme-toggle btn-icon-only" id="btn-theme-dropdown" title="Ganti Tema Warna">
               <span class="theme-preview-dot" id="theme-preview-dot"></span>
-              <span id="current-theme-label">Royal Sapphire</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <span id="current-theme-label" style="display: none;">Royal Sapphire</span>
             </button>
             <div class="theme-dropdown-menu" id="theme-dropdown-menu">
               <div class="theme-menu-title">Pilih Tema Antarmuka</div>
@@ -251,24 +243,20 @@
             </div>
           </div>
 
-          <!-- Quick Guide Button -->
-          <button class="btn-guide-toggle" id="btn-open-guide-modal" title="Buka Panduan Kustomisasi">
-            <span>📖</span>
-            <span>Panduan Isi</span>
+          <!-- Quick Guide Button (Icon Only) -->
+          <button class="btn-guide-toggle btn-icon-only" id="btn-open-guide-modal" title="Panduan Kustomisasi & Ubah Isi">
+            <span style="font-size: 1.15rem;">📖</span>
           </button>
 
-          <!-- Quick Input Buttons directly on Header -->
-          <button type="button" class="btn btn-outline-primary btn-sm" id="btn-header-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 5px; font-weight: 700; border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; border-color: var(--primary-300);" title="Tambah Santri Baru">
-            <span>👤</span>
-            <span>+ Santri</span>
+          <!-- Quick Input Buttons (Icon Only) -->
+          <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" id="btn-header-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" title="Tambah Santri Baru">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
           </button>
-          <button type="button" class="btn btn-outline-primary btn-sm" id="btn-header-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" style="display: flex; align-items: center; gap: 5px; font-weight: 700; border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; border-color: var(--primary-300);" title="Tambah Pengajar / Ustadz Baru">
-            <span>👨‍🏫</span>
-            <span>+ Pengajar</span>
+          <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" id="btn-header-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" title="Tambah Pengajar / Ustadz Baru">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </button>
-          <button class="btn-quick-add" id="btn-open-tx-modal" data-action="open-tx-modal" data-tx-type="in" data-tx-wallet="ops" onclick="(window.app || app).openTxModal('in', 'ops')" title="Catat Mutasi Kas">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>+ Catat Kas</span>
+          <button class="btn-quick-add btn-icon-only" id="btn-open-tx-modal" data-action="open-tx-modal" data-tx-type="in" data-tx-wallet="ops" onclick="(window.app || app).openTxModal('in', 'ops')" title="Catat Mutasi Kas">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
         </div>
       </header>
@@ -447,26 +435,22 @@
 
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
               <!-- Tombol Tambah Santri Baru Langsung di Toolbar SPP -->
-              <button type="button" class="btn btn-primary" id="btn-spp-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 6px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>➕ Tambah Santri Baru</span>
+              <button type="button" class="btn btn-primary btn-icon-only" id="btn-spp-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" title="Tambah Santri Baru">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               </button>
 
               <!-- Tombol Database Spreadsheet (Google Sheets & Excel) -->
-              <button type="button" class="btn btn-secondary" onclick="app.openSpreadsheetModal()" style="display: flex; align-items: center; gap: 6px;" title="Kelola & Ekspor Database Spreadsheet">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span>📊 Database Spreadsheet</span>
+              <button type="button" class="btn btn-secondary btn-icon-only" onclick="app.openSpreadsheetModal()" title="Database Spreadsheet (Excel & Google Sheets)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>
               </button>
 
               <!-- View Switcher -->
               <div class="view-switcher-group">
-                <button type="button" class="view-btn" id="btn-view-cards" onclick="app.setSppView('cards')">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                  <span>Visual Kartu</span>
+                <button type="button" class="view-btn btn-icon-only" id="btn-view-cards" onclick="app.setSppView('cards')" title="Mode Visual Kartu">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 </button>
-                <button type="button" class="view-btn active" id="btn-view-table" onclick="app.setSppView('table')">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                  <span>Tabel Data Pro</span>
+                <button type="button" class="view-btn active btn-icon-only" id="btn-view-table" onclick="app.setSppView('table')" title="Mode Tabel Data Pro">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                 </button>
               </div>
             </div>
@@ -476,23 +460,23 @@
           <div class="spp-class-tabs-bar" id="spp-class-filter-bar">
             <button type="button" class="spp-class-tab-btn active" data-class-filter="all" onclick="app.setSppClassFilter('all')">
               <span>🏢 Semua 4 Kelas</span>
-              <span class="spp-class-tab-badge" id="badge-class-all">10</span>
+              <span class="spp-class-tab-badge" id="badge-class-all">36</span>
             </button>
             <button type="button" class="spp-class-tab-btn" data-class-filter="K1" onclick="app.setSppClassFilter('K1')">
-              <span>📖 Kelas 1 (Jilid 1 - 2)</span>
-              <span class="spp-class-tab-badge" id="badge-class-k1">0</span>
+              <span>📖 Dasar Ikhwan</span>
+              <span class="spp-class-tab-badge" id="badge-class-k1">10</span>
             </button>
             <button type="button" class="spp-class-tab-btn" data-class-filter="K2" onclick="app.setSppClassFilter('K2')">
-              <span>📗 Kelas 2 (Jilid 3 - 4)</span>
-              <span class="spp-class-tab-badge" id="badge-class-k2">0</span>
+              <span>📗 Menengah Akhowat</span>
+              <span class="spp-class-tab-badge" id="badge-class-k2">10</span>
             </button>
             <button type="button" class="spp-class-tab-btn" data-class-filter="K3" onclick="app.setSppClassFilter('K3')">
-              <span>🕌 Kelas 3 (Al-Qur'an & Tahsin)</span>
-              <span class="spp-class-tab-badge" id="badge-class-k3">0</span>
+              <span>🕌 Menengah Ikhwan</span>
+              <span class="spp-class-tab-badge" id="badge-class-k3">6</span>
             </button>
             <button type="button" class="spp-class-tab-btn" data-class-filter="K4" onclick="app.setSppClassFilter('K4')">
-              <span>⭐ Kelas 4 (Tahfidz Juz 30)</span>
-              <span class="spp-class-tab-badge" id="badge-class-k4">0</span>
+              <span>⭐ Dasar Gabungan</span>
+              <span class="spp-class-tab-badge" id="badge-class-k4">10</span>
             </button>
           </div>
 
@@ -518,10 +502,10 @@
               </div>
 
               <div class="filter-right">
-                <button type="button" class="btn btn-secondary" id="btn-broadcast-reminder" onclick="app.broadcastSppReminder()">
-                  📲 Salin Pesan Pengingat WA
+                <button type="button" class="btn btn-secondary btn-icon-only" id="btn-broadcast-reminder" onclick="app.broadcastSppReminder()" title="Salin & Kirim Pengingat Tagihan WhatsApp">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 </button>
-                <span class="badge badge-neutral" id="spp-filter-summary">Menampilkan 10 Santri</span>
+                <span class="badge badge-neutral" id="spp-filter-summary">Menampilkan 36 Santri</span>
               </div>
             </div>
           </div>
@@ -627,11 +611,11 @@
                 <div class="card-subtitle">Pencatatan sedekah sukarela santri, donatur tetap muhsinin, dan QRIS</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary" id="btn-infaq-show-qris" data-action="open-qris-modal" onclick="(window.app || app).openQRISModal()">
-                  📱 Tampilkan QRIS TPA
+                <button class="btn btn-secondary btn-icon-only" id="btn-infaq-show-qris" data-action="open-qris-modal" onclick="(window.app || app).openQRISModal()" title="Tampilkan QRIS Resmi">
+                  <span style="font-size: 1.1rem;">📱</span>
                 </button>
-                <button class="btn btn-primary" id="btn-infaq-add-tx" data-action="open-infaq-modal" onclick="(window.app || app).openInfaqModal()">
-                  ➕ Catat Infaq / Donasi Baru
+                <button class="btn btn-primary btn-icon-only" id="btn-infaq-add-tx" data-action="open-infaq-modal" onclick="(window.app || app).openInfaqModal()" title="Catat Infaq / Donasi Baru">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
               </div>
             </div>
@@ -683,8 +667,8 @@
                   <h3>Honorarium & Bisyarah Ustadz / Ustadzah</h3>
                   <div class="card-subtitle">Kompensasi bagi para pengajar Al-Qur'an (Dibayarkan dari Kas Operasional)</div>
                 </div>
-                <button type="button" class="btn btn-primary" id="btn-expense-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()">
-                  ➕ Tambah Pengajar / Ustadz
+                <button type="button" class="btn btn-primary btn-icon-only" id="btn-expense-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" title="Tambah Pengajar / Ustadz Baru">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
               </div>
 
@@ -715,8 +699,8 @@
                   <h3>Pengeluaran Operasional & Belanja ATK / Modul</h3>
                   <div class="card-subtitle">Pencatatan pengeluaran buku Iqro, spidol, konsumsi, kebersihan dll</div>
                 </div>
-                <button class="btn btn-primary" id="btn-expense-add-expense" data-action="open-expense-modal" onclick="(window.app || app).openExpenseModal()">
-                  ➕ Catat Pengeluaran Baru
+                <button class="btn btn-primary btn-icon-only" id="btn-expense-add-expense" data-action="open-expense-modal" onclick="(window.app || app).openExpenseModal()" title="Catat Pengeluaran Baru">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
               </div>
 
@@ -750,18 +734,18 @@
                 <div class="card-subtitle">Rekap Arus Kas dan Akuntabilitas Pengurus untuk Takmir Masjid & Wali Santri</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button class="btn btn-primary" onclick="window.print()">
-                  🖨️ Cetak / Simpan PDF
+                <button class="btn btn-primary btn-icon-only" onclick="window.print()" title="Cetak / Simpan PDF (Print)">
+                  <span style="font-size: 1.1rem;">🖨️</span>
                 </button>
-                <button class="btn btn-secondary" onclick="app.exportJsonData()">
-                  💾 Backup JSON
+                <button class="btn btn-secondary btn-icon-only" onclick="app.exportJsonData()" title="Backup Database (JSON)">
+                  <span style="font-size: 1.1rem;">💾</span>
                 </button>
-                <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">
-                  📥 Restore Data
+                <button class="btn btn-secondary btn-icon-only" onclick="document.getElementById('import-file-input').click()" title="Restore Database (JSON)">
+                  <span style="font-size: 1.1rem;">📥</span>
                 </button>
                 <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="app.importJsonData(event)">
-                <button class="btn btn-danger btn-sm" onclick="app.resetAllData()">
-                  🔄 Reset Sample
+                <button class="btn btn-danger btn-sm btn-icon-only" onclick="app.resetAllData()" title="Reset Data Sample">
+                  <span style="font-size: 1.05rem;">🔄</span>
                 </button>
               </div>
             </div>
@@ -878,8 +862,8 @@
                   </h3>
                   <div class="card-subtitle">Kelola nama pengajar, tugas kelas, nomor WhatsApp, jumlah sesi, dan standar bisyarah bulanan</div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" id="btn-master-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" style="display: flex; align-items: center; gap: 6px;">
-                  <span>➕ Tambah Pengajar Baru</span>
+                <button type="button" class="btn btn-primary btn-sm btn-icon-only" id="btn-master-add-teacher" data-action="open-teacher-modal" onclick="(window.app || app).openTeacherModal()" title="Tambah Pengajar Baru">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
               </div>
 
@@ -946,8 +930,8 @@
                   </h3>
                   <div class="card-subtitle">Pengelolaan identitas santri, penempatan kelas, tarif SPP & status beasiswa yatim/dhuafa</div>
                 </div>
-                <button class="btn btn-primary btn-sm" id="btn-master-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" style="display: flex; align-items: center; gap: 6px;">
-                  <span>➕ Tambah Santri Baru</span>
+                <button class="btn btn-primary btn-sm btn-icon-only" id="btn-master-add-student" data-action="open-student-modal" onclick="(window.app || app).openStudentModal()" title="Tambah Santri Baru">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
               </div>
 
