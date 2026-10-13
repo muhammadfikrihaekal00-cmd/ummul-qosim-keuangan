@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulir Data Santri & Wali - RQ Ummul Qosim</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3.5.0">
   <style>
     body {
       background: #f1f5f9;
@@ -603,6 +606,21 @@
       } catch (err) {
         console.warn('Gagal simpan langsung ke LocalStorage lokal:', err);
       }
+
+      // Siarkan via BroadcastChannel jika aplikasi utama dibuka di tab lain pada browser yang sama
+      try {
+        if ('BroadcastChannel' in window) {
+          const bc = new BroadcastChannel('sikad_sync_channel');
+          bc.postMessage({
+            type: 'STUDENT_SYNC',
+            studentId: currentStudent.id,
+            name: childFullName,
+            fullName: childFullName,
+            parent: parentName,
+            phone: phoneClean
+          });
+        }
+      } catch (err) {}
 
       // 2. Bangun link auto-sync ke aplikasi utama
       let hostUrl = window.location.origin;

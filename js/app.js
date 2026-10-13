@@ -91,6 +91,29 @@ class SikadApp {
       if (isUnlocked) {
         this.checkUrlAutoUpdate();
       }
+
+      // Sinkronisasi instan jika orang tua mengisi di tab lain pada browser yang sama
+      try {
+        if ('BroadcastChannel' in window) {
+          const bc = new BroadcastChannel('sikad_sync_channel');
+          bc.onmessage = (ev) => {
+            if (ev.data && ev.data.type === 'STUDENT_SYNC') {
+              const student = window.db.getStudent(ev.data.studentId);
+              if (student) {
+                window.db.updateStudent(student.id, {
+                  name: ev.data.name,
+                  fullName: ev.data.fullName,
+                  nickname: student.nickname || student.name,
+                  parent: ev.data.parent,
+                  phone: ev.data.phone
+                });
+                this.renderAll();
+                this.showToast(`⚡ Data santri ${ev.data.name} tersinkronisasi otomatis!`);
+              }
+            }
+          };
+        }
+      } catch (err) {}
     } catch (err) {
       console.error("Initialization error:", err);
     }
