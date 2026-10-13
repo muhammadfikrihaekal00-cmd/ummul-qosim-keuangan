@@ -84,7 +84,7 @@ const DEFAULT_DATA = {
   // Data 36 Santri Resmi RQ Ummul Qosim
   students: [
     // --- KELAS DASAR IKHWAN (K1) ---
-    { id: 'S-001', nis: '202601', name: 'Reyhan', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Reyhan', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
+    { id: 'S-001', nis: '202601', name: 'Reyhan Alfandy', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Mappiasse/Fitriani', phone: '6281336677475', sppAmount: 150000, isScholarship: false, savingsBalance: 0, fullName: 'Reyhan Alfandy', nickname: 'Reyhan' },
     { id: 'S-002', nis: '202602', name: 'Hafizh Regency', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Hafizh', phone: '', sppAmount: 150000, isScholarship: false, savingsBalance: 0 },
     { id: 'S-003', nis: '202603', name: 'Rafa', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Rafa', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
     { id: 'S-004', nis: '202604', name: 'Fahri', classId: 'K1', class: 'Kelas Dasar Ikhwan', parent: 'Wali Fahri', phone: '', sppAmount: 100000, isScholarship: false, savingsBalance: 0 },
@@ -189,6 +189,20 @@ class TPADatabase {
       safeStorageSet('SIKAD_SHEET_URL', DEFAULT_DATA.tpaInfo.sheetSyncUrl);
       if (!Array.isArray(parsed.students) || parsed.students.length < 30) {
         parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
+      } else {
+        // Sinkronisasi pembaruan nama resmi & wali santri ke database lokal
+        DEFAULT_DATA.students.forEach(defStd => {
+          const s = parsed.students.find(x => x.id === defStd.id);
+          if (s && defStd.fullName) {
+            if (!s.fullName || s.name === 'Reyhan') {
+              s.name = defStd.name;
+              s.fullName = defStd.fullName;
+              s.nickname = defStd.nickname || s.nickname || s.name;
+              s.parent = defStd.parent;
+              s.phone = defStd.phone;
+            }
+          }
+        });
       }
       if (!Array.isArray(parsed.sppRecords)) parsed.sppRecords = JSON.parse(JSON.stringify(DEFAULT_DATA.sppRecords));
       

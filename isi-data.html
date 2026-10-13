@@ -415,7 +415,7 @@
   <script>
     // 36 Santri Resmi RQ Ummul Qosim
     const OFFICIAL_STUDENTS = [
-      { id: 'S-001', nis: '202601', name: 'Reyhan', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
+      { id: 'S-001', nis: '202601', name: 'Reyhan Alfandy', class: 'Kelas Dasar Ikhwan', parent: 'Mappiasse/Fitriani', phone: '6281336677475', fullName: 'Reyhan Alfandy' },
       { id: 'S-002', nis: '202602', name: 'Hafizh Regency', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
       { id: 'S-003', nis: '202603', name: 'Rafa', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
       { id: 'S-004', nis: '202604', name: 'Fahri', class: 'Kelas Dasar Ikhwan', parent: '', phone: '', fullName: '' },
@@ -516,6 +516,27 @@
       if (params.get('phone') || params.get('hp')) {
         document.getElementById('input-parent-phone').value = params.get('phone') || params.get('hp');
       }
+
+      // Tarik pembaruan langsung dari Spreadsheet online jika terhubung
+      try {
+        const syncUrl = "https://script.google.com/macros/s/AKfycbzTA8y6CTrRE8RgaPx1ZBj6Abl_Urrm_zF5c_6PQUbzw0sws3X9BLEtL6ToJt5cheC9/exec";
+        fetch(`${syncUrl}?action=get_data&_t=${Date.now()}`)
+          .then(res => res.json())
+          .then(json => {
+            if (json && json.status === 'success' && json.data && Array.isArray(json.data.students)) {
+              studentList = json.data.students;
+              populateDropdown();
+              if (currentStudent) {
+                const refreshed = studentList.find(s => s.id === currentStudent.id);
+                if (refreshed) {
+                  currentStudent = refreshed;
+                  renderStudentCard(currentStudent);
+                }
+              }
+            }
+          })
+          .catch(() => {});
+      } catch (e) {}
     }
 
     function populateDropdown() {
