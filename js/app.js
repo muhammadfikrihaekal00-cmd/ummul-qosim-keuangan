@@ -87,7 +87,10 @@ class SikadApp {
       this.initCommandPalette();
       this.loadTPAInfoToUI();
       this.renderAll();
-      this.checkUrlAutoUpdate();
+      const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
+      if (isUnlocked) {
+        this.checkUrlAutoUpdate();
+      }
     } catch (err) {
       console.error("Initialization error:", err);
     }
@@ -2406,7 +2409,7 @@ Bendahara *${tpaInfo.nama}*
           <td style="font-weight: 700; color: var(--slate-500);">${s.nis}</td>
           <td>
             <div style="font-weight: 700; color: var(--slate-900); font-size: 0.92rem;">${s.name}</div>
-            ${s.fullName && s.fullName !== s.name ? `<div style="font-size: 0.72rem; color: var(--primary-700); font-weight: 600; margin-top: 2px;">📌 Lengkap: ${s.fullName}</div>` : ''}
+            ${s.nickname && s.nickname !== s.name ? `<div style="font-size: 0.72rem; color: var(--slate-500); font-weight: 600; margin-top: 2px;">(Panggilan: ${s.nickname})</div>` : ''}
             ${s.isScholarship ? '<span class="badge badge-info" style="font-size: 0.65rem;">Beasiswa Yatim</span>' : ''}
           </td>
           <td><span class="badge badge-neutral">${s.class}</span></td>
@@ -3220,14 +3223,22 @@ Bendahara *${tpaInfo.nama}*
   // SECURITY PIN LOCK GATE CONTROLLER (PIN: 060708)
   // =========================================================================
   initSecurityPinGate() {
-    try {
-      sessionStorage.setItem('sikadtpa_unlocked', 'true');
-    } catch (e) {}
+    const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
     const screen = document.getElementById('security-pin-screen');
-    if (screen) {
-      screen.classList.add('unlocked');
-      screen.style.display = 'none';
-      screen.style.pointerEvents = 'none';
+    if (isUnlocked) {
+      if (screen) {
+        screen.classList.add('unlocked');
+        screen.style.display = 'none';
+        screen.style.pointerEvents = 'none';
+      }
+    } else {
+      if (screen) {
+        screen.classList.remove('unlocked');
+        screen.style.display = 'flex';
+        screen.style.pointerEvents = 'auto';
+        this.clearPin();
+        this.resetPinStatus();
+      }
     }
 
     // Keypad numbers
@@ -3309,7 +3320,7 @@ Bendahara *${tpaInfo.nama}*
   resetPinStatus() {
     const msg = document.getElementById('pin-status-message');
     if (msg) {
-      msg.innerText = 'Masukkan PIN Keamanan Bendahara';
+      msg.innerText = 'Masukkan 6 Digit PIN Keamanan';
       msg.classList.remove('error');
     }
   }
@@ -3328,11 +3339,18 @@ Bendahara *${tpaInfo.nama}*
       sessionStorage.setItem('sikadtpa_unlocked', 'true');
 
       setTimeout(() => {
-        if (screen) screen.classList.add('unlocked');
+        if (screen) {
+          screen.classList.add('unlocked');
+          screen.style.display = 'none';
+          screen.style.pointerEvents = 'none';
+        }
         this.enteredPin = '';
         this.updatePinDots();
         this.resetPinStatus();
         this.showToast('Selamat datang! Akses keuangan terbuka.');
+
+        // Jalankan sinkronisasi data santri jika ada link dari WA yang baru diklik
+        this.checkUrlAutoUpdate();
       }, 250);
     } else {
       if (msg) {
@@ -3353,12 +3371,16 @@ Bendahara *${tpaInfo.nama}*
   }
 
   lockSession() {
-    this.showToast('ℹ️ Keamanan aktif: Sistem siap digunakan.');
-  }
-
-  quickUnlockDemo() {
-    this.enteredPin = '060708';
-    this.verifyPin();
+    sessionStorage.removeItem('sikadtpa_unlocked');
+    const screen = document.getElementById('security-pin-screen');
+    if (screen) {
+      screen.classList.remove('unlocked');
+      screen.style.display = 'flex';
+      screen.style.pointerEvents = 'auto';
+      this.clearPin();
+      this.resetPinStatus();
+    }
+    this.showToast('🔒 Aplikasi telah dikunci. Masukkan PIN untuk membuka.');
   }
 
   showToast(message) {
@@ -3762,7 +3784,11 @@ Bendahara *${tpaInfo.nama}*
             phone: cleanPhone
           };
           if (cleanFullName) {
+            updatePayload.name = cleanFullName; // Otomatis langsung mengubah nama panggilan di apk
             updatePayload.fullName = cleanFullName;
+            if (!student.nickname) {
+              updatePayload.nickname = student.name; // Simpan rekam jejak nama panggilan awal
+            }
           }
 
           window.db.updateStudent(student.id, updatePayload);
@@ -3771,7 +3797,8 @@ Bendahara *${tpaInfo.nama}*
           this.renderAll();
 
           // Tampilkan notifikasi toast & dialog sukses
-          this.showToast(`🎉 Data santri ${student.name} berhasil diperbarui otomatis.`);
+          const displayName = cleanFullName || student.name;
+          this.showToast(`🎉 Data santri ${displayName} berhasil diperbarui otomatis.`);
           this.showAutoUpdateSuccessModal(student, cleanParent, cleanPhone, oldParent, oldPhone, cleanFullName);
 
           // Bersihkan URL query parameter agar rapi
@@ -3789,19 +3816,25 @@ Bendahara *${tpaInfo.nama}*
     if (!modal) return;
     const infoEl = document.getElementById('auto-update-info-text');
     if (infoEl) {
+      const activeName = newFullName || student.name;
+      const initialNickname = student.nickname || (newFullName && newFullName !== student.name ? student.name : '');
       infoEl.innerHTML = `
         <div style="background: var(--success-bg); border: 1.5px solid #86efac; border-radius: 14px; padding: 16px; margin: 16px 0; text-align: left;">
           <div style="font-weight: 800; font-size: 1.05rem; color: #166534; margin-bottom: 8px;">
-            👦 ${student.name} <span style="font-size: 0.8rem; font-weight: 600; color: #047857;">(${student.class})</span>
+            👦 ${activeName} <span style="font-size: 0.8rem; font-weight: 600; color: #047857;">(${student.class})</span>
           </div>
           <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
-            ${newFullName ? `
             <tr>
-              <td style="color: var(--slate-500); width: 130px; padding: 4px 0;">Nama Lengkap Anak:</td>
-              <td style="font-weight: 700; color: #1e3a8a; padding: 4px 0;">${newFullName}</td>
+              <td style="color: var(--slate-500); width: 140px; padding: 4px 0;">Nama Santri di Apk:</td>
+              <td style="font-weight: 800; color: #1e3a8a; padding: 4px 0;">${activeName}</td>
+            </tr>
+            ${initialNickname ? `
+            <tr>
+              <td style="color: var(--slate-500); width: 140px; padding: 4px 0;">Nama Panggilan Awal:</td>
+              <td style="color: #64748b; padding: 4px 0;">${initialNickname}</td>
             </tr>` : ''}
             <tr>
-              <td style="color: var(--slate-500); width: 130px; padding: 4px 0;">Nama Orang Tua:</td>
+              <td style="color: var(--slate-500); width: 140px; padding: 4px 0;">Nama Orang Tua:</td>
               <td style="font-weight: 700; color: #0f172a; padding: 4px 0;">${newParent}</td>
             </tr>
             <tr>
@@ -3811,7 +3844,7 @@ Bendahara *${tpaInfo.nama}*
           </table>
         </div>
         <p style="font-size: 0.78rem; color: var(--slate-500); line-height: 1.5; margin: 0;">
-          Data ini telah otomatis tersimpan ke dalam database aplikasi Anda tanpa perlu input manual.
+          Nama santri di aplikasi telah otomatis diganti dengan Nama Lengkap tanpa perlu diedit manual.
         </p>
       `;
     }
@@ -3920,14 +3953,16 @@ Bendahara *${tpaInfo.nama}*
     if (!cleanPhone.startsWith('62') && cleanPhone) cleanPhone = '62' + cleanPhone;
 
     window.db.updateStudent(student.id, {
+      name: fullName, // Otomatis langsung mengubah nama panggilan di apk menjadi nama lengkap
       fullName: fullName,
+      nickname: student.nickname || student.name,
       parent: parent,
       phone: cleanPhone || student.phone
     });
 
     this.renderAll();
     this.renderStudentLinksList();
-    this.showToast(`✅ Data santri ${student.name} (${fullName}) berhasil disimpan ke apk!`);
+    this.showToast(`✅ Data santri ${fullName} berhasil disimpan ke apk!`);
     this.closeModal('modal-student-links');
   }
 

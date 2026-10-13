@@ -2494,16 +2494,16 @@ select.select-app:focus {
    SECURITY PIN LOCK SCREEN GATE
    ------------------------------------------------------------- */
 .pin-gate-overlay {
-  display: none !important;
-  pointer-events: none !important;
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 30%, var(--surface-bg) 0%, rgba(15, 23, 42, 0.96) 100%);
-  backdrop-filter: blur(20px);
-  z-index: 99999;
+  background: radial-gradient(circle at 50% 30%, #0f172a 0%, #020617 100%);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  z-index: 999999;
   align-items: center;
   justify-content: center;
   padding: 20px;

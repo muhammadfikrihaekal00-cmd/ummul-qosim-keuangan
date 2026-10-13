@@ -591,6 +591,8 @@
           if (db && Array.isArray(db.students)) {
             const idx = db.students.findIndex(s => s.id === currentStudent.id);
             if (idx !== -1) {
+              db.students[idx].nickname = db.students[idx].nickname || db.students[idx].name;
+              db.students[idx].name = childFullName; // Langsung ubah nama panggilan menjadi nama lengkap di apk
               db.students[idx].fullName = childFullName;
               db.students[idx].parent = parentName;
               db.students[idx].phone = phoneClean;

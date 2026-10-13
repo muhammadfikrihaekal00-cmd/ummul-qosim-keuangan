@@ -9,8 +9,8 @@
 </head>
 <body>
 
-  <!-- ==================== SECURITY PIN LOCK GATE (DISABLED BY DEFAULT) ==================== -->
-  <div class="pin-gate-overlay unlocked" id="security-pin-screen" style="display: none !important;">
+  <!-- ==================== SECURITY PIN LOCK GATE ==================== -->
+  <div class="pin-gate-overlay" id="security-pin-screen">
     <div class="pin-gate-box">
       <!-- Luxury Islamic Emblem Badge -->
       <div class="pin-brand-badge" id="pin-brand-badge-box">
@@ -23,10 +23,10 @@
         </div>
       </div>
       <h2 class="pin-title" id="pin-app-title">Sikad<span>TPA</span> Keuangan</h2>
-      <p class="pin-subtitle" id="pin-tpa-subtitle">RQ Ummul Qosim • Sistem Kas Terpadu</p>
+      <p class="pin-subtitle" id="pin-tpa-subtitle">RQ Ummul Qosim • Akses Khusus Pengurus & Bendahara</p>
 
       <div class="pin-prompt-box">
-        <div class="pin-status-label" id="pin-status-message">Masukkan PIN Keamanan Bendahara</div>
+        <div class="pin-status-label" id="pin-status-message">Masukkan 6 Digit PIN Keamanan</div>
         
         <!-- 6-digit indicator dots -->
         <div class="pin-dots-row" id="pin-dots-container">
@@ -59,10 +59,7 @@
       </div>
 
       <div class="pin-footer-hint">
-        <span>🔒 Kunci Keamanan Aktif (PIN: 060708)</span>
-        <div style="margin-top: 8px;">
-          <button type="button" class="btn btn-sm" onclick="app.quickUnlockDemo()" style="background: rgba(37, 99, 235, 0.15); color: var(--primary-700); border: 1px solid var(--primary-300); font-weight: 700; border-radius: 8px; padding: 6px 14px; cursor: pointer;">⚡ Klik Disini untuk Buka Cepat (PIN: 060708)</button>
-        </div>
+        <span style="font-size: 0.74rem; color: var(--slate-400);">🔒 Dilindungi PIN Keamanan. Hanya untuk Pengurus Lembaga.</span>
       </div>
     </div>
   </div>
@@ -242,6 +239,14 @@
               </div>
             </div>
           </div>
+
+          <!-- Lock Session Button (Icon Only) -->
+          <button type="button" class="btn btn-secondary btn-icon-only" onclick="app.lockSession()" title="Kunci Aplikasi (PIN Keamanan)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </button>
 
           <!-- Quick Guide Button (Icon Only) -->
           <button class="btn-guide-toggle btn-icon-only" id="btn-open-guide-modal" title="Panduan Kustomisasi & Ubah Isi">
