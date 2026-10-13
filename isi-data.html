@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3.5.0">
+  <link rel="stylesheet" href="css/style.css?v=3.6.0">
   <style>
     body {
       background: #f1f5f9;
@@ -619,6 +619,36 @@
             parent: parentName,
             phone: phoneClean
           });
+        }
+      } catch (err) {}
+
+      // Kirim pembaruan otomatis ke Spreadsheet di latar belakang jika URL tersedia
+      try {
+        let syncUrl = localStorage.getItem('SIKAD_SHEET_URL') || '';
+        if (!syncUrl) {
+          const raw = localStorage.getItem('SIKAD_TPA_DATA_V3');
+          if (raw) {
+            const db = JSON.parse(raw);
+            if (db && db.tpaInfo && db.tpaInfo.sheetSyncUrl) {
+              syncUrl = db.tpaInfo.sheetSyncUrl;
+            }
+          }
+        }
+        if (syncUrl && syncUrl.startsWith('http')) {
+          fetch(syncUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'update_student_quick',
+              studentId: currentStudent.id,
+              name: childFullName,
+              fullName: childFullName,
+              parent: parentName,
+              phone: phoneClean,
+              timestamp: new Date().toISOString()
+            })
+          }).catch(e => console.warn('Background cloud sync notice:', e));
         }
       } catch (err) {}
 

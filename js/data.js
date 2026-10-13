@@ -21,7 +21,8 @@ const DEFAULT_DATA = {
     qrisNmid: "ID1026091234567 • A01",
     qrisMerchant: "RQ UMMUL QOSIM",
     rekening: "MUAMALAT 8060019518 / BRI 022401017136537 / SULSELBAR 0102100000088413 ( Atas Nama : M Fikri Haekal )",
-    securityPin: "060708"
+    securityPin: "060708",
+    sheetSyncUrl: ""
   },
   // 4 Kelas Resmi RQ Ummul Qosim
   classes: [
@@ -257,7 +258,7 @@ class TPADatabase {
     }
   }
 
-  save(dataToSave = null) {
+  save(dataToSave = null, skipCloud = false) {
     if (dataToSave) {
       this.data = dataToSave;
     }
@@ -266,6 +267,96 @@ class TPADatabase {
     } catch (e) {
       console.error("Gagal menyimpan ke penyimpanan lokal:", e);
     }
+    if (!skipCloud) {
+      this.triggerBackgroundSync();
+    }
+  }
+
+  getSyncUrl() {
+    try {
+      const fromStorage = localStorage.getItem('SIKAD_SHEET_URL');
+      if (fromStorage && fromStorage.trim()) return fromStorage.trim();
+    } catch (e) {}
+    if (this.data && this.data.tpaInfo && this.data.tpaInfo.sheetSyncUrl) {
+      return this.data.tpaInfo.sheetSyncUrl.trim();
+    }
+    return '';
+  }
+
+  setSyncUrl(url) {
+    const clean = (url || '').trim();
+    try {
+      if (clean) {
+        localStorage.setItem('SIKAD_SHEET_URL', clean);
+      } else {
+        localStorage.removeItem('SIKAD_SHEET_URL');
+      }
+    } catch (e) {}
+    if (this.data && this.data.tpaInfo) {
+      this.data.tpaInfo.sheetSyncUrl = clean;
+    }
+    this.save(this.data, false);
+  }
+
+  triggerBackgroundSync() {
+    if (this._syncDebounceTimer) clearTimeout(this._syncDebounceTimer);
+    this._syncDebounceTimer = setTimeout(() => {
+      this.pushToSpreadsheet();
+    }, 800);
+  }
+
+  async pushToSpreadsheet() {
+    const url = this.getSyncUrl();
+    if (!url || !url.startsWith('http')) return false;
+
+    try {
+      const payload = {
+        action: 'sync_full',
+        timestamp: new Date().toISOString(),
+        data: this.data
+      };
+
+      await fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      console.log('Sinkronisasi latar belakang ke spreadsheet berhasil dikirim.');
+      return true;
+    } catch (err) {
+      console.warn('Kendala sync latar belakang ke spreadsheet:', err);
+      return false;
+    }
+  }
+
+  async pullFromSpreadsheet() {
+    const url = this.getSyncUrl();
+    if (!url || !url.startsWith('http')) return false;
+
+    try {
+      const separator = url.includes('?') ? '&' : '?';
+      const fetchUrl = `${url}${separator}action=get_data&_t=${Date.now()}`;
+      const res = await fetch(fetchUrl);
+      if (!res.ok) return false;
+      const json = await res.json();
+
+      if (json && json.status === 'success' && json.data) {
+        const remoteData = json.data;
+        if (remoteData.students && Array.isArray(remoteData.students) && remoteData.students.length > 0) {
+          this.data = remoteData;
+          this.save(this.data, true);
+          console.log('✓ Data berhasil disinkronkan dari spreadsheet online!');
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('sikad_data_synced', { detail: this.data }));
+          }
+          return true;
+        }
+      }
+    } catch (err) {
+      console.warn('Kendala membaca data dari spreadsheet online:', err);
+    }
+    return false;
   }
 
   resetToDefault() {

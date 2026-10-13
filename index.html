@@ -7,8 +7,7 @@
   <meta name="description" content="Aplikasi pengelolaan keuangan modern dan terpadu untuk TPA/TPQ: kelola SPP/syahriah, multi-kas operasional vs tabungan santri, bisyarah guru, infaq, dan kwitansi digital WhatsApp.">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="css/style.css?v=3.5.0">
+  <link rel="stylesheet" href="css/style.css?v=3.6.0">
 </head>
 <body>
 
@@ -447,8 +446,8 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               </button>
 
-              <!-- Tombol Database Spreadsheet (Google Sheets & Excel) -->
-              <button type="button" class="btn btn-secondary btn-icon-only" onclick="app.openSpreadsheetModal()" title="Database Spreadsheet (Excel & Google Sheets)">
+              <!-- Tombol Database Spreadsheet (Disembunyikan agar tanpa ikon di layar sesuai permintaan) -->
+              <button type="button" class="btn btn-secondary btn-icon-only" id="btn-spp-spreadsheet" onclick="app.openSpreadsheetModal()" title="Database Spreadsheet" style="display: none !important;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>
               </button>
 
@@ -1075,6 +1074,17 @@
                 <div class="form-group">
                   <label>Rekening Bank & Donasi Resmi</label>
                   <input type="text" class="form-control" id="info-tpa-rekening" placeholder="Contoh: BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)" required>
+                </div>
+
+                <!-- Sinkronisasi Cloud Database (Google Sheets) -->
+                <div class="settings-section-divider">
+                  <h4><span>☁️</span> <span>Sinkronisasi Otomatis Cloud Spreadsheet (Laptop & HP)</span></h4>
+                </div>
+
+                <div class="form-group">
+                  <label>URL Web App Google Apps Script</label>
+                  <input type="url" class="form-control" id="info-tpa-sheet-url" placeholder="https://script.google.com/macros/s/.../exec">
+                  <small style="color: var(--slate-500); font-size: 0.72rem;">URL ini membuat data di Laptop dan HP tersinkronisasi otomatis tanpa memunculkan ikon ke pengguna. Cukup masukkan sekali di sini.</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px; padding: 12px; font-weight: 700;">
@@ -1806,31 +1816,57 @@
                 Salin Kode
               </button>
             </div>
-            <pre style="margin: 0; max-height: 140px; overflow-y: auto; font-family: monospace; font-size: 0.7rem; color: #cbd5e1; white-space: pre-wrap;" id="google-apps-script-code">function doPost(e) {
+            <pre style="margin: 0; max-height: 140px; overflow-y: auto; font-family: monospace; font-size: 0.7rem; color: #cbd5e1; white-space: pre-wrap;" id="google-apps-script-code">function doGet(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    
-    // 1. Sheet Santri
-    var sheetSantri = ss.getSheetByName("Data Santri") || ss.insertSheet("Data Santri");
-    sheetSantri.clear();
-    sheetSantri.appendRow(["ID", "NIS", "Nama Santri", "Kelas", "Wali", "No WA", "Tarif SPP", "Beasiswa"]);
-    data.students.forEach(function(s) {
-      sheetSantri.appendRow([s.id, s.nis, s.name, s.class, s.parent, s.phone, s.sppAmount, s.isScholarship ? "Ya" : "Tidak"]);
-    });
-    
-    // 2. Sheet SPP
-    var sheetSpp = ss.getSheetByName("Rekap SPP") || ss.insertSheet("Rekap SPP");
-    sheetSpp.clear();
-    sheetSpp.appendRow(["ID", "Santri ID", "Bulan", "Nominal", "Tgl Bayar", "Status", "Metode", "No Kwitansi"]);
-    data.sppRecords.forEach(function(r) {
-      sheetSpp.appendRow([r.id, r.studentId, r.month, r.amount, r.paidDate, r.status, r.method, r.receiptNo]);
-    });
-    
-    return ContentService.createTextOutput(JSON.stringify({status: "success", message: "Sinkronisasi berhasil!"}))
+    var storeSheet = ss.getSheetByName("_DB_STORE");
+    var masterJson = "";
+    if (storeSheet && storeSheet.getLastRow() >= 1) {
+      masterJson = storeSheet.getRange(1, 1).getValue();
+    }
+    if (!masterJson) {
+      masterJson = PropertiesService.getScriptProperties().getProperty("SIKAD_MASTER_DATA") || "";
+    }
+    var resData = null;
+    if (masterJson) { try { resData = JSON.parse(masterJson); } catch(ex){} }
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", updatedAt: new Date().toISOString(), data: resData }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doPost(e) {
+  try {
+    var raw = e.postData ? e.postData.contents : "";
+    if (!raw) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Kosong" })).setMimeType(ContentService.MimeType.JSON);
+    var payload = JSON.parse(raw);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var nowStr = Utilities.formatDate(new Date(), "Asia/Makassar", "yyyy-MM-dd HH:mm:ss");
+    var storeSheet = ss.getSheetByName("_DB_STORE") || ss.insertSheet("_DB_STORE");
+    var db = payload.data || payload;
+    if (db && db.students) {
+      storeSheet.clear();
+      storeSheet.getRange(1, 1).setValue(JSON.stringify(db));
+      PropertiesService.getScriptProperties().setProperty("SIKAD_MASTER_DATA", JSON.stringify(db));
+      var sheetSantri = ss.getSheetByName("Data Santri") || ss.insertSheet("Data Santri");
+      sheetSantri.clear();
+      sheetSantri.appendRow(["ID", "NIS", "Nama Lengkap Santri", "Kelas", "Wali", "No WA", "Tarif SPP", "Beasiswa", "Saldo Tabungan", "Waktu Sync"]);
+      db.students.forEach(function(s) {
+        sheetSantri.appendRow([s.id, s.nis, s.fullName || s.name, s.class, s.parent, s.phone ? "'" + s.phone : "-", s.sppAmount, s.isScholarship ? "Ya" : "Tidak", s.savingsBalance || 0, nowStr]);
+      });
+      var sheetSpp = ss.getSheetByName("Rekap SPP") || ss.insertSheet("Rekap SPP");
+      sheetSpp.clear();
+      sheetSpp.appendRow(["ID Record", "Santri ID", "Bulan", "Nominal", "Tgl Bayar", "Status", "Metode", "No Kwitansi", "Waktu"]);
+      (db.sppRecords || []).forEach(function(r) {
+        sheetSpp.appendRow([r.id, r.studentId, r.month, r.amount, r.paidDate, r.status, r.method, r.receiptNo, nowStr]);
+      });
+    }
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Sinkronisasi berhasil!", timestamp: nowStr }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }</pre>
@@ -2157,7 +2193,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=3.5.0"></script>
-  <script src="js/app.js?v=3.5.0"></script>
+  <script src="js/data.js?v=3.6.0"></script>
+  <script src="js/app.js?v=3.6.0"></script>
 </body>
 </html>

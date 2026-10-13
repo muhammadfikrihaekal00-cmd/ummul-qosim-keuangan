@@ -114,6 +114,23 @@ class SikadApp {
           };
         }
       } catch (err) {}
+
+      // Sinkronisasi otomatis data via Spreadsheet di latar belakang (Laptop & HP)
+      window.addEventListener('sikad_data_synced', () => {
+        this.renderAll();
+      });
+      if (window.db && typeof window.db.pullFromSpreadsheet === 'function') {
+        window.db.pullFromSpreadsheet();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && window.db) window.db.pullFromSpreadsheet();
+        });
+        window.addEventListener('focus', () => {
+          if (window.db) window.db.pullFromSpreadsheet();
+        });
+        setInterval(() => {
+          if (navigator.onLine && window.db) window.db.pullFromSpreadsheet();
+        }, 45000);
+      }
     } catch (err) {
       console.error("Initialization error:", err);
     }
@@ -670,6 +687,11 @@ class SikadApp {
 
     const elRekening = document.getElementById('info-tpa-rekening');
     if (elRekening) elRekening.value = info.rekening || '';
+
+    const elSheetUrl = document.getElementById('info-tpa-sheet-url');
+    if (elSheetUrl && window.db && typeof window.db.getSyncUrl === 'function') {
+      elSheetUrl.value = window.db.getSyncUrl() || '';
+    }
 
     // QRIS preview in settings form
     const qrisPreviewBox = document.getElementById('info-qris-preview-box');
@@ -2790,6 +2812,12 @@ Bendahara *${tpaInfo.nama}*
 
     window.db.updateTPAInfo(newInfo);
     window.db.updateSecurityPin(pinVal);
+
+    const sheetUrlVal = document.getElementById('info-tpa-sheet-url')?.value.trim() || '';
+    if (window.db && typeof window.db.setSyncUrl === 'function') {
+      window.db.setSyncUrl(sheetUrlVal);
+    }
+
     this.uploadedAppLogo = null;
     this.uploadedQrisImage = null;
     this.loadTPAInfoToUI();
@@ -3637,29 +3665,18 @@ Bendahara *${tpaInfo.nama}*
     }
 
     localStorage.setItem('SIKAD_SHEET_URL', url);
+    if (window.db && typeof window.db.setSyncUrl === 'function') {
+      window.db.setSyncUrl(url);
+    }
     const statusEl = document.getElementById('sheet-sync-status');
     if (statusEl) {
       statusEl.innerText = 'Mengirim data ke Google Spreadsheet... Mohon tunggu...';
     }
 
-    const payload = {
-      timestamp: new Date().toISOString(),
-      tpaInfo: window.db.getTPAInfo(),
-      students: window.db.getStudents(),
-      sppRecords: window.db.data.sppRecords || [],
-      transactions: window.db.getTransactions()
-    };
-
     try {
-      await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
+      const ok = await window.db.pushToSpreadsheet();
       if (statusEl) {
-        statusEl.innerHTML = `<span style="color: #16a34a; font-weight: 700;">✓ Berhasil Disinkronkan:</span> Data (${payload.students.length} santri, ${payload.sppRecords.length} record SPP) telah dikirim ke Google Sheets pada ${new Date().toLocaleTimeString('id-ID')}.`;
+        statusEl.innerHTML = `<span style="color: #16a34a; font-weight: 700;">✓ Berhasil Disinkronkan:</span> Data (${(window.db.getStudents() || []).length} santri) telah dikirim ke Google Sheets pada ${new Date().toLocaleTimeString('id-ID')}.`;
       }
       this.showToast('Alhamdulillah! Data sukses dikirim ke Google Sheets.');
     } catch (err) {
