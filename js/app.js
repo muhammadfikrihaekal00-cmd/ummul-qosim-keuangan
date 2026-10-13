@@ -27,7 +27,7 @@ class SikadApp {
         id: 'K1',
         name: 'Kelas Dasar Ikhwan',
         shortName: 'Dasar Ikhwan',
-        teacher: 'Ustadz Muhammad Rizqi',
+        teacher: 'Ustadz Muhammad Fikri Haekal',
         room: 'Ruang Shofa',
         schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
         color: 'emerald',
@@ -37,7 +37,7 @@ class SikadApp {
         id: 'K2',
         name: 'Kelas Menengah Akhowat',
         shortName: 'Menengah Akhowat',
-        teacher: 'Ustadzah Siti Fatimah',
+        teacher: 'Ustadzah A. Lulu Aprilia Latifa',
         room: 'Ruang Marwah',
         schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
         color: 'royal',
@@ -47,7 +47,7 @@ class SikadApp {
         id: 'K3',
         name: 'Kelas Menengah Ikhwan',
         shortName: 'Menengah Ikhwan',
-        teacher: 'Ustadz Ahmad Fauzi',
+        teacher: 'Ustadzah Khirfatul Jannah',
         room: 'Aula Utama',
         schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
         color: 'persian',
@@ -57,7 +57,7 @@ class SikadApp {
         id: 'K4',
         name: 'Kelas Dasar Ikhwan & Akhowat',
         shortName: 'Dasar Gabungan',
-        teacher: 'Ustadzah Nurul Khadijah',
+        teacher: 'Ustadzah Ummu Khadijah',
         room: 'Serambi Utama',
         schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
         color: 'amber',
@@ -322,13 +322,40 @@ class SikadApp {
     document.getElementById('btn-save-savings')?.addEventListener('click', (e) => this.submitSavings(e));
     document.getElementById('btn-save-pay-spp')?.addEventListener('click', (e) => this.submitPaySpp(e));
 
-    // Global Modal Backdrop Click to Close (Klik area gelap di luar box)
+    // Global Modal Backdrop Click to Close (Klik area gelap di luar box, tahan drag/seleksi teks tidak keluar)
     document.querySelectorAll('.modal-overlay').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+      let isBackdropPress = false;
+      modal.addEventListener('mousedown', (e) => {
+        isBackdropPress = (e.target === modal);
+      });
+      modal.addEventListener('mouseup', (e) => {
+        if (isBackdropPress && e.target === modal) {
           this.closeModal(modal.id);
         }
+        isBackdropPress = false;
       });
+      // Cegah klik / seleksi di dalam modal box memicu penutupan tidak sengaja
+      const box = modal.querySelector('.modal-box');
+      if (box) {
+        box.addEventListener('click', (e) => e.stopPropagation());
+      }
+    });
+
+    // Cegah form modal keluar sendiri / submit tiba-tiba saat menekan Enter saat mengetik input
+    ['form-teacher', 'form-student', 'form-edit-class', 'form-tx', 'form-savings', 'form-pay-spp'].forEach(fId => {
+      const f = document.getElementById(fId);
+      if (f) {
+        f.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+            e.preventDefault();
+            const inputs = Array.from(f.querySelectorAll('input:not([type="hidden"]), select'));
+            const idx = inputs.indexOf(e.target);
+            if (idx >= 0 && idx < inputs.length - 1) {
+              inputs[idx + 1].focus();
+            }
+          }
+        });
+      }
     });
 
     // Escape Key to Close Active Modals
@@ -2834,9 +2861,9 @@ Bendahara *${tpaInfo.nama}*
       if (titleEl) titleEl.innerText = `✏️ Ubah Data Pengajar (${teacher.name})`;
       if (saveBtn) saveBtn.innerText = '💾 Simpan Perubahan Pengajar';
       if (nameInput) nameInput.value = teacher.name || '';
-      if (phoneInput) phoneInput.value = teacher.phone || '628';
+      if (phoneInput) phoneInput.value = teacher.phone || '';
       if (sessionsInput) sessionsInput.value = teacher.sessions || 16;
-      if (salaryInput) salaryInput.value = teacher.baseSalary || 750000;
+      if (salaryInput) salaryInput.value = teacher.baseSalary || 700000;
       if (roleSelect && teacher.role) {
         if (!Array.from(roleSelect.options).some(o => o.value === teacher.role)) {
           roleSelect.add(new Option(teacher.role, teacher.role));
@@ -2849,9 +2876,9 @@ Bendahara *${tpaInfo.nama}*
       if (titleEl) titleEl.innerText = '➕ Tambah Pengajar / Ustadz Baru';
       if (saveBtn) saveBtn.innerText = 'Simpan Data Pengajar';
       if (nameInput) nameInput.value = '';
-      if (phoneInput) phoneInput.value = '628';
+      if (phoneInput) phoneInput.value = '';
       if (sessionsInput) sessionsInput.value = '16';
-      if (salaryInput) salaryInput.value = '750000';
+      if (salaryInput) salaryInput.value = '700000';
       if (roleSelect) roleSelect.selectedIndex = 0;
     }
 
@@ -2868,7 +2895,7 @@ Bendahara *${tpaInfo.nama}*
     const role = document.getElementById('teacher-role')?.value || "Pengajar Al-Qur'an";
     let phone = document.getElementById('teacher-phone')?.value.trim() || '';
     const sessions = Number(document.getElementById('teacher-sessions')?.value || 16);
-    const salary = Number(document.getElementById('teacher-salary')?.value || 750000);
+    const salary = Number(document.getElementById('teacher-salary')?.value || 700000);
 
     if (!name) {
       alert('Silakan masukkan nama lengkap pengajar / ustadz!');
@@ -2876,10 +2903,8 @@ Bendahara *${tpaInfo.nama}*
       return;
     }
 
-    let cleanPhone = phone.replace(/\D/g, '');
-    if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
-    else if (cleanPhone && !cleanPhone.startsWith('62')) cleanPhone = '62' + cleanPhone;
-    if (!cleanPhone) cleanPhone = '6281234567890';
+    let cleanPhone = phone.replace(/[^\d+ -]/g, '').trim();
+    if (!cleanPhone) cleanPhone = '081234567890';
 
     try {
       if (id) {

@@ -29,7 +29,7 @@ const DEFAULT_DATA = {
       id: 'K1',
       name: 'Kelas Dasar Ikhwan',
       shortName: 'Dasar Ikhwan',
-      teacher: 'Ustadz Muhammad Rizqi',
+      teacher: 'Ustadz Muhammad Fikri Haekal',
       room: 'Ruang Shofa',
       schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
       color: 'emerald',
@@ -39,7 +39,7 @@ const DEFAULT_DATA = {
       id: 'K2',
       name: 'Kelas Menengah Akhowat',
       shortName: 'Menengah Akhowat',
-      teacher: 'Ustadzah Siti Fatimah',
+      teacher: 'Ustadzah A. Lulu Aprilia Latifa',
       room: 'Ruang Marwah',
       schedule: 'Senin - Kamis (16:00 - 17:15 WITA)',
       color: 'royal',
@@ -49,7 +49,7 @@ const DEFAULT_DATA = {
       id: 'K3',
       name: 'Kelas Menengah Ikhwan',
       shortName: 'Menengah Ikhwan',
-      teacher: 'Ustadz Ahmad Fauzi',
+      teacher: 'Ustadzah Khirfatul Jannah',
       room: 'Aula Utama',
       schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
       color: 'persian',
@@ -59,7 +59,7 @@ const DEFAULT_DATA = {
       id: 'K4',
       name: 'Kelas Dasar Ikhwan & Akhowat',
       shortName: 'Dasar Gabungan',
-      teacher: 'Ustadzah Nurul Khadijah',
+      teacher: 'Ustadzah Ummu Khadijah',
       room: 'Serambi Utama',
       schedule: 'Senin - Kamis (16:00 - 17:30 WITA)',
       color: 'amber',
@@ -73,12 +73,12 @@ const DEFAULT_DATA = {
     { id: 'infaq', name: 'Kas Infaq & Sedekah', desc: 'Kotak amal Jumat & donasi sukarela', balance: 0, icon: 'heart' },
     { id: 'bangun', name: 'Kas Sarana & Pembangunan', desc: 'Khusus renovasi, meja Al-Quran & sarana', balance: 0, icon: 'building' }
   ],
-  // Data Pengajar / Ustadz
+  // Data 4 Pengajar / Ustadz & Ustadzah Resmi RQ Ummul Qosim
   teachers: [
-    { id: 'G-01', name: 'Ustadz Ahmad Fauzi', phone: '081298765431', role: 'Pengajar Kelas Menengah Ikhwan', baseSalary: 600000, sessions: 16, status: 'Aktif' },
-    { id: 'G-02', name: 'Ustadzah Siti Fatimah', phone: '081387654322', role: 'Pengajar Kelas Menengah Akhowat', baseSalary: 550000, sessions: 14, status: 'Aktif' },
-    { id: 'G-03', name: 'Ustadz Muhammad Rizqi', phone: '081976543213', role: 'Pengajar Kelas Dasar Ikhwan', baseSalary: 500000, sessions: 15, status: 'Aktif' },
-    { id: 'G-04', name: 'Ustadzah Nurul Khadijah', phone: '085265432104', role: 'Pengajar Kelas Dasar Ikhwan & Akhowat', baseSalary: 600000, sessions: 16, status: 'Aktif' }
+    { id: 'G-01', name: 'Ustadz Muhammad Fikri Haekal', phone: '082189480869', role: 'Pengajar Kelas Dasar Ikhwan', baseSalary: 700000, sessions: 16, status: 'Aktif' },
+    { id: 'G-02', name: 'Ustadzah Ummu Khadijah', phone: '082339495396', role: 'Pengajar Kelas Dasar Ikhwan & Akhowat', baseSalary: 700000, sessions: 16, status: 'Aktif' },
+    { id: 'G-03', name: 'Ustadzah A. Lulu Aprilia Latifa', phone: '087722442651', role: 'Pengajar Kelas Menengah Akhowat', baseSalary: 700000, sessions: 16, status: 'Aktif' },
+    { id: 'G-04', name: 'Ustadzah Khirfatul Jannah', phone: '089654707922', role: 'Pengajar Kelas Menengah Ikhwan', baseSalary: 700000, sessions: 16, status: 'Aktif' }
   ],
   // Data 36 Santri Resmi RQ Ummul Qosim
   students: [
@@ -196,7 +196,15 @@ class TPADatabase {
         parsed.transactions = [];
       }
       if (!Array.isArray(parsed.savingsTransactions)) parsed.savingsTransactions = [];
-      if (!Array.isArray(parsed.teachers)) parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
+      // Perbarui atau migrasikan data ustadz ke 4 nama ustadz/ustadzah resmi RQ Ummul Qosim
+      const hasOldTeachers = !Array.isArray(parsed.teachers) || 
+                             parsed.teachers.length === 0 ||
+                             parsed.teachers.some(t => t.name.includes('Ahmad Fauzi') || t.name.includes('Siti Fatimah') || t.name.includes('Muhammad Rizqi') || t.name.includes('Nurul Khadijah')) ||
+                             !parsed.teachers.some(t => t.name.includes('Haekal'));
+      if (hasOldTeachers) {
+        parsed.teachers = JSON.parse(JSON.stringify(DEFAULT_DATA.teachers));
+      }
+
       // 4 Kelas Resmi RQ Ummul Qosim
       if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
         parsed.classes = JSON.parse(JSON.stringify(DEFAULT_DATA.classes));
@@ -210,7 +218,7 @@ class TPADatabase {
             if (!existing.icon) existing.icon = defCls.icon;
             if (!existing.room) existing.room = defCls.room;
             if (!existing.schedule) existing.schedule = defCls.schedule;
-            if (!existing.teacher) existing.teacher = defCls.teacher;
+            existing.teacher = defCls.teacher;
             if (!existing.color) existing.color = defCls.color;
           }
         });
