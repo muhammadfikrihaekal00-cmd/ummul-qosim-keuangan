@@ -628,6 +628,70 @@ body {
   }
 }
 
+/* Header Spotlight Search Omnibar */
+.header-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--slate-100);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 8px 14px;
+  color: var(--slate-600);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 380px;
+  outline: none;
+}
+.header-search-bar:hover {
+  background: #fff;
+  border-color: var(--primary-500);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  color: var(--slate-800);
+}
+.header-search-bar svg {
+  color: var(--slate-400);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.header-search-bar:hover svg {
+  color: var(--primary-600);
+}
+.header-search-bar .search-placeholder-text {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.header-search-bar .search-kbd-shortcut {
+  background: var(--slate-200);
+  color: var(--slate-600);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.68rem;
+  font-family: inherit;
+  font-weight: 700;
+  pointer-events: none;
+}
+@media (max-width: 768px) {
+  .header-search-bar .search-placeholder-text {
+    display: none;
+  }
+  .header-search-bar .search-kbd-shortcut {
+    display: none;
+  }
+  .header-search-bar {
+    padding: 8px 10px;
+    max-width: fit-content;
+  }
+}
+
 /* Header Omni Search Bar */
 .header-omni-search {
   display: flex;
@@ -1573,6 +1637,7 @@ body {
   color: var(--slate-400);
   width: 16px;
   height: 16px;
+  pointer-events: none;
 }
 
 select.select-app {
@@ -2272,7 +2337,7 @@ select.select-app:focus {
   bottom: 0;
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(12px);
-  z-index: 1000;
+  z-index: 100050;
   align-items: flex-start;
   justify-content: center;
   padding: 80px 20px 20px;
@@ -2550,13 +2615,14 @@ select.select-app:focus {
   width: 62px;
   height: 62px;
   border-radius: 20px;
-  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  background: #ffffff;
+  padding: 4px;
   color: var(--slate-900);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .pin-title {
@@ -2784,8 +2850,9 @@ select.select-app:focus {
 .sidebar-logo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #ffffff;
 }
 .pin-logo-img {
   width: 100%;

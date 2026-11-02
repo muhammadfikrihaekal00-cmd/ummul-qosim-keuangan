@@ -9,7 +9,7 @@ const STORAGE_KEY = 'SIKAD_TPA_DATA_V3';
 const DEFAULT_DATA = {
   tpaInfo: {
     appName: "SikadTPA Keuangan",
-    appLogo: "", // data URL Base64 atau kosong (default SVG)
+    appLogo: "img/logo-rq.jpg", // Logo resmi RQ Ummul Qosim
     nama: "RQ Ummul Qosim",
     masjid: "-",
     alamat: "Perumahan Maros Regency, Blok F no. 3",
@@ -183,6 +183,9 @@ class TPADatabase {
       const parsed = JSON.parse(raw);
       if (!parsed.tpaInfo) parsed.tpaInfo = {};
       parsed.tpaInfo = { ...DEFAULT_DATA.tpaInfo, ...parsed.tpaInfo };
+      if (!parsed.tpaInfo.appLogo) {
+        parsed.tpaInfo.appLogo = "img/logo-rq.jpg";
+      }
       if (!parsed.tpaInfo.sheetSyncUrl) {
         parsed.tpaInfo.sheetSyncUrl = DEFAULT_DATA.tpaInfo.sheetSyncUrl;
       }
@@ -561,7 +564,7 @@ class TPADatabase {
     const student = this.getStudent(studentId);
     if (!student) return null;
     if (student.isScholarship) {
-      return { isPaid: true, record: null, note: 'Beasiswa Yatim/Dhuafa (Bebas Biaya)' };
+      return { isPaid: true, record: null, note: 'Beasiswa (Bebas Biaya)' };
     }
     const record = this.data.sppRecords.find(r => r.studentId === studentId && r.month === monthStr);
     return {

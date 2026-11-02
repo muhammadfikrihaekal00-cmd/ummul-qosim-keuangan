@@ -279,6 +279,26 @@ class SikadApp {
       });
     }
 
+    // 0. Spotlight Omnibar Search Buttons
+    document.getElementById('btn-trigger-cmd-header')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.openCommandPalette();
+    });
+    document.getElementById('btn-trigger-cmd-sidebar')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.openCommandPalette();
+    });
+
+    // Klik wrapper input pencarian otomatis memfokuskan field teks
+    document.querySelectorAll('.input-search-wrap').forEach(wrap => {
+      wrap.addEventListener('click', (e) => {
+        const inp = wrap.querySelector('input');
+        if (inp && e.target !== inp) {
+          inp.focus();
+        }
+      });
+    });
+
     // Direct Event Listeners for All Input Buttons
     // 1. Header Buttons
     document.getElementById('btn-header-add-student')?.addEventListener('click', (e) => {
@@ -562,18 +582,10 @@ class SikadApp {
       }
     }
 
+    const currentLogo = info.appLogo || 'img/logo-rq.jpg';
     const sidebarLogoContent = document.getElementById('sidebar-app-logo-content');
     if (sidebarLogoContent) {
-      if (info.appLogo) {
-        sidebarLogoContent.innerHTML = `<img src="${info.appLogo}" class="sidebar-logo-img" alt="Logo">`;
-      } else {
-        sidebarLogoContent.innerHTML = `
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            <circle cx="12" cy="8.5" r="2.2" fill="currentColor"></circle>
-          </svg>`;
-      }
+      sidebarLogoContent.innerHTML = `<img src="${currentLogo}" class="sidebar-logo-img" alt="Logo RQ">`;
     }
 
     // PIN Screen Branding
@@ -585,16 +597,7 @@ class SikadApp {
 
     const pinLogoContent = document.getElementById('pin-brand-logo-content');
     if (pinLogoContent) {
-      if (info.appLogo) {
-        pinLogoContent.innerHTML = `<img src="${info.appLogo}" class="pin-logo-img" alt="Logo">`;
-      } else {
-        pinLogoContent.innerHTML = `
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            <circle cx="12" cy="16" r="1.5" fill="currentColor"></circle>
-          </svg>`;
-      }
+      pinLogoContent.innerHTML = `<img src="${currentLogo}" class="pin-logo-img" alt="Logo RQ" style="background: #ffffff; object-fit: contain;">`;
     }
 
     // Sidebar Institution Name & User
@@ -1103,7 +1106,7 @@ class SikadApp {
               let footerActions = '';
 
               if (s.isScholarship) {
-                statusTag = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
+                statusTag = `<span class="badge badge-warning">⭐ Beasiswa</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end; align-items: center;">
                     <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
@@ -1226,7 +1229,7 @@ class SikadApp {
                   `;
 
                   if (s.isScholarship) {
-                    badgeHtml = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
+                    badgeHtml = `<span class="badge badge-warning">⭐ Beasiswa</span>`;
                     actionButtons = `
                       <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
                         <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
@@ -1392,6 +1395,11 @@ class SikadApp {
     const tpaInfo = window.db.getTPAInfo();
     const rcpTpaEl = document.getElementById('rcp-tpa-name');
     if (rcpTpaEl && tpaInfo) rcpTpaEl.innerText = (tpaInfo.nama || 'TPA').toUpperCase();
+
+    const rcpLogoEl = document.getElementById('rcp-logo-img');
+    if (rcpLogoEl) {
+      rcpLogoEl.src = (tpaInfo && tpaInfo.appLogo) ? tpaInfo.appLogo : 'img/logo-rq.jpg';
+    }
 
     document.getElementById('rcp-number').innerText = `No: ${record.receiptNo}`;
     document.getElementById('rcp-date').innerText = this.formatDateId(record.paidDate);
@@ -1699,14 +1707,20 @@ class SikadApp {
         }, 'image/png');
       };
 
-      if (tpaInfo.appLogo) {
-        const img = new Image();
-        img.onload = () => drawContent(img);
-        img.onerror = () => drawContent(null);
-        img.src = tpaInfo.appLogo;
-      } else {
-        drawContent(null);
-      }
+      const logoToLoad = (tpaInfo && tpaInfo.appLogo) ? tpaInfo.appLogo : 'img/logo-rq.jpg';
+      const img = new Image();
+      img.onload = () => drawContent(img);
+      img.onerror = () => {
+        if (logoToLoad !== 'img/logo-rq.jpg') {
+          const fbImg = new Image();
+          fbImg.onload = () => drawContent(fbImg);
+          fbImg.onerror = () => drawContent(null);
+          fbImg.src = 'img/logo-rq.jpg';
+        } else {
+          drawContent(null);
+        }
+      };
+      img.src = logoToLoad;
     });
   }
 
@@ -2511,7 +2525,7 @@ Bendahara *${tpaInfo.nama}*
           <td>
             <div style="font-weight: 700; color: var(--slate-900); font-size: 0.92rem;">${s.name}</div>
             ${s.nickname && s.nickname !== s.name ? `<div style="font-size: 0.72rem; color: var(--slate-500); font-weight: 600; margin-top: 2px;">(Panggilan: ${s.nickname})</div>` : ''}
-            ${s.isScholarship ? '<span class="badge badge-info" style="font-size: 0.65rem;">Beasiswa Yatim</span>' : ''}
+            ${s.isScholarship ? '<span class="badge badge-info" style="font-size: 0.65rem;">Beasiswa</span>' : ''}
           </td>
           <td><span class="badge badge-neutral">${s.class}</span></td>
           <td>
@@ -3407,6 +3421,11 @@ Bendahara *${tpaInfo.nama}*
   // SECURITY PIN LOCK GATE CONTROLLER (PIN: 060708)
   // =========================================================================
   initSecurityPinGate() {
+    // Buka aplikasi penuh secara default agar seluruh menu & tools dapat langsung diakses
+    if (sessionStorage.getItem('sikadtpa_locked_manually') !== 'true') {
+      sessionStorage.removeItem('sikadtpa_locked_manually');
+      sessionStorage.setItem('sikadtpa_unlocked', 'true');
+    }
     const isUnlocked = sessionStorage.getItem('sikadtpa_unlocked') === 'true';
     const screen = document.getElementById('security-pin-screen');
     if (isUnlocked) {
@@ -3520,6 +3539,7 @@ Bendahara *${tpaInfo.nama}*
         msg.innerText = '✓ PIN Benar! Membuka akses...';
         msg.classList.remove('error');
       }
+      sessionStorage.removeItem('sikadtpa_locked_manually');
       sessionStorage.setItem('sikadtpa_unlocked', 'true');
 
       setTimeout(() => {
@@ -3565,6 +3585,7 @@ Bendahara *${tpaInfo.nama}*
   }
 
   lockSession() {
+    sessionStorage.setItem('sikadtpa_locked_manually', 'true');
     sessionStorage.removeItem('sikadtpa_unlocked');
     const screen = document.getElementById('security-pin-screen');
     if (screen) {
@@ -3643,7 +3664,7 @@ Bendahara *${tpaInfo.nama}*
 
   exportStudentsCsv() {
     const students = window.db.getStudents();
-    const headers = ['ID Santri', 'NIS', 'Nama Lengkap Santri', 'Kelas / Jilid RQ', 'Nama Orang Tua / Wali', 'No WhatsApp Wali', 'Tarif SPP Bulanan (Rp)', 'Status Beasiswa / Yatim', 'Saldo Tabungan (Rp)'];
+    const headers = ['ID Santri', 'NIS', 'Nama Lengkap Santri', 'Kelas / Jilid RQ', 'Nama Orang Tua / Wali', 'No WhatsApp Wali', 'Tarif SPP Bulanan (Rp)', 'Status Beasiswa', 'Saldo Tabungan (Rp)'];
     
     let csv = headers.map(h => this.escapeCsvCell(h)).join(',') + '\r\n';
     students.forEach(s => {
@@ -4395,5 +4416,17 @@ window.deleteStudent = function(id) {
 window.cleanupDuplicateStudents = function(promptConfirm = true) {
   const inst = window.app || initSikadApp();
   if (inst) return inst.cleanupDuplicateStudents(promptConfirm);
+};
+window.openCommandPalette = function() {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.openCommandPalette();
+};
+window.closeCommandPalette = function() {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.closeCommandPalette();
+};
+window.handleCmdBackdropClick = function(e) {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.handleCmdBackdropClick(e);
 };
 
