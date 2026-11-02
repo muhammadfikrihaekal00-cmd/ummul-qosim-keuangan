@@ -918,6 +918,14 @@ class SikadApp {
     this.renderSppTable();
   }
 
+  formatMethod(method) {
+    if (!method) return 'Tunai';
+    const m = String(method).toLowerCase();
+    if (m.includes('transfer') || m.includes('bsi')) return 'Transfer';
+    if (m.includes('tunai')) return 'Tunai';
+    return method;
+  }
+
   setSppClassFilter(classId) {
     this.selectedClassFilter = classId || 'all';
     document.querySelectorAll('#spp-class-filter-bar .spp-class-tab-btn').forEach(btn => {
@@ -996,6 +1004,25 @@ class SikadApp {
     // 2. Render Tabel Terpisah untuk Masing-Masing dari 4 Kelas RQ
     let totalRenderedCount = 0;
     let outputHtml = '';
+
+    // Deteksi santri ganda (duplikat) dan tampilkan banner bantuan jika ditemukan
+    const { duplicates } = this.checkDuplicateStudents();
+    if (duplicates.length > 0) {
+      outputHtml += `
+        <div class="duplicate-alert-banner" style="background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%); border: 1.5px solid #f87171; border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 800; flex-shrink: 0;">⚠️</div>
+            <div>
+              <div style="font-weight: 800; color: #991b1b; font-size: 0.95rem;">Ditemukan ${duplicates.length} Data Santri Duplikat (Inputan Dobel)</div>
+              <div style="font-size: 0.78rem; color: #b91c1c; margin-top: 2px;">Terjadi karena jeda saat update/klik simpan berulang kali. Anda dapat membersihkan data duplikat ini langsung atau menggunakan tombol tong sampah (🗑️) di masing-masing santri.</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-danger btn-sm" onclick="app.cleanupDuplicateStudents(true)" style="font-weight: 700; padding: 8px 16px; border-radius: 8px; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);">
+            🧹 Bersihkan Santri Duplikat Sekarang
+          </button>
+        </div>
+      `;
+    }
 
     const visibleClasses = this.rqClasses.filter(c => {
       if (this.selectedClassFilter === 'all') return true;
@@ -1086,7 +1113,7 @@ class SikadApp {
                   </div>
                 `;
               } else if (isPaid) {
-                statusTag = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
+                statusTag = `<span class="badge badge-success">✓ Lunas (${this.formatMethod(sppStatus.record?.method)})</span>`;
                 footerActions = `
                   <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
                     <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
@@ -1132,6 +1159,14 @@ class SikadApp {
                           <span class="std-badge-class">${s.class}</span>
                         </div>
                       </div>
+                      <div class="std-card-quick-actions" style="margin-left: auto; display: flex; gap: 4px; align-items: center;">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openStudentModal('${s.id}', true)" title="Ubah Data Santri ${s.name}">
+                          ✏️
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm btn-icon-only" onclick="app.deleteStudent('${s.id}')" title="Hapus Data Santri ${s.name}">
+                          🗑️
+                        </button>
+                      </div>
                     </div>
                     <div class="std-details-list">
                       <div class="std-detail-item">
@@ -1171,7 +1206,7 @@ class SikadApp {
                   <th>Wali & No. WhatsApp</th>
                   <th style="width: 120px;">Tarif SPP</th>
                   <th style="width: 165px;">Status (${this.formatMonthId(selectedMonth)})</th>
-                  <th style="text-align: right; width: 175px;">Aksi</th>
+                  <th style="text-align: right; width: 220px;">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -1181,6 +1216,15 @@ class SikadApp {
                   let badgeHtml = '';
                   let actionButtons = '';
 
+                  const editDeleteButtons = `
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.openStudentModal('${s.id}', true)" title="Ubah Data Santri ${s.name}">
+                      ✏️
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm btn-icon-only" onclick="app.deleteStudent('${s.id}')" title="Hapus Data Santri ${s.name}">
+                      🗑️
+                    </button>
+                  `;
+
                   if (s.isScholarship) {
                     badgeHtml = `<span class="badge badge-warning">⭐ Beasiswa Yatim</span>`;
                     actionButtons = `
@@ -1189,10 +1233,11 @@ class SikadApp {
                           🔗
                         </button>
                         <span style="font-size: 0.75rem; color: var(--slate-400); font-weight: 600;">Bebas Biaya</span>
+                        ${editDeleteButtons}
                       </div>
                     `;
                   } else if (isPaid) {
-                    badgeHtml = `<span class="badge badge-success">✓ Lunas (${sppStatus.record?.method || 'Tunai'})</span>`;
+                    badgeHtml = `<span class="badge badge-success">✓ Lunas (${this.formatMethod(sppStatus.record?.method)})</span>`;
                     actionButtons = `
                       <div class="cell-actions" style="display: flex; gap: 6px; justify-content: flex-end;">
                         <button type="button" class="btn btn-outline-primary btn-sm btn-icon-only" onclick="app.copyStudentFormLink('${s.id}')" title="Salin Link Form Wali ${s.name}">
@@ -1207,6 +1252,7 @@ class SikadApp {
                         <button type="button" class="btn btn-danger btn-sm btn-icon-only" onclick="app.cancelSppPaymentPrompt('${sppStatus.record.id}')" title="Batalkan Pelunasan">
                           ↩️
                         </button>
+                        ${editDeleteButtons}
                       </div>
                     `;
                   } else {
@@ -1222,6 +1268,7 @@ class SikadApp {
                         <button type="button" class="btn btn-secondary btn-sm btn-icon-only" onclick="app.openReminderWaPreview('${s.id}', '${selectedMonth}')" title="Kirim Tagihan Pengingat WA">
                           💬
                         </button>
+                        ${editDeleteButtons}
                       </div>
                     `;
                   }
@@ -1342,7 +1389,7 @@ class SikadApp {
     document.getElementById('rcp-student').innerText = student.name;
     document.getElementById('rcp-class').innerText = student.class;
     document.getElementById('rcp-for').innerText = `Syahriah / SPP Bulan ${this.formatMonthId(record.month)}`;
-    document.getElementById('rcp-method').innerText = record.method;
+    document.getElementById('rcp-method').innerText = this.formatMethod(record.method);
     document.getElementById('rcp-amount').innerText = this.formatRp(record.amount);
 
     const btnWa = document.getElementById('btn-rcp-send-wa');
@@ -1504,7 +1551,7 @@ class SikadApp {
           { label: 'NIS / Kelas', val: `${student.nis || '-'}  •  ${student.class}`, isBold: false },
           { label: 'Diterima Dari', val: student.parent, isBold: false },
           { label: 'Keterangan', val: `Syahriah / SPP Bulan ${this.formatMonthId(record.month)}`, isBold: true },
-          { label: 'Metode Pembayaran', val: record.method || 'Tunai', isBold: false },
+          { label: 'Metode Pembayaran', val: this.formatMethod(record.method), isBold: false },
           { label: 'Status Verifikasi', val: 'LUNAS (Alhamdulillah)', isBold: true, isGreen: true }
         ];
 
@@ -1763,7 +1810,7 @@ Kelas/Jilid : ${student.class}
 Diterima Dari: ${student.parent}
 Untuk Bulan : *${this.formatMonthId(record.month)}*
 Jumlah      : *${this.formatRp(record.amount)}*
-Metode Bayar: ${record.method}
+Metode Bayar: ${this.formatMethod(record.method)}
 Status      : *LUNAS ✓*
 ━━━━━━━━━━━━━━━━━━━━
 
@@ -2699,6 +2746,8 @@ Bendahara *${tpaInfo.nama}*
 
   submitStudent(e) {
     if (e && e.preventDefault) e.preventDefault();
+    if (this._isSubmittingStudent) return; // Cegah double submit
+
     const id = document.getElementById('std-id')?.value.trim();
     const nis = document.getElementById('std-nis')?.value.trim();
     const name = document.getElementById('std-name')?.value.trim();
@@ -2724,6 +2773,23 @@ Bendahara *${tpaInfo.nama}*
       cleanPhone = '62' + cleanPhone;
     }
     if (!cleanPhone) cleanPhone = '6281234567890';
+
+    // Cek santri yang sudah ada jika mode tambah baru
+    if (!id) {
+      const existing = (window.db.getStudents() || []).find(s => s.name.trim().toLowerCase() === name.trim().toLowerCase());
+      if (existing) {
+        const proceed = confirm(`⚠️ Perhatian:\nSudah ada santri dengan nama "${existing.name}" di ${existing.class} (NIS: ${existing.nis}).\n\nApakah Anda yakin tetap ingin mendaftarkan santri ini sebagai santri baru (bukan ubah data)?`);
+        if (!proceed) return;
+      }
+    }
+
+    const saveBtn = document.getElementById('btn-save-student');
+    const oldBtnText = saveBtn ? saveBtn.innerHTML : 'Simpan Data Santri';
+    this._isSubmittingStudent = true;
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '⏳ Menyimpan data santri...';
+    }
 
     try {
       const clsKey = this.normalizeClassKey(stdClass);
@@ -2765,17 +2831,75 @@ Bendahara *${tpaInfo.nama}*
     } catch (err) {
       console.error('Gagal menyimpan santri:', err);
       alert('Terjadi kendala saat menyimpan data santri: ' + err.message);
+    } finally {
+      this._isSubmittingStudent = false;
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = oldBtnText;
+      }
     }
   }
 
   deleteStudent(id) {
     const student = window.db.getStudent(id);
-    if (!student) return;
-    if (confirm(`Yakin ingin menghapus santri ${student.name}?`)) {
+    if (!student) {
+      alert('Data santri tidak ditemukan atau sudah dihapus.');
+      return;
+    }
+    const confirmMsg = `Yakin ingin menghapus santri "${student.name}" (NIS: ${student.nis || '-'})?\n\n• Santri akan dihapus dari daftar kelas ${student.class}.\n• Seluruh catatan SPP dan riwayat santri ini akan dibersihkan agar saldo & rekap akurat.`;
+    if (confirm(confirmMsg)) {
       window.db.deleteStudent(id);
       this.renderAll();
-      this.showToast(`Data santri ${student.name} berhasil dihapus.`);
+      this.showToast(`Data santri "${student.name}" berhasil dihapus.`);
     }
+  }
+
+  checkDuplicateStudents() {
+    const students = window.db.getStudents() || [];
+    const nameMap = {};
+    const duplicates = [];
+    students.forEach(s => {
+      const key = (s.name || '').trim().toLowerCase();
+      if (!key) return;
+      if (!nameMap[key]) {
+        nameMap[key] = [s];
+      } else {
+        nameMap[key].push(s);
+        duplicates.push(s);
+      }
+    });
+    return { duplicates, nameMap };
+  }
+
+  cleanupDuplicateStudents(promptConfirm = true) {
+    const { duplicates, nameMap } = this.checkDuplicateStudents();
+    if (duplicates.length === 0) {
+      if (promptConfirm) alert('Alhamdulillah! Tidak ditemukan santri dengan nama ganda (duplikat). Data Anda sudah bersih dan rapi.');
+      return 0;
+    }
+
+    const dupNames = Object.keys(nameMap).filter(k => nameMap[k].length > 1).map(k => nameMap[k][0].name);
+    if (promptConfirm) {
+      const ok = confirm(`Ditemukan ${duplicates.length} data santri duplikat (ganda):\n\n• ${dupNames.join('\n• ')}\n\nApakah Anda ingin menghapus santri duplikat ini secara otomatis dan mempertahankan 1 data yang sah?`);
+      if (!ok) return 0;
+    }
+
+    let removedCount = 0;
+    Object.keys(nameMap).forEach(key => {
+      const list = nameMap[key];
+      if (list.length > 1) {
+        // Simpan 1 santri pertama, hapus duplikat selebihnya
+        const [keep, ...removeList] = list;
+        removeList.forEach(rem => {
+          window.db.deleteStudent(rem.id);
+          removedCount++;
+        });
+      }
+    });
+
+    this.renderAll();
+    this.showToast(`✓ Berhasil membersihkan ${removedCount} data santri duplikat.`);
+    return removedCount;
   }
 
   saveTpaInfo(e) {
@@ -4253,5 +4377,13 @@ window.openStudentFormWa = function(studentId) {
 window.copyAllStudentFormLinks = function(classFilter = 'all') {
   const inst = window.app || initSikadApp();
   if (inst) inst.copyAllStudentFormLinks(classFilter);
+};
+window.deleteStudent = function(id) {
+  const inst = window.app || initSikadApp();
+  if (inst) inst.deleteStudent(id);
+};
+window.cleanupDuplicateStudents = function(promptConfirm = true) {
+  const inst = window.app || initSikadApp();
+  if (inst) return inst.cleanupDuplicateStudents(promptConfirm);
 };
 

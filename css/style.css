@@ -1402,6 +1402,23 @@ body {
 .std-meta {
   flex: 1;
 }
+.std-card-quick-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.std-card-quick-actions .btn-sm {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
 .std-name {
   font-size: 0.92rem;
   font-weight: 800;

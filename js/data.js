@@ -187,11 +187,16 @@ class TPADatabase {
         parsed.tpaInfo.sheetSyncUrl = DEFAULT_DATA.tpaInfo.sheetSyncUrl;
       }
       safeStorageSet('SIKAD_SHEET_URL', DEFAULT_DATA.tpaInfo.sheetSyncUrl);
-      if (!Array.isArray(parsed.students) || parsed.students.length < 30) {
+      if (!Array.isArray(parsed.students)) {
         parsed.students = JSON.parse(JSON.stringify(DEFAULT_DATA.students));
       } else {
+        // Jangan bangkitkan kembali santri yang telah sengaja dihapus
+        if (Array.isArray(parsed.deletedStudentIds) && parsed.deletedStudentIds.length > 0) {
+          parsed.students = parsed.students.filter(s => !parsed.deletedStudentIds.includes(s.id));
+        }
         // Sinkronisasi pembaruan nama resmi & wali santri ke database lokal
         DEFAULT_DATA.students.forEach(defStd => {
+          if (Array.isArray(parsed.deletedStudentIds) && parsed.deletedStudentIds.includes(defStd.id)) return;
           const s = parsed.students.find(x => x.id === defStd.id);
           if (s && defStd.fullName) {
             if (!s.fullName || s.name === 'Reyhan') {
@@ -349,6 +354,10 @@ class TPADatabase {
   }
 
   async pullFromSpreadsheet() {
+    if (this._lastMutationTime && (Date.now() - this._lastMutationTime < 15000)) {
+      console.log('Menunda pull cloud karena baru saja ada perubahan data lokal.');
+      return false;
+    }
     const url = this.getSyncUrl();
     if (!url || !url.startsWith('http')) return false;
 
@@ -362,6 +371,13 @@ class TPADatabase {
       if (json && json.status === 'success' && json.data) {
         const remoteData = json.data;
         if (remoteData.students && Array.isArray(remoteData.students) && remoteData.students.length > 0) {
+          // Filter santri yang telah dihapus di lokal
+          const tombstones = Array.isArray(this.data?.deletedStudentIds) ? this.data.deletedStudentIds : [];
+          if (tombstones.length > 0) {
+            remoteData.students = remoteData.students.filter(s => !tombstones.includes(s.id));
+          }
+          remoteData.deletedStudentIds = tombstones;
+
           this.data = remoteData;
           this.save(this.data, true);
           console.log('✓ Data berhasil disinkronkan dari spreadsheet online!');
@@ -508,8 +524,36 @@ class TPADatabase {
   }
 
   deleteStudent(studentId) {
-    this.data.students = this.data.students.filter(s => s.id !== studentId);
-    this.save();
+    this._lastMutationTime = Date.now();
+    if (!this.data) return false;
+
+    // 1. Simpan ke daftar tombstone agar data yang dihapus tidak dipulihkan kembali oleh sinkronisasi cloud
+    if (!Array.isArray(this.data.deletedStudentIds)) {
+      this.data.deletedStudentIds = [];
+    }
+    if (!this.data.deletedStudentIds.includes(studentId)) {
+      this.data.deletedStudentIds.push(studentId);
+    }
+
+    // 2. Hapus santri dari daftar
+    if (Array.isArray(this.data.students)) {
+      this.data.students = this.data.students.filter(s => s.id !== studentId);
+    }
+
+    // 3. Bersihkan catatan SPP & tabungan santri tersebut
+    if (Array.isArray(this.data.sppRecords)) {
+      this.data.sppRecords = this.data.sppRecords.filter(r => r.studentId !== studentId);
+    }
+    if (Array.isArray(this.data.savingsTransactions)) {
+      this.data.savingsTransactions = this.data.savingsTransactions.filter(t => t.studentId !== studentId);
+    }
+
+    // 4. Simpan ke LocalStorage
+    this.save(this.data);
+
+    // 5. Dorong pembaruan ke cloud spreadsheet langsung
+    this.pushToSpreadsheet();
+    return true;
   }
 
   // Cek status SPP santri pada bulan tertentu (format 'YYYY-MM')

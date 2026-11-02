@@ -7,7 +7,7 @@
   <meta name="description" content="Aplikasi pengelolaan keuangan modern dan terpadu untuk TPA/TPQ: kelola SPP/syahriah, multi-kas operasional vs tabungan santri, bisyarah guru, infaq, dan kwitansi digital WhatsApp.">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <link rel="stylesheet" href="css/style.css?v=3.7.0">
+  <link rel="stylesheet" href="css/style.css?v=3.8.0">
 </head>
 <body>
 
@@ -1073,7 +1073,7 @@
 
                 <div class="form-group">
                   <label>Rekening Bank & Donasi Resmi</label>
-                  <input type="text" class="form-control" id="info-tpa-rekening" placeholder="Contoh: BSI: 7123-4567-89 (a.n. RQ Ummul Qosim)" required>
+                  <input type="text" class="form-control" id="info-tpa-rekening" placeholder="Contoh: Transfer: 7123-4567-89 (a.n. RQ Ummul Qosim)" required>
                 </div>
 
                 <!-- Sinkronisasi Cloud Database (Google Sheets) -->
@@ -1270,9 +1270,8 @@
           <div class="form-group">
             <label>Metode Pembayaran</label>
             <select class="form-control" id="pay-spp-method">
-              <option value="Tunai">Tunai (Langsung ke Bendahara)</option>
-              <option value="Transfer BSI">Transfer Bank BSI</option>
-              <option value="QRIS">QRIS TPA</option>
+              <option value="Tunai">Tunai</option>
+              <option value="Transfer">Transfer</option>
             </select>
           </div>
           <div class="form-group">
@@ -2193,7 +2192,7 @@ function doPost(e) {
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=3.7.0"></script>
-  <script src="js/app.js?v=3.7.0"></script>
+  <script src="js/data.js?v=3.8.0"></script>
+  <script src="js/app.js?v=3.8.0"></script>
 </body>
 </html>
