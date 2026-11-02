@@ -1349,6 +1349,16 @@ class SikadApp {
     document.getElementById('pay-spp-month').value = this.formatMonthId(targetMonth);
     document.getElementById('pay-spp-amount').value = student.sppAmount;
     
+    // Pastikan pilihan metode pembayaran selalu hanya Tunai dan Transfer
+    const methodSelect = document.getElementById('pay-spp-method');
+    if (methodSelect) {
+      methodSelect.innerHTML = `
+        <option value="Tunai">Tunai</option>
+        <option value="Transfer">Transfer</option>
+      `;
+      methodSelect.value = 'Tunai';
+    }
+
     // Store raw month in form dataset
     document.getElementById('form-pay-spp').dataset.rawMonth = targetMonth;
 
